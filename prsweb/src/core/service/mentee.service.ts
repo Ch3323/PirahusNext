@@ -15,6 +15,15 @@ export class MenteeService {
       throw error;
     }
   }
+  async createManyMentees(data: ICreateMentee[]): Promise<IMentee[]> {
+    try {
+      const parsedData = data.map((d) => parseSchema(createMenteeSchema, d));
+      const mentees = await this.menteeRepository.createManyMentees(parsedData);
+      return mentees.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   async updateMentee(data: IUpdateMentee): Promise<IMentee> {
     try {
       const parsedData = parseSchema(updateMenteeSchema, data);
@@ -43,6 +52,14 @@ export class MenteeService {
   async getAllMentees(): Promise<IMentee[]> {
     try {
       const mentees = await this.menteeRepository.getAllMentees();
+      return mentees.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getHintsByMentorId(mentorId: string): Promise<IMentee[]> {
+    try {
+      const mentees = await this.menteeRepository.getHintsByMentorId(mentorId);
       return mentees.data;
     } catch (error) {
       throw error;

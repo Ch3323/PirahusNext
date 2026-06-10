@@ -1,10 +1,21 @@
 import { IMentee } from "./mentee";
 
+export interface IHint {
+  id: string;
+  content: string;
+  createdAt: Date;
+}
+
+export interface IUpdateHintItem {
+  id: string;
+  content: string;
+}
+
 export interface IMentor {
   id: string;
   studentId: string;
 
-  hints: string[];
+  hints: IHint[];
 
   mentee: IMentee | null;
 
@@ -18,15 +29,13 @@ export interface ICreateMentor {
 
 export interface IUpdateMentor {
   id: string;
-  hints?: string[];
+  hints?: IUpdateHintItem[];
 }
 
 export interface IAddHints {
-  id: string;
   hints: string[];
 }
 
 export interface IUpdateHints {
-  id: string;
-  hints: string[];
+  hints: IUpdateHintItem[];
 }

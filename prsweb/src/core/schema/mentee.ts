@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const createMenteeSchema = z.object({
   studentId: z.string().min(1),
+  mentorId: z.string().min(1),
 });
 
 export type CreateMenteeInput = z.infer<typeof createMenteeSchema>;

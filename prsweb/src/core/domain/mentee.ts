@@ -13,6 +13,7 @@ export interface IMentee {
 
 export interface ICreateMentee {
   studentId: string;
+  mentorId: string;
 }
 
 export interface IUpdateMentee {
