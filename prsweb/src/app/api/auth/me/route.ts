@@ -36,7 +36,6 @@ export async function GET() {
       }
 
       return successResponse({
-        type: "mentor",
         user: mentor,
       });
     }
@@ -63,7 +62,6 @@ export async function GET() {
       }
 
       return successResponse({
-        type: "mentee",
         user: mentee,
       });
     }
