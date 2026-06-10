@@ -17,7 +17,16 @@ export async function POST(req: Request) {
       });
     }
 
-    if (studentId.startsWith("68")) {
+    const config = await prisma.systemConfig.findFirst();
+
+    if (!config) {
+      return handleError({
+        status: 500,
+        message: "Admission year setting not configured",
+      });
+    }
+
+    if (studentId.startsWith(config?.mentorYear)) {
       const mentor = await prisma.mentor.findUnique({
         where: {
           studentId,
@@ -30,7 +39,7 @@ export async function POST(req: Request) {
           message: "Mentor not found",
         });
       }
-    } else if (studentId.startsWith("69")) {
+    } else if (studentId.startsWith(config?.menteeYear)) {
       const mentee = await prisma.mentee.findUnique({
         where: {
           studentId,
@@ -47,7 +56,7 @@ export async function POST(req: Request) {
 
     const token = signToken({
       studentId,
-      type: studentId.startsWith("68") ? "mentor" : "mentee",
+      type: studentId.startsWith(config?.mentorYear) ? "mentor" : "mentee",
     });
 
     const cookieStore = await cookies();
