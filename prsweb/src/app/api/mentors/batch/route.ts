@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return successResponse(mentors);
+    return successResponse(mentors, 201, "CREATED");
   } catch (error) {
     return handleError(error);
   }
