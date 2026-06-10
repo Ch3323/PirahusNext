@@ -2,6 +2,7 @@ import { prisma } from "@/src/lib/prisma";
 import { successResponse } from "@/src/lib/api-response";
 import { handleError } from "@/src/lib/handle-error";
 import { NextRequest } from "next/server";
+import { IUpdateHintItem } from "@/src/core/domain/mentor";
 
 export async function PATCH(
   req: NextRequest,
@@ -10,22 +11,20 @@ export async function PATCH(
   try {
     const { id } = await params;
 
-    const { hints }: { hints: string[] } = await req.json();
+    const { hints }: { hints: IUpdateHintItem[] } = await req.json();
 
-    await prisma.$transaction([
-      prisma.hint.deleteMany({
-        where: {
-          mentorId: id,
-        },
-      }),
-
-      prisma.hint.createMany({
-        data: hints.map((content) => ({
-          content,
-          mentorId: id,
-        })),
-      }),
-    ]);
+    await Promise.all(
+      hints.map((hint) =>
+        prisma.hint.update({
+          where: {
+            id: hint.id,
+          },
+          data: {
+            content: hint.content,
+          },
+        }),
+      ),
+    );
 
     const mentor = await prisma.mentor.findUnique({
       where: { id },

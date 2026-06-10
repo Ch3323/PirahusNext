@@ -30,16 +30,19 @@ export class MentorRepository implements IMentorRepository {
   async getAllMentors(): Promise<ApiResponse<IMentor[]>> {
     return httpClient.get<IMentor[]>("/api/mentors");
   }
-  async addHints(data: IAddHints): Promise<ApiResponse<IMentor>> {
-    return httpClient.post<IMentor>(
-      "/api/mentors/hint/add/" + data.mentorId,
-      data.hints,
-    );
+  async addHints(
+    mentorId: string,
+    data: IAddHints,
+  ): Promise<ApiResponse<IMentor>> {
+    return httpClient.post<IMentor>("/api/mentors/hint/add/" + mentorId, data);
   }
-  async updateHints(data: IUpdateHints): Promise<ApiResponse<IMentor>> {
+  async updateHints(
+    mentorId: string,
+    data: IUpdateHints,
+  ): Promise<ApiResponse<IMentor>> {
     return httpClient.patch<IMentor>(
-      "/api/mentors/hint/update/" + data.mentorId,
-      data.hints,
+      "/api/mentors/hint/update/" + mentorId,
+      data,
     );
   }
 }

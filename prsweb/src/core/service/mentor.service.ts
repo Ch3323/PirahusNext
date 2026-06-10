@@ -70,19 +70,22 @@ export class MentorService {
       throw error;
     }
   }
-  async addHints(data: IAddHints): Promise<IMentor> {
+  async addHints(mentorId: string, data: IAddHints): Promise<IMentor> {
     try {
       const parsedData = parseSchema(addHintsSchema, data);
-      const mentor = await this.mentorRepository.addHints(parsedData);
+      const mentor = await this.mentorRepository.addHints(mentorId, parsedData);
       return mentor.data;
     } catch (error) {
       throw error;
     }
   }
-  async updateHints(data: IUpdateHints): Promise<IMentor> {
+  async updateHints(mentorId: string, data: IUpdateHints): Promise<IMentor> {
     try {
       const parsedData = parseSchema(updateHintsSchema, data);
-      const mentor = await this.mentorRepository.updateHints(parsedData);
+      const mentor = await this.mentorRepository.updateHints(
+        mentorId,
+        parsedData,
+      );
       return mentor.data;
     } catch (error) {
       throw error;

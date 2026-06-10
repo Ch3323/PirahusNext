@@ -6,6 +6,11 @@ export interface IHint {
   createdAt: Date;
 }
 
+export interface IUpdateHintItem {
+  id: string;
+  content: string;
+}
+
 export interface IMentor {
   id: string;
   studentId: string;
@@ -24,15 +29,13 @@ export interface ICreateMentor {
 
 export interface IUpdateMentor {
   id: string;
-  hints?: string[];
+  hints?: IUpdateHintItem[];
 }
 
 export interface IAddHints {
   hints: string[];
-  mentorId: string;
 }
 
 export interface IUpdateHints {
-  hints: string[];
-  mentorId: string;
+  hints: IUpdateHintItem[];
 }
