@@ -10,7 +10,7 @@ export async function PATCH(
   try {
     const { id } = await params;
 
-    const hints: string[] = await req.json();
+    const { hints }: { hints: string[] } = await req.json();
 
     await prisma.$transaction([
       prisma.hint.deleteMany({
