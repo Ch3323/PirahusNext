@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Menu from "../components/menu";
 import MenuToggle from "@/src/components/menutoggle";
+import LoginButton from "@/src/components/LoginButton";
 import ScrollHero from "@/src/components/zoomscroll";
 import Loader from "@/src/components/loader";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -44,13 +45,16 @@ function Page() {
 
   return (
     <div className="relative">
-      {loading && <Loader onComplete={() => {}} />}
+      {loading && <Loader onComplete={() => { }} />}
 
       <div className="fixed top-8 left-8 z-2000">
         <NavbarLogo />
       </div>
 
-      <MenuToggle isOpen={isOpen} toggle={toggleMenu} />
+      <div className="fixed top-8 right-8 z-2000 flex items-center gap-4">
+        <LoginButton />
+        <MenuToggle isOpen={isOpen} toggle={toggleMenu} />
+      </div>
 
       {!loading && (
         <>
