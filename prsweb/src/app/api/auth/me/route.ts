@@ -3,6 +3,7 @@ import { prisma } from "@/src/lib/prisma";
 import { verifyToken } from "@/src/lib/jwt";
 import { successResponse } from "@/src/lib/api-response";
 import { handleError } from "@/src/lib/handle-error";
+import { ADMIN_STUDENT_IDS } from "@/src/lib/admins";
 
 export async function GET() {
   try {
@@ -35,10 +36,12 @@ export async function GET() {
         });
       }
 
+      const isAdmin = ADMIN_STUDENT_IDS.includes(payload.studentId);
+
       return successResponse({
         user: {
           ...mentor,
-          role: "mentor",
+          role: isAdmin ? "admin" : "mentor",
         },
       });
     }
