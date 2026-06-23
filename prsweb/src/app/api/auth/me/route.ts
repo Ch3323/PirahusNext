@@ -36,7 +36,10 @@ export async function GET() {
       }
 
       return successResponse({
-        user: mentor,
+        user: {
+          ...mentor,
+          role: "mentor",
+        },
       });
     }
 
@@ -62,7 +65,10 @@ export async function GET() {
       }
 
       return successResponse({
-        user: mentee,
+        user: {
+          ...mentee,
+          role: "mentee",
+        },
       });
     }
   } catch (error) {
