@@ -1,4 +1,4 @@
-import Sudoku from "../../../components/minigame/Sudoku";
+import Sudoku from '@/src/components/minigame/Sudoku';
 export default function Page() {
   return <Sudoku />;
 }

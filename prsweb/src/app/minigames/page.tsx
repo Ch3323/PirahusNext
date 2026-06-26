@@ -15,7 +15,7 @@ type GameTheme = {
   colorGlow: string
   gradient: string
   icon: string
-  image?: string // pass in your own art later
+  image?: string
 }
 
 const games: GameTheme[] = [
@@ -43,6 +43,7 @@ const games: GameTheme[] = [
     colorGlow: '#ff8c4233',
     gradient: 'linear-gradient(135deg, #ff8c42, #ffb347, #ff5722)',
     icon: '⊞',
+    image: '/images/sudokuimg.png',
   },
 ]
 

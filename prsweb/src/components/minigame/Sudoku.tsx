@@ -1,6 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
+import FaultyTerminal from "@/src/components/reactbits/FaultyTerminal";
+import { Pixelify_Sans, Share_Tech_Mono } from "next/font/google";
+
+const pixelifySans = Pixelify_Sans({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+const shareTechMono = Share_Tech_Mono({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -12,7 +24,79 @@ interface HistoryEntry {
   prevNotes: Set<number>;
 }
 
-// ── Pure puzzle logic (no React) ─────────────────────────────────────────────
+// ── Background (same as Dungeon) ─────────────────────────────────────────────
+
+const Background = memo(function Background() {
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
+      <FaultyTerminal
+        scale={1.3}
+        gridMul={[2, 1]}
+        digitSize={1.2}
+        timeScale={0.5}
+        pause={false}
+        scanlineIntensity={0.5}
+        glitchAmount={1}
+        flickerAmount={1}
+        noiseAmp={1}
+        chromaticAberration={0}
+        dither={0}
+        curvature={0.1}
+        tint="#363248"
+        mouseReact={false}
+        mouseStrength={0.5}
+        pageLoadAnimation
+        brightness={0.6}
+      />
+    </div>
+  );
+});
+
+// ── Shared button style (mirrors Dungeon) ─────────────────────────────────────
+
+const btnBase: React.CSSProperties = {
+  color: "#6b7280",
+  border: "1px solid #374151",
+  fontSize: "0.875rem",
+  padding: "0.25rem 0.75rem",
+  background: "transparent",
+  cursor: "pointer",
+  borderRadius: "0.25rem",
+  fontFamily: "inherit",
+  letterSpacing: "0.05em",
+  transition: "color 0.15s",
+};
+
+function HoverBtn({
+  onClick,
+  children,
+  active,
+  style,
+}: {
+  onClick?: () => void;
+  children: React.ReactNode;
+  active?: boolean;
+  style?: React.CSSProperties;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        ...btnBase,
+        color: active ? "#d1d5db" : hovered ? "#d1d5db" : "#6b7280",
+        borderColor: active ? "#6b7280" : "#374151",
+        ...style,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ── Pure puzzle logic ─────────────────────────────────────────────────────────
 
 function canPlace(board: number[], row: number, col: number, n: number): boolean {
   for (let i = 0; i < 9; i++) {
@@ -58,7 +142,9 @@ export default function Sudoku() {
   const [board, setBoard] = useState<number[]>(Array(81).fill(0));
   const [solution, setSolution] = useState<number[]>(Array(81).fill(0));
   const [given, setGiven] = useState<boolean[]>(Array(81).fill(false));
-  const [notes, setNotes] = useState<Set<number>[]>(Array(81).fill(null).map(() => new Set()));
+  const [notes, setNotes] = useState<Set<number>[]>(
+    Array(81).fill(null).map(() => new Set())
+  );
   const [selected, setSelected] = useState<number | null>(null);
   const [notesMode, setNotesMode] = useState(false);
   const [mistakes, setMistakes] = useState(0);
@@ -90,20 +176,21 @@ export default function Sudoku() {
 
   useEffect(() => {
     startGame("easy");
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [startGame]);
 
-  const formatTime = (t: number) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+  const formatTime = (t: number) =>
+    `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 
   const inputNumber = useCallback(
     (n: number) => {
       if (selected === null || given[selected] || gameOver || win) return;
-
       setHistory((h) => [
         ...h,
         { idx: selected, prevValue: board[selected], prevNotes: new Set(notes[selected]) },
       ]);
-
       if (notesMode && n !== 0) {
         setNotes((prev) => {
           const next = prev.map((s) => new Set(s));
@@ -113,17 +200,14 @@ export default function Sudoku() {
         });
         return;
       }
-
       if (n === 0) {
         setBoard((b) => { const nb = [...b]; nb[selected] = 0; return nb; });
         return;
       }
-
       if (board[selected] === n) {
         setBoard((b) => { const nb = [...b]; nb[selected] = 0; return nb; });
         return;
       }
-
       const isCorrect = n === solution[selected];
       if (!isCorrect) {
         const newMistakes = mistakes + 1;
@@ -133,7 +217,6 @@ export default function Sudoku() {
           if (timerRef.current) clearInterval(timerRef.current);
         }
       }
-
       setBoard((b) => {
         const nb = [...b];
         nb[selected] = n;
@@ -144,8 +227,6 @@ export default function Sudoku() {
         }
         return nb;
       });
-
-      // Clear related notes
       if (isCorrect) {
         setNotes((prev) => {
           const next = prev.map((s) => new Set(s));
@@ -169,10 +250,13 @@ export default function Sudoku() {
     const last = history[history.length - 1];
     setHistory((h) => h.slice(0, -1));
     setBoard((b) => { const nb = [...b]; nb[last.idx] = last.prevValue; return nb; });
-    setNotes((prev) => { const next = prev.map((s) => new Set(s)); next[last.idx] = last.prevNotes; return next; });
+    setNotes((prev) => {
+      const next = prev.map((s) => new Set(s));
+      next[last.idx] = last.prevNotes;
+      return next;
+    });
   }, [history, gameOver, win]);
 
-  // Keyboard handler
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (gameOver || win) return;
@@ -192,178 +276,356 @@ export default function Sudoku() {
     return () => window.removeEventListener("keydown", handler);
   }, [selected, inputNumber, undoMove, gameOver, win]);
 
-  // Cell styling helpers
+  // ── Cell color helpers (terminal palette) ────────────────────────────────
+
   const selRow = selected !== null ? Math.floor(selected / 9) : -1;
   const selCol = selected !== null ? selected % 9 : -1;
-  const selBox = selected !== null ? Math.floor(selRow / 3) * 3 + Math.floor(selCol / 3) : -1;
+  const selBox =
+    selected !== null ? Math.floor(selRow / 3) * 3 + Math.floor(selCol / 3) : -1;
   const selVal = selected !== null ? board[selected] : 0;
 
   function getCellBg(i: number): string {
     const r = Math.floor(i / 9), c = i % 9;
     const box = Math.floor(r / 3) * 3 + Math.floor(c / 3);
-    if (i === selected) return "bg-blue-100 dark:bg-blue-900/40";
+    if (i === selected) return "rgba(107,114,128,0.35)";
     if (selected !== null && (r === selRow || c === selCol || box === selBox))
-      return "bg-gray-100 dark:bg-gray-800";
-    if (selVal && board[i] === selVal) return "bg-green-100 dark:bg-green-900/30";
-    return "bg-white dark:bg-gray-900";
+      return "rgba(107,114,128,0.12)";
+    if (selVal && board[i] === selVal) return "rgba(156,163,175,0.2)";
+    // Alternate 3x3 box shading for readability
+    const boxRow = Math.floor(r / 3);
+    const boxCol = Math.floor(c / 3);
+    const isAltBox = (boxRow + boxCol) % 2 === 1;
+    return isAltBox ? "rgba(255,255,255,0.03)" : "transparent";
   }
 
-  function getCellText(i: number): string {
-    if (!board[i]) return "text-gray-400";
-    if (given[i]) return "font-semibold text-gray-900 dark:text-gray-100";
-    if (board[i] !== solution[i]) return "text-red-500 font-medium";
-    return "text-blue-600 dark:text-blue-400 font-medium";
+  function getCellColor(i: number): string {
+    if (!board[i]) return "transparent";
+    if (given[i]) return "#f3f4f6";                  // given: near-white
+    if (board[i] !== solution[i]) return "#f87171";   // wrong: bright red
+    return "#d1d5db";                                 // correct user: bright gray
   }
 
   function getBorderRight(c: number): string {
-    if (c === 8) return "border-r-0";
-    if (c === 2 || c === 5) return "border-r-2 border-r-gray-700 dark:border-r-gray-300";
-    return "border-r border-r-gray-200 dark:border-r-gray-700";
+    if (c === 8) return "none";
+    if (c === 2 || c === 5) return "2px solid #4b5563";
+    return "1px solid #1f2937";
   }
 
   function getBorderBottom(r: number): string {
-    if (r === 8) return "border-b-0";
-    if (r === 2 || r === 5) return "border-b-2 border-b-gray-700 dark:border-b-gray-300";
-    return "border-b border-b-gray-200 dark:border-b-gray-700";
+    if (r === 8) return "none";
+    if (r === 2 || r === 5) return "2px solid #4b5563";
+    return "1px solid #1f2937";
   }
 
-  return (
-    <div className="flex flex-col items-center gap-5 py-8 select-none">
-      {/* Header */}
-      <h1 className="text-2xl font-medium tracking-tight text-gray-900 dark:text-gray-100">
-        Sudoku
-      </h1>
+  // ── Exhausted numbers (all 9 placed correctly) ───────────────────────────
 
-      {/* Timer + Mistakes */}
-      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-        <span className="font-mono text-base">{formatTime(timer)}</span>
-        <div className="flex gap-1">
-          {Array.from({ length: MAX_MISTAKES }).map((_, i) => (
-            <span key={i} className={i < mistakes ? "text-red-400" : "text-red-500"}>
-              {i < mistakes ? "♡" : "♥"}
-            </span>
+  function isExhausted(n: number): boolean {
+    let count = 0;
+    for (let i = 0; i < 81; i++) {
+      if (board[i] === n && board[i] === solution[i]) count++;
+    }
+    return count === 9;
+  }
+
+  // ── Grid size ────────────────────────────────────────────────────────────
+
+  const gridSize = "min(360px, 88vw)";
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        overflow: "hidden",
+        backgroundColor: "#000000",
+        userSelect: "none",
+        ...pixelifySans.style,
+      }}
+    >
+      <Background />
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "5rem 1rem 2rem",
+          gap: "1rem",
+        }}
+      >
+        {/* ── Header (top-left, mirrors Dungeon) ── */}
+        <div
+          style={{
+            position: "absolute",
+            top: "1rem",
+            left: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.25rem",
+          }}
+        >
+          <h1
+            style={{
+              color: "#d1d5db",
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              margin: 0,
+            }}
+          >
+            Sudoku
+          </h1>
+
+          {/* Timer */}
+          <span
+            style={{
+              color: "#6b7280",
+              fontSize: "0.875rem",
+              letterSpacing: "0.1em",
+            }}
+          >
+            {formatTime(timer)}
+          </span>
+
+          {/* Mistakes */}
+          <div style={{ display: "flex", gap: "0.25rem" }}>
+            {Array.from({ length: MAX_MISTAKES }).map((_, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: "0.875rem",
+                  color: i < mistakes ? "#374151" : "#ef4444",
+                }}
+              >
+                {i < mistakes ? "♡" : "♥"}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Difficulty buttons (top-right) ── */}
+        <div
+          style={{
+            position: "absolute",
+            top: "1rem",
+            right: "1rem",
+            display: "flex",
+            gap: "0.375rem",
+          }}
+        >
+          {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
+            <HoverBtn key={d} onClick={() => startGame(d)} active={diff === d}>
+              {d.toUpperCase()}
+            </HoverBtn>
           ))}
         </div>
-      </div>
 
-      {/* Difficulty + actions */}
-      <div className="flex gap-2 flex-wrap justify-center">
-        {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
-          <button
-            key={d}
-            onClick={() => startGame(d)}
-            className={`px-4 py-1.5 text-sm rounded-lg border transition-colors capitalize ${
-              diff === d
-                ? "bg-blue-600 text-white border-blue-600"
-                : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+        {/* ── Grid panel ── */}
+        <div
+          style={{
+            width: gridSize,
+            aspectRatio: "1",
+            flexShrink: 0,
+            padding: "4px",
+            background: "rgba(15, 15, 20, 0.88)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid #374151",
+            boxShadow: "0 0 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04) inset",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "grid",
+              gridTemplateColumns: "repeat(9, 1fr)",
+              gridTemplateRows: "repeat(9, 1fr)",
+              border: "1px solid #4b5563",
+            }}
           >
-            {d}
-          </button>
-        ))}
-        <button
-          onClick={undoMove}
-          title="Undo (Ctrl+Z)"
-          className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-        >
-          ↩
-        </button>
-        <button
-          onClick={() => startGame(diff)}
-          title="New game"
-          className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-        >
-          ↺
-        </button>
-      </div>
-
-      {/* Grid */}
-      <div
-        className="border-2 border-gray-700 dark:border-gray-300 rounded-xl overflow-hidden"
-        style={{ width: "min(360px, 92vw)", aspectRatio: "1" }}
-      >
-        <div className="grid grid-cols-9 w-full h-full">
-          {board.map((val, i) => {
-            const r = Math.floor(i / 9);
-            const c = i % 9;
-            const n = notes[i];
-            return (
-              <div
-                key={i}
-                onClick={() => setSelected(i)}
-                className={`flex items-center justify-center cursor-pointer transition-colors text-base
-                  ${getCellBg(i)} ${getCellText(i)}
-                  ${getBorderRight(c)} ${getBorderBottom(r)}`}
-              >
-                {val ? (
-                  <span>{val}</span>
-                ) : n && n.size > 0 ? (
-                  <div className="grid grid-cols-3 w-full h-full p-px">
-                    {Array.from({ length: 9 }, (_, d) => d + 1).map((d) => (
-                      <span
-                        key={d}
-                        className="flex items-center justify-center text-gray-400 dark:text-gray-500"
-                        style={{ fontSize: "clamp(5px, 1.3vw, 9px)" }}
-                      >
-                        {n.has(d) ? d : ""}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
+            {board.map((val, i) => {
+              const r = Math.floor(i / 9);
+              const c = i % 9;
+              const n = notes[i];
+              return (
+                <div
+                  key={i}
+                  onClick={() => setSelected(i)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    backgroundColor: getCellBg(i),
+                    color: getCellColor(i),
+                    borderRight: getBorderRight(c),
+                    borderBottom: getBorderBottom(r),
+                    fontSize: "clamp(14px, 3.5vw, 22px)",
+                    fontWeight: given[i] ? "700" : "400",
+                    transition: "background-color 0.1s",
+                    position: "relative",
+                  }}
+                >
+                  {val ? (
+                    <span style={{ fontFamily: shareTechMono.style.fontFamily }}>{val}</span>
+                  ) : n && n.size > 0 ? (
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gridTemplateRows: "repeat(3, 1fr)",
+                        width: "100%",
+                        height: "100%",
+                        padding: "1px",
+                      }}
+                    >
+                      {Array.from({ length: 9 }, (_, d) => d + 1).map((d) => (
+                        <span
+                          key={d}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#6b7280",
+                            fontSize: "clamp(5px, 1.1vw, 8px)",
+                          }}
+                        >
+                          {n.has(d) ? d : ""}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Numpad */}
-      <div
-        className="grid grid-cols-5 gap-2"
-        style={{ width: "min(360px, 92vw)" }}
-      >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-          <button
-            key={n}
-            onClick={() => inputNumber(n)}
-            className="py-3 text-lg font-medium rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        {/* ── Numpad ── */}
+        <div style={{ display: "flex", gap: "0.5rem", width: gridSize, alignItems: "flex-end" }}>
+
+          {/* Erase — left of 3x3 */}
+          <HoverBtn
+            onClick={() => inputNumber(0)}
+            style={{
+              width: "2.5rem",
+              flexShrink: 0,
+              alignSelf: "flex-end",
+              padding: "0.6rem 0",
+              fontSize: "1rem",
+              textAlign: "center",
+            }}
           >
-            {n}
-          </button>
-        ))}
-        <button
-          onClick={() => setNotesMode((m) => !m)}
-          title="Toggle notes (N)"
-          className={`py-3 text-sm rounded-lg border transition-colors ${
-            notesMode
-              ? "bg-blue-600 text-white border-blue-600"
-              : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
-          }`}
-        >
-          ✏️
-        </button>
-        <button
-          onClick={() => inputNumber(0)}
-          title="Erase"
-          className="py-3 text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-        >
-          ⌫
-        </button>
-      </div>
+            ⌫
+          </HoverBtn>
 
-      {/* Status */}
-      {win && (
-        <p className="text-green-600 dark:text-green-400 font-medium text-base">
-          Puzzle solved! 🎉
+          {/* 3×3 digit grid */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "0.375rem",
+              flex: 1,
+            }}
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => {
+              const done = isExhausted(n);
+              return done ? (
+                <div
+                  key={n}
+                  style={{
+                    padding: "0.65rem 0",
+                    fontSize: "1.25rem",
+                    textAlign: "center",
+                    color: "#1f2937",
+                    border: "1px solid #1f2937",
+                    borderRadius: "0.25rem",
+                    pointerEvents: "none",
+                    letterSpacing: "0.1em",
+                    fontFamily: shareTechMono.style.fontFamily,
+                  }}
+                >
+                  {n}
+                </div>
+              ) : (
+                <HoverBtn
+                  key={n}
+                  onClick={() => inputNumber(n)}
+                  style={{
+                    padding: "0.65rem 0",
+                    fontSize: "1.25rem",
+                    textAlign: "center",
+                    fontFamily: shareTechMono.style.fontFamily,
+                    letterSpacing: "0.1em",
+                    color: "#d1d5db",
+                    borderColor: "#4b5563",
+                  }}
+                >
+                  {n}
+                </HoverBtn>
+              );
+            })}
+          </div>
+
+          {/* Notes — right of 3x3 */}
+          <HoverBtn
+            onClick={() => setNotesMode((m) => !m)}
+            active={notesMode}
+            style={{
+              width: "2.5rem",
+              flexShrink: 0,
+              alignSelf: "flex-end",
+              padding: "0.6rem 0",
+              fontSize: "1rem",
+              textAlign: "center",
+            }}
+          >
+            ✏️
+          </HoverBtn>
+
+        </div>
+
+        {/* ── Bottom toolbar ── */}
+        <div
+          style={{
+            display: "flex",
+            gap: "0.375rem",
+            alignItems: "center",
+            width: gridSize,
+          }}
+        >
+          <HoverBtn onClick={undoMove}>↩ UNDO</HoverBtn>
+          <HoverBtn onClick={() => startGame(diff)}>↺ NEW</HoverBtn>
+
+          {win && (
+            <span style={{ color: "#9ca3af", fontSize: "0.75rem", letterSpacing: "0.1em" }}>
+              SOLVED · {formatTime(timer)}
+            </span>
+          )}
+          {gameOver && !win && (
+            <span style={{ color: "#ef4444", fontSize: "0.75rem", letterSpacing: "0.1em" }}>
+              GAME OVER ·{" "}
+              <span
+                onClick={() => startGame(diff)}
+                style={{ cursor: "pointer", textDecoration: "underline" }}
+              >
+                RETRY
+              </span>
+            </span>
+          )}
+        </div>
+
+        {/* ── Hint ── */}
+        <p style={{ color: "#4b5563", fontSize: "0.75rem", margin: 0, letterSpacing: "0.05em" }}>
+          1–9 to place · N to toggle notes · Ctrl+Z to undo · Arrows to move
         </p>
-      )}
-      {gameOver && !win && (
-        <p className="text-red-500 font-medium text-base">
-          Game over — too many mistakes.{" "}
-          <button onClick={() => startGame(diff)} className="underline">
-            Try again
-          </button>
-        </p>
-      )}
+
+      </div>
     </div>
   );
 }
