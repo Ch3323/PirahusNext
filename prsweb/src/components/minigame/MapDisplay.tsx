@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { GameState } from "@/src/lib/game/gameTypes";
-import { posKey, MAP_W, MAP_H } from "@/src/lib/game/mapGen";
+import { GameState } from "@/src/lib/game/dungeon/gameTypes";
+import { posKey, MAP_W, MAP_H } from "@/src/lib/game/dungeon/mapGen";
 
 interface Props {
   state: GameState;

@@ -2,8 +2,8 @@
 
 import { useReducer, useEffect, useCallback, memo } from "react";
 import Link from "next/link";
-import { generateGame } from "@/src/lib/game/mapGen";
-import { gameReducer } from "@/src/lib/game/gameReducer";
+import { generateGame } from "@/src/lib/game/dungeon/mapGen";
+import { gameReducer } from "@/src/lib/game/dungeon/gameReducer";
 import MapDisplay from "../../../components/minigame/MapDisplay";
 import GameTerminal from "../../../components/minigame/GameTerminal";
 import FaultyTerminal from "../../../components/reactbits/background/FaultyTerminal";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { GameState, GameAction } from "@/src/lib/game/gameTypes";
+import { GameState, GameAction } from "@/src/lib/game/dungeon/gameTypes";
 
 interface Props {
   state: GameState;
