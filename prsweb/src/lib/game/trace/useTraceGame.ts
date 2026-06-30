@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Phase, Question } from "./types";
 import { buildQuestionSet } from "./questions";
+import { useGamePoints } from "@/src/hooks/useGamePoints";
+import { calculateTracePts } from "@/src/lib/game/scoring";
 
 export const INITIAL_TIME = 180;
 export const MAX_QUESTIONS = 10;
@@ -17,6 +19,7 @@ export function useTraceGame() {
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
   const [bonusFlash, setBonusFlash] = useState<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { awardPoints } = useGamePoints("trace");
 
   const currentQ = questions[qIdx] ?? null;
 
@@ -59,9 +62,14 @@ export function useTraceGame() {
     setSelectedChoice(null);
     setBonusFlash(null);
     const next = qIdx + 1;
-    if (next >= MAX_QUESTIONS || next >= questions.length) setPhase("result");
-    else setQIdx(next);
-  }, [qIdx, questions.length]);
+    if (next >= MAX_QUESTIONS || next >= questions.length) {
+      setPhase("result");
+      const pts = calculateTracePts(score, timeLeft);
+      awardPoints(pts, { score, timeLeft });
+    } else {
+      setQIdx(next);
+    }
+  }, [qIdx, questions.length, score, timeLeft, awardPoints]);
 
   const submitAnswer = useCallback((answer: string) => {
     if (!currentQ || feedback) return;

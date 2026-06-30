@@ -38,7 +38,9 @@ function HoverBtn({ onClick, children, active, style, disabled }: {
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
         color: disabled ? "#1f2937" : active || hov ? "#d1d5db" : "#6b7280",
-        border: `1px solid ${disabled ? "#1f2937" : active ? "#6b7280" : hov ? "#4b5563" : "#374151"}`,
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: disabled ? "#1f2937" : active ? "#6b7280" : hov ? "#4b5563" : "#374151",
         fontSize: "0.875rem", padding: "0.25rem 0.75rem", background: "transparent",
         cursor: disabled ? "default" : "pointer", borderRadius: "0.25rem",
         fontFamily: "inherit", letterSpacing: "0.05em",
@@ -211,9 +213,9 @@ export default function TraceGame() {
                     const isCorrect = choice === currentQ.answer;
                     const showResult = !!feedback;
                     let borderColor = "#374151", color = "#6b7280";
-                    if (showResult && isCorrect)                    { borderColor = "#4ade80"; color = "#4ade80"; }
-                    else if (showResult && isSelected && !isCorrect){ borderColor = "#f87171"; color = "#f87171"; }
-                    else if (!showResult && isSelected)             { borderColor = "#6b7280"; color = "#d1d5db"; }
+                    if (showResult && isCorrect) { borderColor = "#4ade80"; color = "#4ade80"; }
+                    else if (showResult && isSelected && !isCorrect) { borderColor = "#f87171"; color = "#f87171"; }
+                    else if (!showResult && isSelected) { borderColor = "#6b7280"; color = "#d1d5db"; }
                     return (
                       <button key={choice} onClick={() => handleChoiceClick(choice)} disabled={!!feedback} style={{
                         background: "rgba(15,15,20,0.88)", border: `1px solid ${borderColor}`, color,
@@ -259,9 +261,9 @@ export default function TraceGame() {
               </div>
               <div style={{ color: "#6b7280", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
                 {score === 10 ? "PERFECT RUN — elite tracer 🔥" :
-                 score >= 8  ? "SHARP — you barely need a compiler" :
-                 score >= 5  ? "DECENT — keep tracing" :
-                               "NEEDS WORK — trust the process"}
+                  score >= 8 ? "SHARP — you barely need a compiler" :
+                    score >= 5 ? "DECENT — keep tracing" :
+                      "NEEDS WORK — trust the process"}
               </div>
               <HoverBtn onClick={startGame} style={{ fontSize: "1rem", padding: "0.5rem 2rem", color: "#d1d5db", borderColor: "#4b5563" }}>
                 TRY AGAIN

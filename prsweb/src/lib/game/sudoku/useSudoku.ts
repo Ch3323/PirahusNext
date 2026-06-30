@@ -1,23 +1,26 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Difficulty, HistoryEntry } from "./types";
 import { generatePuzzle } from "./sudokuLogic";
+import { useGamePoints } from "@/src/hooks/useGamePoints";
+import { calculateSudokuPts } from "@/src/lib/game/scoring";
 
 export const MAX_MISTAKES = 3;
 
 export function useSudoku() {
-  const [board, setBoard]       = useState<number[]>(Array(81).fill(0));
+  const [board, setBoard] = useState<number[]>(Array(81).fill(0));
   const [solution, setSolution] = useState<number[]>(Array(81).fill(0));
-  const [given, setGiven]       = useState<boolean[]>(Array(81).fill(false));
-  const [notes, setNotes]       = useState<Set<number>[]>(Array(81).fill(null).map(() => new Set()));
+  const [given, setGiven] = useState<boolean[]>(Array(81).fill(false));
+  const [notes, setNotes] = useState<Set<number>[]>(Array(81).fill(null).map(() => new Set()));
   const [selected, setSelected] = useState<number | null>(null);
   const [notesMode, setNotesMode] = useState(false);
   const [mistakes, setMistakes] = useState(0);
-  const [history, setHistory]   = useState<HistoryEntry[]>([]);
-  const [diff, setDiff]         = useState<Difficulty>("easy");
-  const [timer, setTimer]       = useState(0);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [diff, setDiff] = useState<Difficulty>("easy");
+  const [timer, setTimer] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [win, setWin]           = useState(false);
+  const [win, setWin] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { awardPoints, popupPoints, showPopup, closePopup } = useGamePoints("sudoku");
 
   const startGame = useCallback((d: Difficulty) => {
     const { board: b, solution: s } = generatePuzzle(d);
@@ -82,6 +85,8 @@ export function useSudoku() {
       if (nb.every((v, i) => v === solution[i])) {
         setWin(true);
         if (timerRef.current) clearInterval(timerRef.current);
+        const pts = calculateSudokuPts(diff, mistakes);
+        awardPoints(pts, { diff, mistakes, timer });
       }
       return nb;
     });
@@ -121,5 +126,6 @@ export function useSudoku() {
     notesMode, toggleNotesMode, mistakes, diff,
     timer, gameOver, win,
     startGame, inputNumber, undoMove,
+    popupPoints, showPopup, closePopup,
   };
 }

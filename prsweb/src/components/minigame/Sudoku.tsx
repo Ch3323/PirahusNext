@@ -5,19 +5,27 @@ import { Pixelify_Sans, Share_Tech_Mono } from "next/font/google";
 import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal";
 import { useSudoku, MAX_MISTAKES } from "@/src/lib/game/sudoku/useSudoku";
 import { Difficulty } from "@/src/lib/game/sudoku/types";
+import PointsPopup from "@/src/components/minigame/PointsPopup";
 
-const pixelifySans  = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "700"] });
+const pixelifySans = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "700"] });
 const shareTechMono = Share_Tech_Mono({ subsets: ["latin"], weight: "400" });
 
-const Background = memo(function Background() {
+const DIFF_TINT: Record<Difficulty, string> = {
+  easy: "#2d4a3a",
+  medium: "#4a3f2d",
+  hard: "#4a2d2d",
+};
+
+const Background = memo(function Background({ tint }: { tint: string }) {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
       <FaultyTerminal
         scale={1.3} gridMul={[2, 1]} digitSize={1.2} timeScale={0.5}
         pause={false} scanlineIntensity={0.5} glitchAmount={1} flickerAmount={1}
         noiseAmp={1} chromaticAberration={0} dither={0} curvature={0.1}
-        tint="#363248" mouseReact={false} mouseStrength={0.5}
-        pageLoadAnimation brightness={0.6}
+        tint={tint}
+        mouseReact={false} mouseStrength={0.5}
+        pageLoadAnimation brightness={0.8}
       />
     </div>
   );
@@ -58,6 +66,7 @@ export default function Sudoku() {
     notesMode, toggleNotesMode, mistakes, diff,
     timer, gameOver, win,
     startGame, inputNumber, undoMove,
+    popupPoints, showPopup, closePopup,
   } = useSudoku();
 
   // keyboard
@@ -70,9 +79,9 @@ export default function Sudoku() {
       if ((e.key === "z" || e.key === "Z") && e.ctrlKey) { undoMove(); return; }
       if (selected !== null) {
         const r = Math.floor(selected / 9), c = selected % 9;
-        if (e.key === "ArrowUp"    && r > 0) { setSelected(selected - 9); e.preventDefault(); }
-        if (e.key === "ArrowDown"  && r < 8) { setSelected(selected + 9); e.preventDefault(); }
-        if (e.key === "ArrowLeft"  && c > 0) { setSelected(selected - 1); e.preventDefault(); }
+        if (e.key === "ArrowUp" && r > 0) { setSelected(selected - 9); e.preventDefault(); }
+        if (e.key === "ArrowDown" && r < 8) { setSelected(selected + 9); e.preventDefault(); }
+        if (e.key === "ArrowLeft" && c > 0) { setSelected(selected - 1); e.preventDefault(); }
         if (e.key === "ArrowRight" && c < 8) { setSelected(selected + 1); e.preventDefault(); }
       }
     };
@@ -113,28 +122,40 @@ export default function Sudoku() {
 
   return (
     <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden", backgroundColor: "#000", userSelect: "none", ...pixelifySans.style }}>
-      <Background />
+      <Background tint={DIFF_TINT[diff]} />
 
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "5rem 1rem 2rem", gap: "1rem" }}>
 
-        {/* Header */}
-        <div style={{ position: "absolute", top: "1rem", left: "1rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-          <h1 style={{ color: "#d1d5db", fontSize: "1.5rem", fontWeight: "bold", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>Sudoku</h1>
-          <span style={{ color: "#6b7280", fontSize: "0.875rem", letterSpacing: "0.1em" }}>{formatTime(timer)}</span>
+        {/* Top-left: title only */}
+        <div style={{ position: "absolute", top: "1rem", left: "1rem" }}>
+          <h1 style={{ color: "#d1d5db", fontSize: "1.5rem", fontWeight: "bold", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
+            Sudoku
+          </h1>
+          <HoverBtn onClick={() => window.history.back()} style={{ marginTop: "0.25rem", width: "fit-content" }}>← BACK</HoverBtn>
+        </div>
+
+        {/* Top-right: timer only */}
+        <div style={{ position: "absolute", top: "1rem", right: "1rem" }}>
+          <span style={{ color: "#d1d5db", fontSize: "1.5rem", letterSpacing: "0.1em", fontFamily: shareTechMono.style.fontFamily }}>
+            {formatTime(timer)}
+          </span>
+        </div>
+
+        {/* Bottom-left: hearts + difficulty */}
+        <div style={{ position: "absolute", bottom: "1rem", left: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           <div style={{ display: "flex", gap: "0.25rem" }}>
             {Array.from({ length: MAX_MISTAKES }).map((_, i) => (
-              <span key={i} style={{ fontSize: "0.875rem", color: i < mistakes ? "#374151" : "#ef4444" }}>
+              <span key={i} style={{ fontSize: "2.5rem", color: i < mistakes ? "#374151" : "#ef4444" }}>
                 {i < mistakes ? "♡" : "♥"}
               </span>
             ))}
           </div>
-        </div>
 
-        {/* Difficulty */}
-        <div style={{ position: "absolute", top: "1rem", right: "1rem", display: "flex", gap: "0.375rem" }}>
-          {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
-            <HoverBtn key={d} onClick={() => startGame(d)} active={diff === d}>{d.toUpperCase()}</HoverBtn>
-          ))}
+          <div style={{ display: "flex", gap: "0.375rem" }}>
+            {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
+              <HoverBtn key={d} onClick={() => startGame(d)} active={diff === d}>{d.toUpperCase()}</HoverBtn>
+            ))}
+          </div>
         </div>
 
         {/* Grid */}
@@ -196,6 +217,11 @@ export default function Sudoku() {
         </p>
 
       </div>
+      <PointsPopup
+        points={popupPoints ?? 0}
+        show={showPopup}
+        onComplete={closePopup}
+      />
     </div>
   );
 }

@@ -1,17 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { Difficulty } from "./types";
 import { LEVELS, generatePuzzle, isSorted } from "./sortLogic";
+import { useGamePoints } from "@/src/hooks/useGamePoints";
+import { calculateSortPts } from "@/src/lib/game/scoring";
 
 export function useSortGame() {
-  const [diff, setDiff]           = useState<Difficulty>("easy");
-  const [bars, setBars]           = useState<number[]>([]);
-  const [original, setOriginal]   = useState<number[]>([]);
-  const [selected, setSelected]   = useState<number | null>(null);
-  const [swaps, setSwaps]         = useState(0);
-  const [won, setWon]             = useState(false);
-  const [history, setHistory]     = useState<number[][]>([]);
-  const [timer, setTimer]         = useState(0);
+  const [diff, setDiff] = useState<Difficulty>("easy");
+  const [bars, setBars] = useState<number[]>([]);
+  const [original, setOriginal] = useState<number[]>([]);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [swaps, setSwaps] = useState(0);
+  const [won, setWon] = useState(false);
+  const [history, setHistory] = useState<number[][]>([]);
+  const [timer, setTimer] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
+  const { awardPoints } = useGamePoints("sort");
+
+  const par = LEVELS[diff].par;
 
   const startGame = useCallback((d: Difficulty) => {
     const puzzle = generatePuzzle(d);
@@ -37,7 +42,7 @@ export function useSortGame() {
   const handleBarClick = useCallback((idx: number) => {
     if (won) return;
     if (selected === null) { setSelected(idx); return; }
-    if (selected === idx)  { setSelected(null); return; }
+    if (selected === idx) { setSelected(null); return; }
     if (Math.abs(selected - idx) !== 1) { setSelected(idx); return; }
 
     setHistory((h) => [...h, [...bars]]);
@@ -50,8 +55,10 @@ export function useSortGame() {
     if (isSorted(next)) {
       setWon(true);
       setTimerActive(false);
+      const pts = calculateSortPts(diff, swaps + 1, par);
+      awardPoints(pts, { diff, swaps: swaps + 1, par });
     }
-  }, [selected, bars, won]);
+  }, [selected, bars, won, diff, swaps, par, awardPoints]);
 
   const undo = useCallback(() => {
     if (!history.length || won) return;
@@ -71,8 +78,6 @@ export function useSortGame() {
     setTimer(0);
     setTimerActive(true);
   }, [original]);
-
-  const par = LEVELS[diff].par;
 
   return {
     diff, bars, selected, swaps, won, history,
