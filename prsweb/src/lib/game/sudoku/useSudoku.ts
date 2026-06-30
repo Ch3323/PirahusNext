@@ -20,6 +20,7 @@ export function useSudoku() {
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const hasAwardedRef = useRef(false);
   const { awardPoints, popupPoints, showPopup, closePopup } = useGamePoints("sudoku");
 
   const startGame = useCallback((d: Difficulty) => {
@@ -36,6 +37,7 @@ export function useSudoku() {
     setGameOver(false);
     setWin(false);
     setTimer(0);
+    hasAwardedRef.current = false;
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => setTimer((t) => t + 1), 1000);
   }, []);
@@ -44,6 +46,18 @@ export function useSudoku() {
     startGame("easy");
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [startGame]);
+
+  useEffect(() => {
+    if (hasAwardedRef.current || gameOver || win || board.some((v) => v === 0)) return;
+    
+    if (board.every((v, i) => v === solution[i])) {
+      hasAwardedRef.current = true;
+      setWin(true);
+      if (timerRef.current) clearInterval(timerRef.current);
+      const pts = calculateSudokuPts(diff, mistakes);
+      awardPoints(pts, { diff, mistakes, timer });
+    }
+  }, [board, solution, gameOver, win, diff, mistakes, timer, awardPoints]);
 
   const inputNumber = useCallback((n: number) => {
     if (selected === null || given[selected] || gameOver || win) return;
@@ -79,22 +93,11 @@ export function useSudoku() {
       }
     }
 
-    let wonThisMove = false;
     setBoard((b) => {
       const nb = [...b];
       nb[selected] = n;
-      if (nb.every((v, i) => v === solution[i])) {
-        wonThisMove = true;
-      }
       return nb;
     });
-
-    if (wonThisMove) {
-      setWin(true);
-      if (timerRef.current) clearInterval(timerRef.current);
-      const pts = calculateSudokuPts(diff, mistakes);
-      awardPoints(pts, { diff, mistakes, timer });
-    }
 
     if (isCorrect) {
       setNotes((prev) => {
