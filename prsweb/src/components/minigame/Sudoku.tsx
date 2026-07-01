@@ -6,6 +6,8 @@ import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal
 import { useSudoku, MAX_MISTAKES } from "@/src/lib/game/sudoku/useSudoku";
 import { Difficulty } from "@/src/lib/game/sudoku/types";
 import PointsPopup from "@/src/components/minigame/PointsPopup";
+import InfoPopup from "../InfoPopup";
+import { Info } from "lucide-react";
 
 const pixelifySans = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "700"] });
 const shareTechMono = Share_Tech_Mono({ subsets: ["latin"], weight: "400" });
@@ -61,6 +63,8 @@ function HoverBtn({ onClick, children, active, style }: {
 const gridSize = "min(360px, 88vw)";
 
 export default function Sudoku() {
+  const [showInfo, setShowInfo] = useState(false);
+
   const {
     board, solution, given, notes, selected, setSelected,
     notesMode, toggleNotesMode, mistakes, diff,
@@ -126,7 +130,7 @@ export default function Sudoku() {
 
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "5rem 1rem 2rem", gap: "1rem" }}>
 
-        {/* Top-left: title only */}
+        {/* Top-left: title + info icon */}
         <div style={{ position: "absolute", top: "1rem", left: "1rem" }}>
           <h1 style={{ color: "#d1d5db", fontSize: "1.5rem", fontWeight: "bold", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
             Sudoku

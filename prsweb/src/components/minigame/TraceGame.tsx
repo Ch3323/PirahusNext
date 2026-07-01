@@ -2,14 +2,15 @@
 
 import { useEffect, useRef, memo, useState } from "react";
 import { Share_Tech_Mono, Pixelify_Sans } from "next/font/google";
+import { Info } from "lucide-react";
 import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal";
 import PointsPopup from "@/src/components/minigame/PointsPopup";
 import { useTraceGame, INITIAL_TIME, MAX_QUESTIONS } from "@/src/lib/game/trace/useTraceGame";
+import PointsPopup from "@/src/components/minigame/PointsPopup";
+import InfoPopup from "../InfoPopup";
 
 const pixelifySans = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "700"] });
 const shareTechMono = Share_Tech_Mono({ subsets: ["latin"], weight: "400" });
-
-// ── Sub-components ────────────────────────────────────────────────────────────
 
 const Background = memo(function Background() {
   return (
@@ -53,6 +54,25 @@ function HoverBtn({ onClick, children, active, style, disabled }: {
   );
 }
 
+function InfoBtn({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Game Info"
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        width: "1.75rem", height: "1.75rem",
+        background: "transparent", cursor: "pointer", padding: 0,
+        color: hov ? "#d1d5db" : "#6b7280", transition: "color 0.15s, border-color 0.15s",
+      }}
+    >
+      <Info size={16} strokeWidth={1.5} />
+    </button>
+  );
+}
+
 function TimerBar({ seconds, max }: { seconds: number; max: number }) {
   const pct = Math.min(seconds / max, 1);
   const color = pct > 0.5 ? "#4ade80" : pct > 0.25 ? "#fbbf24" : "#f87171";
@@ -83,9 +103,9 @@ function CodeBlock({ code }: { code: string }) {
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
-
 export default function TraceGame() {
+  const [showInfo, setShowInfo] = useState(false);
+
   const {
     phase, currentQ, qIdx, timeLeft, score, streak,
     input, setInput, selectedChoice, feedback, bonusFlash,
@@ -210,7 +230,7 @@ export default function TraceGame() {
                 </div>
               ) : (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
-                  {currentQ.choices?.map((choice) => {
+                  {currentQ.choices?.map((choice: string) => {
                     const isSelected = selectedChoice === choice;
                     const isCorrect = choice === currentQ.answer;
                     const showResult = !!feedback;

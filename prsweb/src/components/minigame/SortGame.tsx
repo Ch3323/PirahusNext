@@ -2,11 +2,14 @@
 
 import { useEffect, useState, memo } from "react";
 import { Pixelify_Sans, Share_Tech_Mono } from "next/font/google";
+import { Info } from "lucide-react";
 import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal";
 import PointsPopup from "@/src/components/minigame/PointsPopup";
 import { useSortGame } from "@/src/lib/game/sorting/useSortGame";
 import { scoreLabel, minSwaps, MAX_BAR_HEIGHT } from "@/src/lib/game/sorting/sortLogic";
 import { Difficulty } from "@/src/lib/game/sorting/types";
+import PointsPopup from "@/src/components/minigame/PointsPopup";
+import InfoPopup from "../InfoPopup";
 
 const pixelifySans = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "700"] });
 const shareTechMono = Share_Tech_Mono({ subsets: ["latin"], weight: "400" });
@@ -57,6 +60,25 @@ function HoverBtn({ onClick, children, active, style, disabled }: {
   );
 }
 
+function InfoBtn({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Game Info"
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        width: "1.75rem", height: "1.75rem",
+        background: "transparent", cursor: "pointer", padding: 0,
+        color: hov ? "#d1d5db" : "#6b7280", transition: "color 0.15s, border-color 0.15s",
+      }}
+    >
+      <Info size={16} strokeWidth={1.5} />
+    </button>
+  );
+}
+
 function Bar({ value, maxValue, selected, swappable, sorted, onClick, index }: {
   value: number; maxValue: number; selected: boolean;
   swappable: boolean; sorted: boolean; onClick: () => void; index: number;
@@ -83,6 +105,8 @@ function Bar({ value, maxValue, selected, swappable, sorted, onClick, index }: {
 }
 
 export default function SortGame() {
+  const [showInfo, setShowInfo] = useState(false);
+
   const {
     diff, bars, selected, swaps, won, history,
     timer, par, startGame, handleBarClick, undo, reset,
@@ -120,7 +144,7 @@ export default function SortGame() {
 
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
 
-        {/* Top-left: title only */}
+        {/* Top-left: title + info */}
         <div style={{ position: "absolute", top: "1rem", left: "1rem" }}>
           <h1 style={{ color: "#d1d5db", fontSize: "1.5rem", fontWeight: "bold", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>Sort</h1>
           <HoverBtn onClick={() => window.location.href = '/minigames'} style={{ marginTop: "0.25rem", width: "fit-content" }}>← BACK</HoverBtn>
@@ -170,7 +194,7 @@ export default function SortGame() {
             ))}
           </div>
 
-          {/* Undo/Reset — now under the box */}
+          {/* Undo/Reset */}
           <div style={{ display: "flex", gap: "0.375rem" }}>
             <HoverBtn onClick={undo} disabled={!history.length || won}>↩ UNDO</HoverBtn>
             <HoverBtn onClick={reset}>↺ RESET</HoverBtn>
