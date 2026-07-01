@@ -89,6 +89,8 @@ export const MentorScalarFieldEnum = {
   name: 'name',
   isAdmin: 'isAdmin',
   point: 'point',
+  unlockedCosmetics: 'unlockedCosmetics',
+  equippedEffect: 'equippedEffect',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -103,6 +105,8 @@ export const MenteeScalarFieldEnum = {
   name: 'name',
   point: 'point',
   unlockedHintLevels: 'unlockedHintLevels',
+  unlockedCosmetics: 'unlockedCosmetics',
+  equippedEffect: 'equippedEffect',
   mentorId: 'mentorId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

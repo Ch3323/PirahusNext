@@ -6,7 +6,7 @@ import GiftPointsButton from "@/src/components/shop/Giftpointsbutton";
 import GiftModal from "@/src/components/shop/Giftmodal";
 import type { ShopItem, GiftTransfer } from "@/src/lib/shop/Types";
 import { SHOP_ITEMS } from "@/src/components/shop/Items";
-import { hintService } from "@/src/infra/container";
+import { hintService, cosmeticService } from "@/src/infra/container";
 
 import PtsBadge from "@/src/components/minigame/points";
 import { useUserStore } from "@/src/store/auth";
@@ -26,6 +26,7 @@ export default function Shop() {
 
   const unlockedHintLevels =
     user && user.role === "mentee" ? user.unlockedHintLevels : [];
+  const unlockedCosmetics = user?.unlockedCosmetics || [];
 
   const spinItems = SHOP_ITEMS.filter((i) => i.category === "spin");
   const hintItems = SHOP_ITEMS.filter((i) => i.category === "hint").map(
@@ -37,13 +38,18 @@ export default function Shop() {
           : i.owned,
     }),
   );
-  const cosmeticItems = SHOP_ITEMS.filter((i) => i.category === "cosmetic");
+  const cosmeticItems = SHOP_ITEMS.filter((i) => i.category === "cosmetic").map(
+    (i) => ({
+      ...i,
+      owned: unlockedCosmetics.includes(i.id) ? true : i.owned,
+    }),
+  );
 
   const handleBuy = async (item: ShopItem, hintLevel?: number) => {
-    if (isMentor) {
+    if (item.category === "hint" && isMentor) {
       Swal.fire({
         title: "ไม่อนุญาต",
-        text: "ระบบร้านค้าเปิดให้เฉพาะน้องรหัส (Mentee) ใช้งานเท่านั้น",
+        text: "คำใบ้เปิดให้เฉพาะน้องรหัส (Mentee) ซื้อเท่านั้น",
         icon: "warning",
         confirmButtonText: "ตกลง",
       });
@@ -93,6 +99,84 @@ export default function Shop() {
           confirmButtonText: "ตกลง",
         });
       }
+    }
+
+    if (item.category === "cosmetic") {
+      try {
+        Swal.fire({
+          title: "กำลังดำเนินการ...",
+          text: "โปรดรอสักครู่",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        const result = await cosmeticService.unlockCosmetic(item.id);
+
+        if (user) {
+          setUser({
+            ...user,
+            point: result.newPoint,
+            unlockedCosmetics: [...(user.unlockedCosmetics || []), item.id],
+          } as CurrentUser);
+        }
+        getUser();
+
+        Swal.fire({
+          title: "สำเร็จ!",
+          text: "ซื้อไอเทมตกแต่งสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
+      } catch (error) {
+        Swal.fire({
+          title: "ผิดพลาด!",
+          text: "เกิดข้อผิดพลาดในการซื้อไอเทมตกแต่ง",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+        });
+      }
+    }
+  };
+
+  const handleEquip = async (item: ShopItem) => {
+    try {
+      Swal.fire({
+        title: "กำลังดำเนินการ...",
+        text: "โปรดรอสักครู่",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      const equipId = user?.equippedEffect === item.id ? null : item.id;
+      const result = await cosmeticService.equipCosmetic(equipId);
+
+      if (user) {
+        setUser({
+          ...user,
+          equippedEffect: result.equippedEffect,
+        } as CurrentUser);
+      }
+      getUser();
+
+      Swal.fire({
+        title: "สำเร็จ!",
+        text: equipId ? "ติดตั้งไอเทมสำเร็จ" : "ถอดไอเทมสำเร็จ",
+        icon: "success",
+        confirmButtonText: "ตกลง",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "ผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเปลี่ยนเอฟเฟกต์",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -156,7 +240,7 @@ export default function Shop() {
 
       {isMentor && (
         <div className="mx-auto mb-8 max-w-5xl border-2 border-[#ff6b6b] bg-[#1a0505] p-4 text-center font-['Pixelify_Sans'] text-lg text-[#ff6b6b] drop-shadow-[0_0_8px_rgba(255,107,107,.45)]">
-          ⚠️ ระบบร้านค้าเปิดให้เฉพาะน้องรหัส (Mentee) ใช้งานเท่านั้น
+          ⚠️ คุณคือ Mentor (สามารถซื้อได้เฉพาะหมวด Cosmetic)
         </div>
       )}
 
@@ -177,6 +261,8 @@ export default function Shop() {
         items={cosmeticItems}
         currentPoints={points}
         onBuy={handleBuy}
+        onEquip={handleEquip}
+        equippedEffect={user?.equippedEffect}
       />
 
       <GiftPointsButton onClick={() => setGiftOpen(true)} />

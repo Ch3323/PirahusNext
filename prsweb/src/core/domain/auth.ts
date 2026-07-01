@@ -20,6 +20,8 @@ interface BaseUser {
   studentId: string;
   name: string | null;
   point: number;
+  unlockedCosmetics: string[];
+  equippedEffect?: string | null;
 }
 
 export interface MentorUser extends BaseUser {

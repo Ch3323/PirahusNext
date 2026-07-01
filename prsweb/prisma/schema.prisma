@@ -21,6 +21,8 @@ model Mentor {
   name       String?
   isAdmin    Boolean @default(false)
   point      Int     @default(0)
+  unlockedCosmetics String[] @default([])
+  equippedEffect    String?
   hints      Hint[]
 
   mentee     Mentee?
@@ -36,6 +38,8 @@ model Mentee {
   name       String?
   point               Int     @default(0)
   unlockedHintLevels  Int[]   @default([])
+  unlockedCosmetics   String[] @default([])
+  equippedEffect      String?
 
   mentorId   String @unique
   mentor     Mentor @relation(fields: [mentorId], references: [id])

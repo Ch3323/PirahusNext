@@ -8,6 +8,8 @@ interface ShopSectionProps {
   items: ShopItem[];
   currentPoints: number;
   onBuy: (item: ShopItem, hintLevel?: number) => void;
+  onEquip?: (item: ShopItem) => void;
+  equippedEffect?: string | null;
 }
 
 export default function ShopSection({
@@ -15,6 +17,8 @@ export default function ShopSection({
   items,
   currentPoints,
   onBuy,
+  onEquip,
+  equippedEffect,
 }: ShopSectionProps) {
   if (items.length === 0) return null;
 
@@ -30,6 +34,8 @@ export default function ShopSection({
             item={item}
             currentPoints={currentPoints}
             onBuy={onBuy}
+            onEquip={onEquip}
+            isEquipped={equippedEffect === item.id}
           />
         ))}
       </div>

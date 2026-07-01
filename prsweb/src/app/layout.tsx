@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Noto_Sans_Thai } from "next/font/google";
 import { Pixelify_Sans } from "next/font/google";
+import GlobalEffectWrapper from "@/src/components/GlobalEffectWrapper";
 import "./globals.css";
 
 const pixelifySans = Pixelify_Sans({
@@ -44,7 +45,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${notoSansThai.variable} ${notoSansThai.className} ${pixelifySans.variable} antialiased [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
       >
-        {children}
+        <GlobalEffectWrapper>
+          {children}
+        </GlobalEffectWrapper>
       </body>
     </html>
   );
