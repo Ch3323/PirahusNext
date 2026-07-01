@@ -45,3 +45,10 @@ export function calculateTracePts(score: number, timeLeft: number): number {
     1.0;
   return Math.floor(base * accuracy * timeFactor);
 }
+
+// ── Dungeon ──────────────────────────────────────────────────────────────
+export function calculateDungeonPts(fragmentsCollected: number): number {
+  const base = 30; // base for escaping
+  const fragmentBonus = fragmentsCollected * 5; 
+  return base + fragmentBonus;
+}

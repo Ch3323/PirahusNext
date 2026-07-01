@@ -81,6 +81,7 @@ export async function POST(req: NextRequest) {
               ? "admin"
               : "mentor"
             : "mentee",
+        point: user.point,
       });
 
       const cookieStore = await cookies();
@@ -121,6 +122,7 @@ export async function POST(req: NextRequest) {
               ? "admin"
               : "mentor"
             : "mentee",
+        point: user.point,
       });
 
       const cookieStore = await cookies();

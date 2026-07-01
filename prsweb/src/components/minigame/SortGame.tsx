@@ -3,6 +3,7 @@
 import { useEffect, useState, memo } from "react";
 import { Pixelify_Sans, Share_Tech_Mono } from "next/font/google";
 import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal";
+import PointsPopup from "@/src/components/minigame/PointsPopup";
 import { useSortGame } from "@/src/lib/game/sorting/useSortGame";
 import { scoreLabel, minSwaps, MAX_BAR_HEIGHT } from "@/src/lib/game/sorting/sortLogic";
 import { Difficulty } from "@/src/lib/game/sorting/types";
@@ -85,6 +86,7 @@ export default function SortGame() {
   const {
     diff, bars, selected, swaps, won, history,
     timer, par, startGame, handleBarClick, undo, reset,
+    popupPoints, showPopup, closePopup,
   } = useSortGame();
 
   useEffect(() => {
@@ -190,6 +192,8 @@ export default function SortGame() {
 
         </div>
       </div>
+      
+      <PointsPopup points={popupPoints || 0} show={showPopup} onComplete={closePopup} />
     </div>
   );
 }

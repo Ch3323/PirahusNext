@@ -7,7 +7,11 @@ import { gameReducer } from "@/src/lib/game/dungeon/gameReducer";
 import MapDisplay from "../../../components/minigame/MapDisplay";
 import GameTerminal from "../../../components/minigame/GameTerminal";
 import FaultyTerminal from "../../../components/reactbits/background/FaultyTerminal";
+import PointsPopup from "../../../components/minigame/PointsPopup";
 import { Pixelify_Sans } from "next/font/google";
+import { useGamePoints } from "@/src/hooks/useGamePoints";
+import { calculateDungeonPts } from "@/src/lib/game/scoring";
+import { useRef } from "react";
 
 const pixelifySans = Pixelify_Sans({
   subsets: ["latin"],
@@ -56,6 +60,22 @@ const buttonStyle = {
 
 export default function Page() {
   const [state, dispatch] = useReducer(gameReducer, null, generateGame);
+  const { awardPoints, popupPoints, showPopup, closePopup } = useGamePoints("dungeon");
+  const hasAwardedRef = useRef(false);
+
+  useEffect(() => {
+    if (state?.phase === "playing" && state.logs.length === 1) {
+      hasAwardedRef.current = false;
+    }
+  }, [state?.phase, state?.logs.length]);
+
+  useEffect(() => {
+    if (state?.phase === "escaped" && !hasAwardedRef.current) {
+      hasAwardedRef.current = true;
+      const pts = calculateDungeonPts(state.collectedParts.length);
+      awardPoints(pts, { fragments: state.collectedParts.length });
+    }
+  }, [state?.phase, state?.collectedParts.length, awardPoints]);
 
   const handleKey = useCallback(
     (e: KeyboardEvent) => {
@@ -163,6 +183,8 @@ export default function Page() {
           </p>
         </div>
       </div>
+      
+      <PointsPopup points={popupPoints || 0} show={showPopup} onComplete={closePopup} />
     </div>
   );
 }

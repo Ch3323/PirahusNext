@@ -6,6 +6,7 @@ export interface TokenPayload {
   studentId: string;
   type: "mentor" | "mentee";
   role: "admin" | "mentor" | "mentee";
+  point: number;
 }
 
 export function signToken(payload: TokenPayload) {

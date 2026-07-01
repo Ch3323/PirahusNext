@@ -26,7 +26,6 @@ interface BaseUser {
 
 export interface MentorUser extends BaseUser {
   type: "mentor";
-  point: number;
   mentee: {
     id: string;
     studentId: string;
@@ -36,12 +35,4 @@ export interface MentorUser extends BaseUser {
 
 export interface MenteeUser extends BaseUser {
   type: "mentee";
-  point: number;
-  unlockedHintLevels: number[];
-  mentorId: string | null;
-  mentor: {
-    id: string;
-    studentId: string;
-    name: string | null;
-  } | null;
 }

@@ -3,6 +3,7 @@
 import { useEffect, useRef, memo, useState } from "react";
 import { Share_Tech_Mono, Pixelify_Sans } from "next/font/google";
 import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal";
+import PointsPopup from "@/src/components/minigame/PointsPopup";
 import { useTraceGame, INITIAL_TIME, MAX_QUESTIONS } from "@/src/lib/game/trace/useTraceGame";
 
 const pixelifySans = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "700"] });
@@ -89,6 +90,7 @@ export default function TraceGame() {
     phase, currentQ, qIdx, timeLeft, score, streak,
     input, setInput, selectedChoice, feedback, bonusFlash,
     startGame, handleTypeSubmit, handleChoiceClick,
+    popupPoints, showPopup, closePopup,
   } = useTraceGame();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -273,6 +275,8 @@ export default function TraceGame() {
 
         </div>
       </div>
+
+      <PointsPopup points={popupPoints || 0} show={showPopup} onComplete={closePopup} />
 
       <style>{`
         @keyframes fadeup {

@@ -21,8 +21,19 @@ export async function GET() {
         where: {
           studentId: payload.studentId,
         },
-        include: {
-          mentee: true,
+        select: {
+          id: true,
+          studentId: true,
+          name: true,
+          point: true,
+          isAdmin: true,
+          mentee: {
+            select: {
+              id: true,
+              studentId: true,
+              name: true,
+            },
+          },
         },
       });
 
@@ -37,6 +48,7 @@ export async function GET() {
           studentId: payload.studentId,
           type: payload.type,
           role: currentRole,
+          point: mentor.point,
         });
 
         const cookieStore = await cookies();
@@ -49,10 +61,11 @@ export async function GET() {
         });
       }
 
-      const { password, isAdmin, ...userData } = mentor;
+      const { isAdmin, point, ...userData } = mentor;
 
       return successResponse({
         ...userData,
+        mentee: mentor.mentee ? [mentor.mentee] : [],
         type: "mentor",
         role: currentRole,
       });
@@ -63,8 +76,11 @@ export async function GET() {
         where: {
           studentId: payload.studentId,
         },
-        include: {
-          mentor: true,
+        select: {
+          id: true,
+          studentId: true,
+          name: true,
+          point: true,
         },
       });
 
@@ -79,6 +95,7 @@ export async function GET() {
           studentId: payload.studentId,
           type: payload.type,
           role: currentRole,
+          point: mentee.point,
         });
 
         const cookieStore = await cookies();
@@ -91,10 +108,10 @@ export async function GET() {
         });
       }
 
-      const { password, ...menteeWithoutPassword } = mentee;
+      const { point, ...userData } = mentee;
 
       return successResponse({
-        ...menteeWithoutPassword,
+        ...userData,
         type: "mentee",
         role: currentRole,
       });
