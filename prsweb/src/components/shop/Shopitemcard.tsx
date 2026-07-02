@@ -5,12 +5,29 @@ import type { ShopItem } from "@/src/lib/shop/Types";
 interface ShopItemCardProps {
   item: ShopItem;
   currentPoints: number;
-  onBuy: (item: ShopItem) => void;
+  onBuy: (item: ShopItem, hintLevel?: number) => void;
+  onEquip?: (item: ShopItem) => void;
+  isEquipped?: boolean;
+  isMentor?: boolean;
 }
 
-export default function ShopItemCard({ item, currentPoints, onBuy }: ShopItemCardProps) {
+export default function ShopItemCard({
+  item,
+  currentPoints,
+  onBuy,
+  onEquip,
+  isEquipped = false,
+  isMentor = false,
+}: ShopItemCardProps) {
   const canAfford = currentPoints >= item.price;
-  const isBuyDisabled = item.disabled || item.owned || !canAfford;
+  const isCosmetic = item.category === "cosmetic";
+  const canEquip = isCosmetic && item.owned;
+  const mentorCannotBuyHint = isMentor && item.category === "hint";
+  const isBuyDisabled =
+    item.disabled ||
+    (!canEquip && item.owned) ||
+    (!canEquip && !canAfford) ||
+    mentorCannotBuyHint;
 
   const cardBase =
     "relative flex flex-col items-center gap-[0.55rem] bg-[#101712] border-2 border-[#2b3a2f] pt-[1.1rem] px-4 pb-4 [image-rendering:pixelated] transition-[transform,border-color,box-shadow] duration-[120ms] ease-in-out";
@@ -48,17 +65,35 @@ export default function ShopItemCard({ item, currentPoints, onBuy }: ShopItemCar
       </div>
 
       <button
-        className="mt-[0.2rem] w-full py-2 bg-[#16321f] border-2 border-[#3f7a4f] text-[#b8ffcf] font-['Share_Tech_Mono'] text-[0.75rem] tracking-[0.06em] cursor-pointer transition-colors duration-120ms ease-in-out enabled:hover:bg-[#6dff9e] enabled:hover:text-[#06210f] enabled:active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50"
+        className={`mt-[0.2rem] w-full py-2 font-['Share_Tech_Mono'] text-[0.75rem] tracking-[0.06em] cursor-pointer transition-colors duration-120ms ease-in-out disabled:cursor-not-allowed disabled:opacity-50 ${
+          isEquipped
+            ? "bg-[#6dff9e] text-[#06210f] border-2 border-[#6dff9e]"
+            : canEquip
+              ? "bg-[#ffd66b] text-[#221a00] border-2 border-[#ffd66b] hover:bg-[#ffb347]"
+              : "bg-[#16321f] border-2 border-[#3f7a4f] text-[#b8ffcf] enabled:hover:bg-[#6dff9e] enabled:hover:text-[#06210f] enabled:active:scale-[0.96]"
+        }`}
         disabled={isBuyDisabled}
-        onClick={() => !isBuyDisabled && onBuy(item)}
+        onClick={() => {
+          if (canEquip && onEquip) {
+            onEquip(item);
+          } else if (!isBuyDisabled) {
+            onBuy(item, item.hintLevel);
+          }
+        }}
       >
         {item.disabled
           ? "ไปที่หน้า Spin"
-          : item.owned
-          ? "ปลดล็อกแล้ว"
-          : canAfford
-          ? "ซื้อ"
-          : "แต้มไม่พอ"}
+          : isEquipped
+            ? "ใช้งานอยู่"
+            : canEquip
+              ? "ใช้งาน"
+              : mentorCannotBuyHint
+                ? "เฉพาะน้องรหัส"
+                : item.owned
+                  ? "ปลดล็อกแล้ว"
+                  : canAfford
+                    ? "ซื้อ"
+                    : "แต้มไม่พอ"}
       </button>
     </div>
   );

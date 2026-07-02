@@ -61,3 +61,8 @@ export type Mentee = Prisma.MenteeModel
  * 
  */
 export type Hint = Prisma.HintModel
+/**
+ * Model ShopItem
+ * 
+ */
+export type ShopItem = Prisma.ShopItemModel

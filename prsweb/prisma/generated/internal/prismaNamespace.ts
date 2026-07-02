@@ -387,7 +387,8 @@ export const ModelName = {
   AdmissionYear: 'AdmissionYear',
   Mentor: 'Mentor',
   Mentee: 'Mentee',
-  Hint: 'Hint'
+  Hint: 'Hint',
+  ShopItem: 'ShopItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admissionYear" | "mentor" | "mentee" | "hint"
+    modelProps: "admissionYear" | "mentor" | "mentee" | "hint" | "shopItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ShopItem: {
+      payload: Prisma.$ShopItemPayload<ExtArgs>
+      fields: Prisma.ShopItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ShopItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ShopItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>
+        }
+        findFirst: {
+          args: Prisma.ShopItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ShopItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>
+        }
+        findMany: {
+          args: Prisma.ShopItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>[]
+        }
+        create: {
+          args: Prisma.ShopItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>
+        }
+        createMany: {
+          args: Prisma.ShopItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ShopItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>[]
+        }
+        delete: {
+          args: Prisma.ShopItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>
+        }
+        update: {
+          args: Prisma.ShopItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.ShopItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ShopItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ShopItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.ShopItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShopItemPayload>
+        }
+        aggregate: {
+          args: Prisma.ShopItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateShopItem>
+        }
+        groupBy: {
+          args: Prisma.ShopItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShopItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ShopItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShopItemCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -758,6 +833,8 @@ export const MentorScalarFieldEnum = {
   name: 'name',
   isAdmin: 'isAdmin',
   point: 'point',
+  unlockedCosmetics: 'unlockedCosmetics',
+  equippedEffect: 'equippedEffect',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -772,6 +849,8 @@ export const MenteeScalarFieldEnum = {
   name: 'name',
   point: 'point',
   unlockedHintLevels: 'unlockedHintLevels',
+  unlockedCosmetics: 'unlockedCosmetics',
+  equippedEffect: 'equippedEffect',
   mentorId: 'mentorId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -789,6 +868,23 @@ export const HintScalarFieldEnum = {
 } as const
 
 export type HintScalarFieldEnum = (typeof HintScalarFieldEnum)[keyof typeof HintScalarFieldEnum]
+
+
+export const ShopItemScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  icon: 'icon',
+  disabled: 'disabled',
+  effectKey: 'effectKey',
+  hintLevel: 'hintLevel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShopItemScalarFieldEnum = (typeof ShopItemScalarFieldEnum)[keyof typeof ShopItemScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -997,6 +1093,7 @@ export type GlobalOmitConfig = {
   mentor?: Prisma.MentorOmit
   mentee?: Prisma.MenteeOmit
   hint?: Prisma.HintOmit
+  shopItem?: Prisma.ShopItemOmit
 }
 
 /* Types for Logging */

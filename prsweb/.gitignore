@@ -17,6 +17,13 @@
 /.next/
 /out/
 
+# next.js build output
+.next
+
+# Prisma
+/prisma/generated
+prisma/seed-data.json
+
 # production
 /build
 

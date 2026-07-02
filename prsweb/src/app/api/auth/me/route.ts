@@ -26,6 +26,8 @@ export async function GET() {
           studentId: true,
           name: true,
           point: true,
+          unlockedCosmetics: true,
+          equippedEffect: true,
           isAdmin: true,
           mentee: {
             select: {
@@ -79,6 +81,9 @@ export async function GET() {
           studentId: true,
           name: true,
           point: true,
+          unlockedHintLevels: true,
+          unlockedCosmetics: true,
+          equippedEffect: true,
         },
       });
 

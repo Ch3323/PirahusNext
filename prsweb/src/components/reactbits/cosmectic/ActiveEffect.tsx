@@ -22,11 +22,20 @@ interface ActiveEffectProps {
  * ส่วน Ribbons กับ SplashCursor เป็น fixed overlay เต็มจอแบบ pointer-events-none
  * (ไม่บังคลิกหน้าเว็บ) เลยแค่ render คู่ไปกับ children ปกติ
  */
-export default function ActiveEffect({ effectKey, children }: ActiveEffectProps) {
+export default function ActiveEffect({
+  effectKey,
+  children,
+}: ActiveEffectProps) {
   switch (effectKey) {
     case "click-spark":
       return (
-        <ClickSpark sparkColor="#ffd66b" sparkSize={8} sparkRadius={20} sparkCount={10} duration={450}>
+        <ClickSpark
+          sparkColor="#ffd66b"
+          sparkSize={8}
+          sparkRadius={20}
+          sparkCount={10}
+          duration={450}
+        >
           {children}
         </ClickSpark>
       );

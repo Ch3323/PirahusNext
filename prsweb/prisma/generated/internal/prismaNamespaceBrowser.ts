@@ -54,7 +54,8 @@ export const ModelName = {
   AdmissionYear: 'AdmissionYear',
   Mentor: 'Mentor',
   Mentee: 'Mentee',
-  Hint: 'Hint'
+  Hint: 'Hint',
+  ShopItem: 'ShopItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -89,6 +90,8 @@ export const MentorScalarFieldEnum = {
   name: 'name',
   isAdmin: 'isAdmin',
   point: 'point',
+  unlockedCosmetics: 'unlockedCosmetics',
+  equippedEffect: 'equippedEffect',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -103,6 +106,8 @@ export const MenteeScalarFieldEnum = {
   name: 'name',
   point: 'point',
   unlockedHintLevels: 'unlockedHintLevels',
+  unlockedCosmetics: 'unlockedCosmetics',
+  equippedEffect: 'equippedEffect',
   mentorId: 'mentorId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -120,6 +125,23 @@ export const HintScalarFieldEnum = {
 } as const
 
 export type HintScalarFieldEnum = (typeof HintScalarFieldEnum)[keyof typeof HintScalarFieldEnum]
+
+
+export const ShopItemScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  icon: 'icon',
+  disabled: 'disabled',
+  effectKey: 'effectKey',
+  hintLevel: 'hintLevel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShopItemScalarFieldEnum = (typeof ShopItemScalarFieldEnum)[keyof typeof ShopItemScalarFieldEnum]
 
 
 export const SortOrder = {
