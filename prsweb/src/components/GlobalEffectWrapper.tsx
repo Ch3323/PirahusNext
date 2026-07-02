@@ -25,15 +25,17 @@ export default function GlobalEffectWrapper({
   useEffect(() => {
     let isMounted = true;
     if (user?.equippedEffect) {
-      shopItemService.getShopItemById(user.equippedEffect).then(item => {
+      shopItemService.getShopItemById(user.equippedEffect).then((item) => {
         if (isMounted) {
-          setEffectKey(item?.effectKey as EffectKey || null);
+          setEffectKey((item?.effectKey as EffectKey) || null);
         }
       });
     } else {
       setEffectKey(null);
     }
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [user?.equippedEffect]);
 
   return <ActiveEffect effectKey={effectKey}>{children}</ActiveEffect>;

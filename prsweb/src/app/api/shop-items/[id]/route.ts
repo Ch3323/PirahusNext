@@ -5,10 +5,27 @@ import { handleError } from "@/src/lib/handle-error";
 import { updateShopItemSchema } from "@/src/core/schema/shop-item";
 import { requireAuth } from "@/src/lib/get-current-user";
 import { NotFoundError } from "@/src/core/error/error";
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+
+    const item = await prisma.shopItem.findUnique({ where: { id } });
+    if (!item) {
+      throw new NotFoundError("ShopItem not found");
+    }
+
+    return successResponse(item);
+  } catch (error) {
+    return handleError(error);
+  }
+}
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await requireAuth(["admin"]);
@@ -35,7 +52,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await requireAuth(["admin"]);
