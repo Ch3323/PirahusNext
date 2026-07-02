@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # - DATABASE_URL=postgresql://user:password@db:5432/pirahus?schema=public
+    # Uncomment the lines below if you want the app to wait for the local DB to be ready
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    restart: unless-stopped
+
+  # Uncomment the block below to run a local PostgreSQL database container
+  # db:
+  #   image: postgres:15-alpine
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=user
+  #     - POSTGRES_PASSWORD=password
+  #     - POSTGRES_DB=pirahus
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U user -d pirahus"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+  #   restart: unless-stopped
+
+# volumes:
+#   pgdata:
