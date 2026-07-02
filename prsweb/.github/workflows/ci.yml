@@ -2,14 +2,14 @@ name: CI
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: ["master", "main"]
   pull_request:
-    branches: [ "master", "main" ]
+    branches: ["master", "main"]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -17,8 +17,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install Dependencies
         run: npm ci
@@ -33,7 +33,6 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          # ใส่ค่าหลอกๆ ไว้ให้ตอน Build บน CI ไม่พัง (เพราะ GitHub ไม่มีไฟล์ .env)
           JWT_SECRET: "dummy_secret_for_ci_build"
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/dummy_db?schema=public"
 
@@ -43,6 +42,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - name: Test Docker Build
         run: docker build -t prsweb-test .
