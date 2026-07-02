@@ -678,12 +678,16 @@ function SeniorRow({
   );
 }
 
+import ShopAdminTab from "@/src/components/admin/ShopAdminTab";
+
 export default function AdminBackroomClient() {
   const router = useRouter();
   const { user, loading: authLoading, getUser } = useUserStore();
+
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [students, setStudents] = useState<IMentor[]>([]);
+  const [activeTab, setActiveTab] = useState<"mentors" | "shop">("mentors");
 
   const refreshData = async () => {
     try {
@@ -783,61 +787,62 @@ export default function AdminBackroomClient() {
           }}
         />
 
-        <button
-          onClick={() => router.push("/")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "none",
-            border: "none",
-            color: "#708840",
-            fontSize: "12px",
-            fontFamily: "monospace",
-            cursor: "pointer",
-            padding: 0,
-            marginBottom: "24px",
-          }}
-        >
-          <FaArrowLeft size={10} /> BACK TO HOME
-        </button>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "24px" }}>
+          <div style={{ display: "flex", gap: "16px" }}>
+            <button
+              onClick={() => setActiveTab("mentors")}
+              style={{
+                background: "none",
+                border: "none",
+                color: activeTab === "mentors" ? "#a8c060" : "#5a7a38",
+                fontSize: "20px",
+                fontWeight: 700,
+                fontFamily: "'Share Tech Mono', monospace",
+                cursor: "pointer",
+                padding: "0 0 4px",
+                borderBottom: activeTab === "mentors" ? "2px solid #a8c060" : "2px solid transparent",
+                transition: "all 0.2s"
+              }}
+            >
+              จัดการสายรหัส
+            </button>
+            <button
+              onClick={() => setActiveTab("shop")}
+              style={{
+                background: "none",
+                border: "none",
+                color: activeTab === "shop" ? "#a8c060" : "#5a7a38",
+                fontSize: "20px",
+                fontWeight: 700,
+                fontFamily: "'Share Tech Mono', monospace",
+                cursor: "pointer",
+                padding: "0 0 4px",
+                borderBottom: activeTab === "shop" ? "2px solid #a8c060" : "2px solid transparent",
+                transition: "all 0.2s"
+              }}
+            >
+              จัดการร้านค้า
+            </button>
+          </div>
 
-        <div style={{ marginBottom: "36px" }}>
-          <p
+          <button
+            onClick={() => router.push("/")}
             style={{
-              fontSize: "10px",
-              fontWeight: 700,
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "#8faa55",
-              marginBottom: "4px",
-              fontFamily: "monospace",
-            }}
-          >
-            ■ SYSTEM / ADMIN PANEL
-          </p>
-          <h1
-            style={{
-              fontSize: "28px",
-              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "none",
+              border: "1px solid rgba(140,170,80,0.4)",
               color: "#a8c060",
-              margin: "0 0 4px",
-              fontFamily: "'Share Tech Mono', monospace",
-              letterSpacing: "0.06em",
-            }}
-          >
-            พี่รหัส — น้องรหัส
-          </h1>
-          <p
-            style={{
               fontSize: "12px",
-              color: "#8faa55",
-              margin: 0,
               fontFamily: "monospace",
+              cursor: "pointer",
+              padding: "6px 12px",
+              borderRadius: "4px",
             }}
           >
-            {students.length} pairs registered
-          </p>
+            <FaArrowLeft size={10} /> HOME
+          </button>
         </div>
 
         <div
@@ -846,6 +851,9 @@ export default function AdminBackroomClient() {
             marginBottom: "20px",
           }}
         />
+
+        {activeTab === "mentors" ? (
+          <>
 
         <input
           type="text"
@@ -916,6 +924,10 @@ export default function AdminBackroomClient() {
           >
             — no results —
           </p>
+        )}
+          </>
+        ) : (
+          <ShopAdminTab />
         )}
       </div>
     </div>
