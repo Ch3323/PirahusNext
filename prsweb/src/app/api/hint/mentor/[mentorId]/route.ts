@@ -31,6 +31,9 @@ export async function GET(
 
     const hints = await prisma.hint.findMany({
       where: { mentorId },
+      orderBy: {
+        level: "asc",
+      },
     });
     return successResponse(hints);
   } catch (error) {

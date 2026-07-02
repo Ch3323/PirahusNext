@@ -10,6 +10,7 @@ interface ShopSectionProps {
   onBuy: (item: ShopItem, hintLevel?: number) => void;
   onEquip?: (item: ShopItem) => void;
   equippedEffect?: string | null;
+  isMentor?: boolean;
 }
 
 export default function ShopSection({
@@ -19,6 +20,7 @@ export default function ShopSection({
   onBuy,
   onEquip,
   equippedEffect,
+  isMentor,
 }: ShopSectionProps) {
   if (items.length === 0) return null;
 
@@ -36,6 +38,7 @@ export default function ShopSection({
             onBuy={onBuy}
             onEquip={onEquip}
             isEquipped={equippedEffect === item.id}
+            isMentor={isMentor}
           />
         ))}
       </div>

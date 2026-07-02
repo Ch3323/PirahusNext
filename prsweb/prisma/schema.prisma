@@ -60,3 +60,18 @@ model Hint {
 
   @@unique([mentorId, level])
 }
+
+model ShopItem {
+  id          String   @id @default(cuid())
+  category    String
+  name        String
+  description String
+  price       Int
+  icon        String
+  disabled    Boolean  @default(false)
+  effectKey   String?
+  hintLevel   Int?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

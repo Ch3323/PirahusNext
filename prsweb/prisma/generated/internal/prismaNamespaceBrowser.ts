@@ -54,7 +54,8 @@ export const ModelName = {
   AdmissionYear: 'AdmissionYear',
   Mentor: 'Mentor',
   Mentee: 'Mentee',
-  Hint: 'Hint'
+  Hint: 'Hint',
+  ShopItem: 'ShopItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -124,6 +125,23 @@ export const HintScalarFieldEnum = {
 } as const
 
 export type HintScalarFieldEnum = (typeof HintScalarFieldEnum)[keyof typeof HintScalarFieldEnum]
+
+
+export const ShopItemScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  icon: 'icon',
+  disabled: 'disabled',
+  effectKey: 'effectKey',
+  hintLevel: 'hintLevel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShopItemScalarFieldEnum = (typeof ShopItemScalarFieldEnum)[keyof typeof ShopItemScalarFieldEnum]
 
 
 export const SortOrder = {
