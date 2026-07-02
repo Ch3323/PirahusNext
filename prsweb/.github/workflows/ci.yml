@@ -33,9 +33,9 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          # If your build process requires environment variables, define placeholder values here
-          # JWT_SECRET: "dummy_secret_for_build"
-          # DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/dummy?schema=public"
+          # ใส่ค่าหลอกๆ ไว้ให้ตอน Build บน CI ไม่พัง (เพราะ GitHub ไม่มีไฟล์ .env)
+          JWT_SECRET: "dummy_secret_for_ci_build"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/dummy_db?schema=public"
 
   docker-build-check:
     runs-on: ubuntu-latest
