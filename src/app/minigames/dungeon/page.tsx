@@ -182,10 +182,42 @@ export default function Page() {
             <p>
               Navigate the maze with WASD. Entering a new room reveals a
               Caesar-ciphered description — each room uses its own random shift.
-              Collect all 4 key fragments (each shifted by +2); decode and
-              combine them in order, then enter the result at the exit to
+              Collect all 4 key fragments (each shifted by the room's shift);
+              decode and combine them in order, then enter the result at the exit to
               escape. Avoid trap rooms.
             </p>
+
+            <div
+              style={{
+                borderTop: "1px solid #374151",
+                margin: "0.75rem 0",
+              }}
+            />
+
+            <div
+              style={{
+                backgroundColor: "#111827",
+                border: "1px solid #374151",
+                borderRadius: "0.25rem",
+                padding: "0.5rem 0.75rem",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fde047",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                }}
+              >
+                Scoring
+              </span>
+              <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
+                10 base points + 10 per fragment collected, plus a 15-point bonus
+                for finding all 4. <strong style={{ color: "#d1d5db" }}>Max: 65 pts.</strong>
+              </p>
+            </div>
           </InfoPopup>
 
           <button

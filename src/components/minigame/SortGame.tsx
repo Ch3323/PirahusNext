@@ -301,6 +301,35 @@ export default function SortGame() {
               the bars into ascending order in as few swaps as possible — try to
               beat par.
             </p>
+
+            <div style={{ borderTop: "1px solid #374151", margin: "0.75rem 0" }} />
+
+            <div
+              style={{
+                backgroundColor: "#111827",
+                border: "1px solid #374151",
+                borderRadius: "0.25rem",
+                padding: "0.5rem 0.75rem",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fde047",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                }}
+              >
+                Scoring
+              </span>
+              <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
+                Base points scale with difficulty (Easy 10 / Medium 25 / Hard 50).
+                Finish at or under par for a <strong style={{ color: "#d1d5db" }}>1.5×</strong> multiplier;
+                each swap over par lowers it — 1.25× at +1, 1.0× at +2, 0.75× at +3,
+                down to <strong style={{ color: "#d1d5db" }}>0.5×</strong> at +4 or more.
+              </p>
+            </div>
           </InfoPopup>
 
           <HoverBtn

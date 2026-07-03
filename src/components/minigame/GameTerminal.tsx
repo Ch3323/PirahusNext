@@ -45,8 +45,8 @@ export default function GameTerminal({ state, dispatch }: Props) {
         <span>📍 ({state.playerX}, {state.playerY})</span>
       </div>
 
-      {/* Key fragments collected — shown as cipher, with shift hint */}
-      {state.collectedParts.length > 0 && (
+      {/* Key fragments collected — shown as cipher, with shift hint. Hidden during enterKey since that box shows it too */}
+      {state.collectedParts.length > 0 && state.phase !== "enterKey" && (
         <div style={{ backgroundColor: "#111827", border: "1px solid #374151", borderRadius: "0.25rem", padding: "0.5rem 0.75rem", fontSize: "0.75rem", color: "#fde047", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
           <span>
             Ciphered fragments (shift +{state.cipherShift}):{" "}
@@ -55,7 +55,7 @@ export default function GameTerminal({ state, dispatch }: Props) {
               .join(" · ")}
           </span>
           <span style={{ color: "#6b7280", fontSize: "0.7rem" }}>
-            Decode each (shift -{state.cipherShift}) and join in order to form the key.
+            Decode each fragment (shift -{state.cipherShift}) and join in order to form the key.
           </span>
         </div>
       )}
@@ -63,9 +63,9 @@ export default function GameTerminal({ state, dispatch }: Props) {
       {/* Enter key phase */}
       {state.phase === "enterKey" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", paddingLeft: "0.25rem" }}>
+          <div style={{ backgroundColor: "#111827", border: "1px solid #374151", borderRadius: "0.25rem", padding: "0.5rem 0.75rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
             <span style={{ color: "#facc15", fontSize: "0.75rem" }}>
-              Combine and decode your fragments (shift -2) to form the full key:
+              Ciphered fragments (shift +{state.cipherShift}):
             </span>
             <span style={{ color: "#9ca3af", fontSize: "0.85rem", letterSpacing: "0.1em", fontFamily: "monospace" }}>
               {state.collectedParts.length < 4
@@ -73,6 +73,9 @@ export default function GameTerminal({ state, dispatch }: Props) {
                 : [...state.collectedParts]
                   .sort((a, b) => state.keyPartsEncrypted.indexOf(a) - state.keyPartsEncrypted.indexOf(b))
                   .join("")}
+            </span>
+            <span style={{ color: "#6b7280", fontSize: "0.7rem" }}>
+              Decode (shift -{state.cipherShift}) and enter the result below.
             </span>
           </div>
           <div style={{ display: "flex", gap: "0.5rem" }}>

@@ -153,7 +153,39 @@ export default function Sudoku() {
           </div>
 
           <InfoPopup isOpen={showInfo} onClose={() => setShowInfo(false)} title="Sudoku">
-            <p>Fill the grid so each row, column, and 3×3 box contains 1–9 with no repeats. You have {MAX_MISTAKES} lives — use them wisely.</p>
+            <p>
+              Fill the grid so each row, column, and 3×3 box contains 1–9 with no
+              repeats. You have {MAX_MISTAKES} lives — use them wisely.
+            </p>
+
+            <div style={{ borderTop: "1px solid #374151", margin: "0.75rem 0" }} />
+
+            <div
+              style={{
+                backgroundColor: "#111827",
+                border: "1px solid #374151",
+                borderRadius: "0.25rem",
+                padding: "0.5rem 0.75rem",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fde047",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                }}
+              >
+                Scoring
+              </span>
+              <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
+                Base points scale with difficulty (Easy 10 / Medium 25 / Hard 50).
+                A flawless solve earns <strong style={{ color: "#d1d5db" }}>1.5×</strong>,
+                one mistake keeps 1.0×, and two or more mistakes drops it to{" "}
+                <strong style={{ color: "#d1d5db" }}>0.7×</strong>.
+              </p>
+            </div>
           </InfoPopup>
 
           <HoverBtn onClick={() => window.history.back()} style={{ marginTop: "0.25rem", width: "fit-content" }}>← BACK</HoverBtn>

@@ -269,6 +269,35 @@ export default function TraceGame() {
               Correct answers add bonus time — harder questions are worth more.
               10 questions per run.
             </p>
+
+            <div style={{ borderTop: "1px solid #374151", margin: "0.75rem 0" }} />
+
+            <div
+              style={{
+                backgroundColor: "#111827",
+                border: "1px solid #374151",
+                borderRadius: "0.25rem",
+                padding: "0.5rem 0.75rem",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fde047",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                }}
+              >
+                Scoring
+              </span>
+              <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
+                Fixed base of 40 points, scaled by your accuracy across all 10
+                questions and a time bonus:{" "}
+                <strong style={{ color: "#d1d5db" }}>1.5×</strong> with over 2 minutes
+                left, 1.25× with over 1 minute left, 1.0× otherwise.
+              </p>
+            </div>
           </InfoPopup>
 
           <HoverBtn
