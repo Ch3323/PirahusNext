@@ -16,6 +16,8 @@ import { GiftRepository } from "./repositories/gift.repository";
 import { GiftService } from "../core/service/gift.service";
 import { ProfileRepository } from "./repositories/profile.repository";
 import { ProfileService } from "../core/service/profile.service";
+import { LeaderboardRepository } from "./repositories/leaderboard.repository";
+import { LeaderboardService } from "../core/service/leaderboard.service";
 
 const admissionYearRepository = new AdmissionYearRepository();
 const authRepository = new AuthRepository();
@@ -26,6 +28,7 @@ const cosmeticRepository = new CosmeticRepository();
 const shopItemRepository = new ShopItemRepository();
 const giftRepository = new GiftRepository();
 const profileRepository = new ProfileRepository();
+const leaderboardRepository = new LeaderboardRepository();
 
 export const admissionYearService = new AdmissionYearService(
   admissionYearRepository,
@@ -38,3 +41,4 @@ export const cosmeticService = new CosmeticService(cosmeticRepository);
 export const shopItemService = new ShopItemService(shopItemRepository);
 export const giftService = new GiftService(giftRepository);
 export const profileService = new ProfileService(profileRepository);
+export const leaderboardService = new LeaderboardService(leaderboardRepository);

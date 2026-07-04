@@ -4,8 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePointsLeaderboard } from "@/src/hooks/leaderboard/usePointsLeaderboard";
 import { useSpeedrunLeaderboard } from "@/src/hooks/leaderboard/useSpeedrunLeaderboard";
-import type { Difficulty, GameKey, LeaderboardProps } from "@/src/lib/leaderboard/types";
-import { GAMES, HAS_DIFFICULTY, DIFFICULTIES, formatTime } from "@/src/lib/leaderboard/types";
+import type {
+  Difficulty,
+  GameKey,
+  LeaderboardProps,
+} from "@/src/lib/leaderboard/types";
+import {
+  GAMES,
+  HAS_DIFFICULTY,
+  DIFFICULTIES,
+  formatTime,
+} from "@/src/lib/leaderboard/types";
 import { StatusLine } from "@/src/lib/leaderboard/StatusLine";
 import { RankRow } from "@/src/lib/leaderboard/RankRow";
 import Dither from "@/src/components/reactbits/background/Dither";
@@ -32,7 +41,7 @@ export default function Leaderboard({
     speedrunEndpoint,
     activeGame,
     5,
-    gameHasDifficulty ? activeDifficulty : undefined
+    gameHasDifficulty ? activeDifficulty : undefined,
   );
 
   const accentColor = activeTab === "points" ? "#22d3ee" : activeGameMeta.color;
@@ -89,7 +98,9 @@ export default function Leaderboard({
     >
       <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
         <Dither
-          waveColor={[0.19215686274509805, 0.23921568627450981, 0.30980392156862746]}
+          waveColor={[
+            0.19215686274509805, 0.23921568627450981, 0.30980392156862746,
+          ]}
           disableAnimation={false}
           enableMouseInteraction={false}
           mouseRadius={0.3}
@@ -115,7 +126,6 @@ export default function Leaderboard({
             alignItems: "flex-start",
           }}
         >
-
           <Link
             href="/minigames"
             style={buttonStyle}
@@ -130,7 +140,8 @@ export default function Leaderboard({
         <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
           {(["points", "speedrun"] as Tab[]).map((tab) => {
             const active = tab === activeTab;
-            const tabColor = tab === "points" ? "#22d3ee" : activeGameMeta.color;
+            const tabColor =
+              tab === "points" ? "#22d3ee" : activeGameMeta.color;
             return (
               <button
                 key={tab}
@@ -161,36 +172,66 @@ export default function Leaderboard({
         <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
           {activeTab === "points" ? (
             <>
-              <div style={{ fontFamily: "Pixelify Sans", fontSize: 11, color: "#64748b", marginBottom: 14, letterSpacing: 1 }}>
-                {"//"} RANKED BY TOTAL POINTS
-              </div>
+              <div
+                style={{
+                  fontFamily: "Pixelify Sans",
+                  fontSize: 11,
+                  color: "#64748b",
+                  marginBottom: 14,
+                  letterSpacing: 1,
+                }}
+              ></div>
 
               <StatusLine
                 loading={points.loading}
                 error={points.error}
-                empty={!points.loading && !points.error && points.entries.length === 0}
+                empty={
+                  !points.loading &&
+                  !points.error &&
+                  points.entries.length === 0
+                }
               />
 
-              {!points.loading && !points.error && points.entries.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1, justifyContent: "space-between" }}>
-                  {points.entries.map((entry) => (
-                    <RankRow
-                      key={entry.userId}
-                      rank={entry.rank}
-                      username={entry.username}
-                      value={entry.points.toLocaleString()}
-                      valueSuffix="pts"
-                      isMe={entry.userId === currentUserId}
-                      accentColor="#22d3ee"
-                    />
-                  ))}
-                </div>
-              )}
+              {!points.loading &&
+                !points.error &&
+                points.entries.length > 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      flex: 1,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    {points.entries.map((entry) => (
+                      <RankRow
+                        key={entry.userId}
+                        rank={entry.rank}
+                        username={entry.username}
+                        value={entry.points.toLocaleString()}
+                        valueSuffix="pts"
+                        isMe={entry.userId === currentUserId}
+                        accentColor="#22d3ee"
+                      />
+                    ))}
+                  </div>
+                )}
             </>
           ) : (
             <>
-              <div style={{ fontSize: 11, color: "#64748b", marginBottom: 14, letterSpacing: 1 }}>
-                {"//"} FASTEST CLEAR TIME{gameHasDifficulty ? ` — ${activeDifficulty.toUpperCase()}` : ""}
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "#64748b",
+                  marginBottom: 14,
+                  letterSpacing: 1,
+                }}
+              >
+                {"//"} FASTEST CLEAR TIME
+                {gameHasDifficulty
+                  ? ` — ${activeDifficulty.toUpperCase()}`
+                  : ""}
               </div>
 
               {/* game tabs */}
@@ -238,7 +279,9 @@ export default function Leaderboard({
                           letterSpacing: 0.5,
                           border: `1px solid ${active ? activeGameMeta.color : "#1e293b"}`,
                           borderRadius: 4,
-                          background: active ? `${activeGameMeta.color}14` : "transparent",
+                          background: active
+                            ? `${activeGameMeta.color}14`
+                            : "transparent",
                           color: active ? activeGameMeta.color : "#475569",
                           cursor: "pointer",
                           transition: "all 0.15s ease",
@@ -254,28 +297,42 @@ export default function Leaderboard({
               <StatusLine
                 loading={speedrun.loading}
                 error={speedrun.error}
-                empty={!speedrun.loading && !speedrun.error && speedrun.entries.length === 0}
+                empty={
+                  !speedrun.loading &&
+                  !speedrun.error &&
+                  speedrun.entries.length === 0
+                }
               />
 
-              {!speedrun.loading && !speedrun.error && speedrun.entries.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1, justifyContent: "space-between" }}>
-                  {speedrun.entries.map((entry) => (
-                    <RankRow
-                      key={entry.userId}
-                      rank={entry.rank}
-                      username={entry.username}
-                      value={formatTime(entry.timeMs)}
-                      meta={
-                        activeGame === "trace" && entry.correctAnswers != null
-                          ? `${entry.correctAnswers}${entry.totalAnswers != null ? `/${entry.totalAnswers}` : ""} correct`
-                          : undefined
-                      }
-                      isMe={entry.userId === currentUserId}
-                      accentColor={activeGameMeta.color}
-                    />
-                  ))}
-                </div>
-              )}
+              {!speedrun.loading &&
+                !speedrun.error &&
+                speedrun.entries.length > 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      flex: 1,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    {speedrun.entries.map((entry) => (
+                      <RankRow
+                        key={entry.userId}
+                        rank={entry.rank}
+                        username={entry.username}
+                        value={formatTime(entry.timeMs)}
+                        meta={
+                          activeGame === "trace" && entry.correctAnswers != null
+                            ? `${entry.correctAnswers}${entry.totalAnswers != null ? `/${entry.totalAnswers}` : ""} correct`
+                            : undefined
+                        }
+                        isMe={entry.userId === currentUserId}
+                        accentColor={activeGameMeta.color}
+                      />
+                    ))}
+                  </div>
+                )}
             </>
           )}
         </div>
