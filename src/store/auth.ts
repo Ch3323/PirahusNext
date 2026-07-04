@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { authService } from "../infra/container";
+import { authService } from "@/src/clients/container";
 import { CurrentUser } from "../core/domain/auth";
 
 interface UserStore {

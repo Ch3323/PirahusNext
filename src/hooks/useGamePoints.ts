@@ -3,7 +3,7 @@ import {
   mentorService,
   menteeService,
   authService,
-} from "@/src/infra/container";
+} from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
 
 type GameName = "dungeon" | "sudoku" | "sort" | "trace";

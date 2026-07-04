@@ -1,7 +1,10 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@/src/lib/prisma";
 import { successResponse } from "@/src/lib/api-response";
 import { handleError } from "@/src/lib/handle-error";
+import { ShopItemService } from "@/src/services/shop-item.service";
+import { ShopCategory } from "@/src/lib/shop/Types";
+
+const shopItemService = new ShopItemService();
 
 export async function GET(
   req: NextRequest,
@@ -9,12 +12,10 @@ export async function GET(
 ) {
   try {
     const { category } = await params;
-    
-    const items = await prisma.shopItem.findMany({
-      where: { category },
-      orderBy: { createdAt: "asc" },
-    });
-    
+    if (category !== "spin" && category !== "cosmetic" && category !== "hint") {
+      throw new Error("Invalid category");
+    }
+    const items = await shopItemService.findByCategory(category);
     return successResponse(items);
   } catch (error) {
     return handleError(error);

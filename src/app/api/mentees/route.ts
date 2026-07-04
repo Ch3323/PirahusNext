@@ -1,52 +1,29 @@
-import { prisma } from "@/src/lib/prisma";
+import { NextRequest } from "next/server";
 import { successResponse } from "@/src/lib/api-response";
 import { handleError } from "@/src/lib/handle-error";
-import { NextRequest } from "next/server";
 import { requireAuth } from "@/src/lib/get-current-user";
 import { createMenteeSchema } from "@/src/core/schema/mentee";
-import { sanitizeMentee } from "@/src/lib/sanitize";
+import { MenteeService } from "@/src/services/mentee.service";
+
+const menteeService = new MenteeService();
+
+export async function GET() {
+  try {
+    await requireAuth(["admin", "mentor"]);
+    const mentees = await menteeService.findAll();
+    return successResponse(mentees);
+  } catch (error) {
+    return handleError(error);
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
     await requireAuth(["admin"]);
     const body = await req.json();
     const validatedData = createMenteeSchema.parse(body);
-
-    const mentee = await prisma.mentee.create({
-      data: {
-        studentId: validatedData.studentId,
-        mentorId: validatedData.mentorId,
-        name: validatedData.name,
-      },
-      include: {
-        mentor: {
-          include: {
-            hints: true,
-          },
-        },
-      },
-    });
-
-    return successResponse(sanitizeMentee(mentee), 201, "CREATED");
-  } catch (error) {
-    return handleError(error);
-  }
-}
-
-export async function GET() {
-  try {
-    await requireAuth(["admin", "mentor"]);
-    const mentees = await prisma.mentee.findMany({
-      include: {
-        mentor: {
-          include: {
-            hints: true,
-          },
-        },
-      },
-    });
-
-    return successResponse(mentees.map(sanitizeMentee));
+    const mentee = await menteeService.createMentee(validatedData);
+    return successResponse(mentee, 201, "CREATED");
   } catch (error) {
     return handleError(error);
   }

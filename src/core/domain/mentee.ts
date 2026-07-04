@@ -6,9 +6,11 @@ export interface IMentee {
   nickname?: string | null;
   point: number;
   unlockedHintLevels: number[];
+  unlockedCosmetics: string[];
+  equippedEffect: string | null;
 
   mentorId: string;
-  mentor: IMentor;
+  mentor?: IMentor | null;
 
   createdAt: Date;
   updatedAt: Date;

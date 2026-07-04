@@ -7,6 +7,8 @@ export interface IMentor {
   nickname?: string | null;
   isAdmin: boolean;
   point: number;
+  unlockedCosmetics: string[];
+  equippedEffect: string | null;
 
   hints: IHint[];
 

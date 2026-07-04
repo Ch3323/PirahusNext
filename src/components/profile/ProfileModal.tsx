@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useUserStore } from "@/src/store/auth";
-import { profileService } from "@/src/infra/container";
+import { profileService } from "@/src/clients/container";
 
 interface ProfileModalProps {
   onClose: () => void;

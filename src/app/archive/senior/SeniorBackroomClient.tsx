@@ -11,7 +11,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { authService, hintService } from "@/src/infra/container";
+import { authService, hintService } from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
 import Swal from "sweetalert2";
 import { IHint } from "@/src/core/domain/hint";

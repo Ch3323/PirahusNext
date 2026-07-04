@@ -13,7 +13,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { authService, mentorService, hintService } from "@/src/infra/container";
+import { authService, mentorService, hintService } from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
 import Swal from "sweetalert2";
 import { IMentor } from "@/src/core/domain/mentor";

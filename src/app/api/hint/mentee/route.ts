@@ -1,42 +1,14 @@
-import { prisma } from "@/src/lib/prisma";
 import { successResponse } from "@/src/lib/api-response";
-import { NotFoundError } from "@/src/core/error/error";
 import { handleError } from "@/src/lib/handle-error";
 import { requireAuth } from "@/src/lib/get-current-user";
+import { HintService } from "@/src/services/hint.service";
+
+const hintService = new HintService();
 
 export async function GET() {
   try {
     const session = await requireAuth(["mentee"]);
-
-    const mentee = await prisma.mentee.findUnique({
-      where: { studentId: session.studentId },
-      include: {
-        mentor: {
-          include: { hints: true },
-        },
-      },
-    });
-
-    if (!mentee) throw new NotFoundError("Mentee not found");
-
-    const hintShopItems = await prisma.shopItem.findMany({
-      where: { category: "hint" },
-    });
-
-    const hints = mentee.mentor.hints.map((hint) => {
-      const isUnlocked = mentee.unlockedHintLevels.includes(hint.level);
-      const shopItem = hintShopItems.find((s) => s.hintLevel === hint.level);
-      return {
-        id: hint.id,
-        level: hint.level,
-        cost: shopItem?.price || 0,
-        isUnlocked,
-        content: isUnlocked ? hint.content : null,
-      };
-    });
-
-    hints.sort((a, b) => a.level - b.level);
-
+    const hints = await hintService.getMenteeHints(session.studentId);
     return successResponse(hints);
   } catch (error) {
     return handleError(error);

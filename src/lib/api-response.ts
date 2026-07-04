@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ApiResponse } from "@/src/infra/interface/response";
+import { ApiResponse } from "@/src/core/interface/response";
 
 export function successResponse<T>(
   data: T,
