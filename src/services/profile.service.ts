@@ -1,20 +1,25 @@
 import { ProfileRepository } from "@/src/repositories/profile.repository";
 import { Role } from "@/src/core/domain/auth";
+import { IProfileRepository } from "@/src/core/ports/server/profile.repository.port";
 
-const profileRepo = new ProfileRepository();
+
 
 export class ProfileService {
+  constructor(
+    private readonly profileRepo: IProfileRepository = new ProfileRepository()
+  ) {}
+
   async updateNickname(
     studentId: string,
     role: Role,
     nickname: string
   ): Promise<{ message: string }> {
     if (role === "admin" || role === "mentor") {
-      await profileRepo.updateMentorNickname(studentId, nickname);
+      await this.profileRepo.updateMentorNickname(studentId, nickname);
     } else {
       const lastThree = studentId.slice(-3);
       const formattedNickname = `${lastThree} ${nickname}`;
-      await profileRepo.updateMenteeNickname(studentId, formattedNickname);
+      await this.profileRepo.updateMenteeNickname(studentId, formattedNickname);
     }
     return { message: "Profile updated successfully" };
   }

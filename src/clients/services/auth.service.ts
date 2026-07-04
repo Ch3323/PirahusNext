@@ -1,10 +1,10 @@
-import { AuthClientRepository } from "../repositories/auth.repository";
+import { IAuthClientRepository } from "@/src/core/ports/client/auth.repository.port";
 import { parseSchema } from "@/src/lib/validation";
 import { loginSchema } from "@/src/core/schema/auth";
 import { Login, LoginResponse, CurrentUser, SetupProfileResponse } from "@/src/core/domain/auth";
 
 export class AuthService {
-  constructor(private readonly authRepository: AuthClientRepository) {}
+  constructor(private readonly authRepository: IAuthClientRepository) {}
 
   async login(loginData: Login): Promise<LoginResponse> {
     try {

@@ -1,6 +1,7 @@
 import { prisma } from "@/src/lib/prisma";
+import { IAdmissionYearRepository } from "@/src/core/ports/server/admission-year.repository.port";
 
-export class AdmissionYearRepository {
+export class AdmissionYearRepository implements IAdmissionYearRepository {
   async findFirst() {
     return prisma.admissionYear.findFirst();
   }

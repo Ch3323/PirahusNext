@@ -1,10 +1,10 @@
-import { MentorClientRepository } from "../repositories/mentor.repository";
+import { IMentorClientRepository } from "@/src/core/ports/client/mentor.repository.port";
 import { IMentor, ICreateMentor } from "@/src/core/domain/mentor";
 import { parseSchema } from "@/src/lib/validation";
 import { createMentorSchema } from "@/src/core/schema/mentor";
 
 export class MentorService {
-  constructor(private readonly mentorRepository: MentorClientRepository) {}
+  constructor(private readonly mentorRepository: IMentorClientRepository) {}
 
   async createMentor(data: ICreateMentor): Promise<IMentor> {
     try {

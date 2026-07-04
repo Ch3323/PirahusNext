@@ -7,7 +7,9 @@ import {
 } from "@/src/core/domain/auth";
 import httpClient from "@/src/lib/http";
 
-export class AuthClientRepository {
+import { IAuthClientRepository } from "@/src/core/ports/client/auth.repository.port";
+
+export class AuthClientRepository implements IAuthClientRepository {
   async login(loginData: Login): Promise<ApiResponse<LoginResponse>> {
     return httpClient.post<LoginResponse>("/api/auth/login", loginData);
   }

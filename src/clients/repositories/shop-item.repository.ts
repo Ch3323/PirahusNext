@@ -2,7 +2,9 @@ import httpClient from "@/src/lib/http";
 import { ApiResponse } from "@/src/core/interface/response";
 import { ShopItemEntity, CreateShopItemInput, UpdateShopItemInput } from "@/src/core/domain/shop-item";
 
-export class ShopItemClientRepository {
+import { IShopItemClientRepository } from "@/src/core/ports/client/shop-item.repository.port";
+
+export class ShopItemClientRepository implements IShopItemClientRepository {
   async findAll(): Promise<ApiResponse<ShopItemEntity[]>> {
     return httpClient.get<ShopItemEntity[]>("/api/shop-items");
   }

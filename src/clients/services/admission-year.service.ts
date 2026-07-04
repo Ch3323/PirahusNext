@@ -7,10 +7,10 @@ import {
   CreateAdmissionYear,
   UpdateAdmissionYear,
 } from "@/src/core/domain/admission-year";
-import { AdmissionYearClientRepository } from "../repositories/admission-year.repository";
+import { IAdmissionYearClientRepository } from "@/src/core/ports/client/admission-year.repository.port";
 
 export class AdmissionYearService {
-  constructor(private admissionYearRepository: AdmissionYearClientRepository) {}
+  constructor(private admissionYearRepository: IAdmissionYearClientRepository) {}
 
   async createAdmissionYear(data: CreateAdmissionYear) {
     const parsedData = parseSchema(CreateAdmissionYearSchema, data);

@@ -2,37 +2,42 @@ import { ShopItemRepository } from "@/src/repositories/shop-item.repository";
 import { NotFoundError } from "@/src/core/error/error";
 import { ShopItemEntity, CreateShopItemInput, UpdateShopItemInput } from "@/src/core/domain/shop-item";
 import { ShopCategory } from "@/src/lib/shop/Types";
+import { IShopItemRepository } from "@/src/core/ports/server/shop-item.repository.port";
 
-const shopItemRepo = new ShopItemRepository();
+
 
 export class ShopItemService {
+  constructor(
+    private readonly shopItemRepo: IShopItemRepository = new ShopItemRepository()
+  ) {}
+
   async findAll(): Promise<ShopItemEntity[]> {
-    return shopItemRepo.findAll();
+    return this.shopItemRepo.findAll();
   }
 
   async findByCategory(category: ShopCategory): Promise<ShopItemEntity[]> {
-    return shopItemRepo.findByCategory(category);
+    return this.shopItemRepo.findByCategory(category);
   }
 
   async findById(id: string): Promise<ShopItemEntity> {
-    const item = await shopItemRepo.findById(id);
+    const item = await this.shopItemRepo.findById(id);
     if (!item) throw new NotFoundError("ShopItem not found");
     return item;
   }
 
   async create(data: CreateShopItemInput): Promise<ShopItemEntity> {
-    return shopItemRepo.create(data);
+    return this.shopItemRepo.create(data);
   }
 
   async update(id: string, data: UpdateShopItemInput): Promise<ShopItemEntity> {
-    const existing = await shopItemRepo.findById(id);
+    const existing = await this.shopItemRepo.findById(id);
     if (!existing) throw new NotFoundError("ShopItem not found");
-    return shopItemRepo.update(id, data);
+    return this.shopItemRepo.update(id, data);
   }
 
   async delete(id: string): Promise<void> {
-    const existing = await shopItemRepo.findById(id);
+    const existing = await this.shopItemRepo.findById(id);
     if (!existing) throw new NotFoundError("ShopItem not found");
-    await shopItemRepo.delete(id);
+    await this.shopItemRepo.delete(id);
   }
 }

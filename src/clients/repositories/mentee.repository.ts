@@ -2,7 +2,9 @@ import { ApiResponse } from "@/src/core/interface/response";
 import httpClient from "@/src/lib/http";
 import { IMentee, ICreateMentee } from "@/src/core/domain/mentee";
 
-export class MenteeClientRepository {
+import { IMenteeClientRepository } from "@/src/core/ports/client/mentee.repository.port";
+
+export class MenteeClientRepository implements IMenteeClientRepository {
   async createMentee(data: ICreateMentee): Promise<ApiResponse<IMentee>> {
     return httpClient.post<IMentee>("/api/mentees", data);
   }

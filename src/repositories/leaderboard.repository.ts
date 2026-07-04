@@ -1,7 +1,9 @@
 import { prisma } from "@/src/lib/prisma";
 import { ILeaderboardResponse } from "@/src/core/domain/leaderboard";
 
-export class LeaderboardRepository {
+import { ILeaderboardRepository } from "@/src/core/ports/server/leaderboard.repository.port";
+
+export class LeaderboardRepository implements ILeaderboardRepository {
   async getTopScores(limit: number = 10): Promise<ILeaderboardResponse> {
     const [topMentors, topMentees] = await Promise.all([
       prisma.mentor.findMany({

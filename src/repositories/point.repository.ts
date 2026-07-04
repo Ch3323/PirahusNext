@@ -1,7 +1,9 @@
 import { prisma } from "@/src/lib/prisma";
 import { NotFoundError } from "@/src/core/error/error";
 
-export class PointRepository {
+import { IPointRepository } from "@/src/core/ports/server/point.repository.port";
+
+export class PointRepository implements IPointRepository {
   async getMentorPoint(id: string) {
     let mentor = await prisma.mentor.findUnique({ where: { id } });
     if (!mentor) {

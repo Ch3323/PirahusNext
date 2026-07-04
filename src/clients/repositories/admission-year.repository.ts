@@ -2,7 +2,9 @@ import httpClient from "@/src/lib/http";
 import { IAdmissionYear, CreateAdmissionYear, UpdateAdmissionYear } from "@/src/core/domain/admission-year";
 import { ApiResponse } from "@/src/core/interface/response";
 
-export class AdmissionYearClientRepository {
+import { IAdmissionYearClientRepository } from "@/src/core/ports/client/admission-year.repository.port";
+
+export class AdmissionYearClientRepository implements IAdmissionYearClientRepository {
   async getAdmissionYear(): Promise<ApiResponse<IAdmissionYear>> {
     return httpClient.get<IAdmissionYear>("/api/admission-year");
   }

@@ -4,7 +4,9 @@ import { IUnlockCosmeticResult, IEquipCosmeticResult } from "@/src/core/domain/c
 import { ShopItemEntity } from "@/src/core/domain/shop-item";
 import { mapToShopItemEntity } from "@/src/factories/shop-item.factory";
 
-export class CosmeticRepository {
+import { ICosmeticRepository } from "@/src/core/ports/server/cosmetic.repository.port";
+
+export class CosmeticRepository implements ICosmeticRepository {
   async findShopItem(id: string): Promise<ShopItemEntity | null> {
     const item = await prisma.shopItem.findUnique({ where: { id } });
     return item ? mapToShopItemEntity(item) : null;

@@ -2,7 +2,9 @@ import httpClient from "@/src/lib/http";
 import { ApiResponse } from "@/src/core/interface/response";
 import { IHint, IAddHints, IUpdateHints, IMenteeHint, IUnlockHintResult } from "@/src/core/domain/hint";
 
-export class HintClientRepository {
+import { IHintClientRepository } from "@/src/core/ports/client/hint.repository.port";
+
+export class HintClientRepository implements IHintClientRepository {
   async addHints(data: IAddHints): Promise<ApiResponse<{ count: number }>> {
     return httpClient.post<{ count: number }>("/api/hint", data);
   }

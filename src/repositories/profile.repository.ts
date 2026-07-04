@@ -1,7 +1,9 @@
 import { prisma } from "@/src/lib/prisma";
 import { Mentor, Mentee } from "@/prisma/generated/client";
 
-export class ProfileRepository {
+import { IProfileRepository } from "@/src/core/ports/server/profile.repository.port";
+
+export class ProfileRepository implements IProfileRepository {
   async updateMentorNickname(studentId: string, nickname: string): Promise<Mentor> {
     return prisma.mentor.update({ where: { studentId }, data: { nickname } });
   }

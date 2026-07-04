@@ -1,8 +1,8 @@
-import { ShopItemClientRepository } from "../repositories/shop-item.repository";
+import { IShopItemClientRepository } from "@/src/core/ports/client/shop-item.repository.port";
 import { ShopItemEntity, CreateShopItemInput, UpdateShopItemInput } from "@/src/core/domain/shop-item";
 
 export class ShopItemService {
-  constructor(private readonly shopItemRepository: ShopItemClientRepository) {}
+  constructor(private readonly shopItemRepository: IShopItemClientRepository) {}
 
   async getAllShopItems(): Promise<ShopItemEntity[]> {
     const response = await this.shopItemRepository.findAll();

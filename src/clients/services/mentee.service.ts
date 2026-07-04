@@ -1,10 +1,10 @@
-import { MenteeClientRepository } from "../repositories/mentee.repository";
+import { IMenteeClientRepository } from "@/src/core/ports/client/mentee.repository.port";
 import { IMentee, ICreateMentee } from "@/src/core/domain/mentee";
 import { parseSchema } from "@/src/lib/validation";
 import { createMenteeSchema } from "@/src/core/schema/mentee";
 
 export class MenteeService {
-  constructor(private readonly menteeRepository: MenteeClientRepository) {}
+  constructor(private readonly menteeRepository: IMenteeClientRepository) {}
 
   async createMentee(data: ICreateMentee): Promise<IMentee> {
     try {

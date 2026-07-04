@@ -2,7 +2,9 @@ import { ApiResponse } from "@/src/core/interface/response";
 import httpClient from "@/src/lib/http";
 import { IMentor, ICreateMentor } from "@/src/core/domain/mentor";
 
-export class MentorClientRepository {
+import { IMentorClientRepository } from "@/src/core/ports/client/mentor.repository.port";
+
+export class MentorClientRepository implements IMentorClientRepository {
   async createMentor(data: ICreateMentor): Promise<ApiResponse<IMentor>> {
     return httpClient.post<IMentor>("/api/mentors", data);
   }

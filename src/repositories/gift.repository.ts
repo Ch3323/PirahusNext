@@ -1,7 +1,9 @@
 import { prisma } from "@/src/lib/prisma";
 import { Role } from "@/src/core/domain/auth";
 
-export class GiftRepository {
+import { IGiftRepository } from "@/src/core/ports/server/gift.repository.port";
+
+export class GiftRepository implements IGiftRepository {
   async executeTransferTransaction(
     senderId: string,
     senderRole: Role,

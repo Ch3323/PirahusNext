@@ -1,8 +1,8 @@
 import { IUnlockCosmeticResult, IEquipCosmeticResult } from "@/src/core/domain/cosmetic";
-import { CosmeticClientRepository } from "../repositories/cosmetic.repository";
+import { ICosmeticClientRepository } from "@/src/core/ports/client/cosmetic.repository.port";
 
 export class CosmeticService {
-  constructor(private readonly cosmeticRepository: CosmeticClientRepository) {}
+  constructor(private readonly cosmeticRepository: ICosmeticClientRepository) {}
   
   async unlockCosmetic(id: string): Promise<IUnlockCosmeticResult> {
     try {

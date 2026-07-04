@@ -31,7 +31,9 @@ export type MenteeForMe = Prisma.MenteeGetPayload<{
   };
 }>;
 
-export class AuthRepository {
+import { IAuthRepository } from "@/src/core/ports/server/auth.repository.port";
+
+export class AuthRepository implements IAuthRepository {
   async findAdmissionYear(): Promise<AdmissionYear | null> {
     return prisma.admissionYear.findFirst();
   }

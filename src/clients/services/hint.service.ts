@@ -1,10 +1,10 @@
 import { parseSchema } from "@/src/lib/validation";
 import { IHint, IAddHints, IUpdateHints, IMenteeHint, IUnlockHintResult } from "@/src/core/domain/hint";
-import { HintClientRepository } from "../repositories/hint.repository";
+import { IHintClientRepository } from "@/src/core/ports/client/hint.repository.port";
 import { addHintsSchema, updateHintsSchema } from "@/src/core/schema/hint";
 
 export class HintService {
-  constructor(private readonly hintRepository: HintClientRepository) {}
+  constructor(private readonly hintRepository: IHintClientRepository) {}
   async addHints(data: IAddHints): Promise<{ count: number }> {
     try {
       const parsedData = parseSchema(addHintsSchema, data);

@@ -7,7 +7,9 @@ export type MentorWithRelations = Prisma.MentorGetPayload<{
   include: { hints: true; mentee: true };
 }>;
 
-export class MentorRepository {
+import { IMentorRepository } from "@/src/core/ports/server/mentor.repository.port";
+
+export class MentorRepository implements IMentorRepository {
   async createMentor(data: ICreateMentor): Promise<MentorWithRelations> {
     return prisma.mentor.create({
       data: { studentId: data.studentId },

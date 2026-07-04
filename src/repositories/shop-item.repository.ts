@@ -6,7 +6,9 @@ import {
 } from "@/src/core/domain/shop-item";
 import { mapToShopItemEntity } from "@/src/factories/shop-item.factory";
 
-export class ShopItemRepository {
+import { IShopItemRepository } from "@/src/core/ports/server/shop-item.repository.port";
+
+export class ShopItemRepository implements IShopItemRepository {
   async findAll(): Promise<ShopItemEntity[]> {
     const items = await prisma.shopItem.findMany({ orderBy: { createdAt: "asc" } });
     return items.map(mapToShopItemEntity);
