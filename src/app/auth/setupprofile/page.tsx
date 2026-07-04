@@ -15,7 +15,7 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { Pixelify_Sans } from "next/font/google";
-import { authService } from "@/src/infra/container";
+import { authService } from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
 
 const pixelifySans = Pixelify_Sans({ subsets: ["latin"] });

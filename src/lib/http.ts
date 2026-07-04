@@ -4,7 +4,7 @@ import axios, {
   AxiosError,
   AxiosResponse,
 } from "axios";
-import { ApiResponse } from "../infra/interface/response";
+import { ApiResponse } from "../core/interface/response";
 
 const http: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "",

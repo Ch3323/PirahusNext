@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useUserStore } from "@/src/store/auth";
 import ActiveEffect from "./reactbits/cosmectic/ActiveEffect";
 import { EffectKey } from "@/src/lib/shop/Types";
-import { shopItemService } from "@/src/infra/container";
+import { shopItemService } from "@/src/clients/container";
 
 export default function GlobalEffectWrapper({
   children,

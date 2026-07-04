@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
+import { Role } from "@/src/core/domain/auth";
 
 const SECRET = process.env.JWT_SECRET!;
 
 export interface TokenPayload {
   studentId: string;
-  role: "admin" | "mentor" | "mentee";
+  role: Role;
   point: number;
 }
 

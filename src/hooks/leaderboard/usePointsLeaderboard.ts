@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PointsEntry } from "@/src/lib/leaderboard/types";
-import { leaderboardService } from "@/src/infra/container";
+import { leaderboardService } from "@/src/clients/container";
 
 export function usePointsLeaderboard(endpoint: string, limit: number) {
   const [entries, setEntries] = useState<PointsEntry[]>([]);

@@ -1,9 +1,11 @@
+import { Role } from "./auth";
+
 export interface ILeaderboardEntry {
   id: string;
   studentId: string;
   nickname: string | null;
   point: number;
-  role: "mentor" | "mentee";
+  role: Role;
 }
 
 export interface ILeaderboardResponse {

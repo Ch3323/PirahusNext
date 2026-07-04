@@ -24,6 +24,8 @@ interface BaseUser {
   equippedEffect?: string | null;
 }
 
+export type Role = "admin" | "mentor" | "mentee";
+
 export interface MentorUser extends BaseUser {
   role: "admin" | "mentor";
   mentee: {

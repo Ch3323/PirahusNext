@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { shopItemService } from "@/src/infra/container";
+import { shopItemService } from "@/src/clients/container";
 import type { ShopItem } from "@/src/lib/shop/Types";
 import type { CurrentUser } from "@/src/core/domain/auth";
 

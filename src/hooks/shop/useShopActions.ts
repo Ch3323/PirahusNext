@@ -2,7 +2,7 @@ import {
   hintService,
   cosmeticService,
   giftService,
-} from "@/src/infra/container";
+} from "@/src/clients/container";
 import Swal from "sweetalert2";
 import type { ShopItem, GiftTransfer } from "@/src/lib/shop/Types";
 import type { CurrentUser } from "@/src/core/domain/auth";

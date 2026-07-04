@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { FaPlus, FaTrash, FaPencilAlt, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { shopItemService } from "@/src/infra/container";
+import { shopItemService } from "@/src/clients/container";
 import type { ShopItemEntity, CreateShopItemInput } from "@/src/core/domain/shop-item";
 import type { ShopCategory } from "@/src/lib/shop/Types";
 
