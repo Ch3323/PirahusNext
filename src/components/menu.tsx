@@ -14,7 +14,7 @@ function Menu({ onNavigate }: MenuProps) {
   const links = [
     { name: "HOME", href: "/" },
     { name: "MINIGAMES", href: "/minigames" },
-    { name: "ARCHIVE", href: "/archive" },
+    { name: "ARCHIVE", href: "/archive/senior" },
   ];
 
   return (

@@ -53,7 +53,7 @@ const ProfileModal = ({ onClose }: ProfileModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-3000 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="relative w-[90%] max-w-[400px] bg-[#0d0d0d] border border-[#27272a] p-6 rounded-lg shadow-2xl">
         <button
           onClick={onClose}

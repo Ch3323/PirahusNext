@@ -16,6 +16,10 @@ import { useUserStore } from "@/src/store/auth";
 import Swal from "sweetalert2";
 import { IHint } from "@/src/core/domain/hint";
 import { IMentee } from "@/src/core/domain/mentee";
+import HintBoard from "@/src/components/archive/senior/Hintboard";
+import MentorPanel from "@/src/components/archive/senior/Mentorpanel";
+import Link from "next/dist/client/link";
+import Grainient from "@/src/components/reactbits/background/Grainient";
 
 function JuniorCard({ junior }: { junior: IMentee | null }) {
   if (!junior) {
@@ -533,9 +537,6 @@ export default function SeniorBackroomClient() {
       <div
         style={{
           minHeight: "100vh",
-          backgroundImage: "url('/images/backroomspattern.png')",
-          backgroundSize: "300px 300px",
-          backgroundRepeat: "repeat",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -561,378 +562,136 @@ export default function SeniorBackroomClient() {
   const rest =
     mentor.studentId.length >= 2 ? mentor.studentId.slice(2) : mentor.studentId;
 
+  const buttonStyle = {
+    color: "#6b7280",
+    border: "1px solid #374151",
+    fontSize: "0.875rem",
+    padding: "0.25rem 0.75rem",
+    width: "fit-content",
+    background: "transparent",
+    cursor: "pointer",
+    borderRadius: "0.25rem",
+    fontFamily: "Pixelify Sans",
+    textDecoration: "none",
+    display: "inline-block",
+  };
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        backgroundImage: "url('/images/backroomspattern.png')",
-        backgroundSize: "300px 300px",
-        backgroundRepeat: "repeat",
-        backgroundColor: "rgba(10, 14, 8, 0.45)",
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "48px 24px",
+        overflow: "hidden",
       }}
     >
-      <style>{`
-        .hint-page *::selection {
-          background-color: rgba(140, 170, 80, 0.35);
-          color: #d8e8b8;
-        }
-      `}</style>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+        }}
+      >
+        <Grainient
+          color1="#604599"
+          color2="#17112f"
+          color3="#222b57"
+          timeSpeed={0.25}
+          colorBalance={0}
+          warpStrength={1}
+          warpFrequency={5}
+          warpSpeed={2}
+          warpAmplitude={50}
+          blendAngle={0}
+          blendSoftness={0.05}
+          rotationAmount={500}
+          noiseScale={2}
+          grainAmount={0.1}
+          grainScale={2}
+          grainAnimated
+          contrast={1.5}
+          gamma={1}
+          saturation={1}
+          centerX={0}
+          centerY={0}
+          zoom={0.9}
+        />
+      </div>
 
       <div
-        className="hint-page"
+        style={{
+          position: "fixed",
+          top: "2.5rem",
+          left: "2rem",
+          zIndex: 1000,
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.5rem",
+          alignItems: "flex-start",
+        }}
+      >
+        <Link
+          href="/"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#d1d5db")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "#6b7280")}
+        >
+          ← Back
+        </Link>
+      </div>
+
+      <style>{`
+      .backroom-columns {
+        display: flex;
+        gap: 56px;
+        align-items: center;
+      }
+      .backroom-col-left {
+        flex: 0 0 280px;
+      }
+      .backroom-col-right {
+        flex: 1;
+        min-width: 0;
+      }
+      @media (max-width: 720px) {
+        .backroom-columns {
+          flex-direction: column;
+          gap: 32px;
+        }
+        .backroom-col-left {
+          flex: 1 1 auto;
+          width: 100%;
+        }
+      }
+    `}</style>
+
+      <div
         style={{
           position: "relative",
           zIndex: 1,
-          maxWidth: "820px",
-          margin: "0 auto",
-          padding: "48px 24px",
-          backgroundColor: "rgba(10, 14, 8, 0.45)",
-          backdropFilter: "blur(2px)",
-          WebkitBackdropFilter: "blur(2px)",
-          minHeight: "100vh",
-          boxShadow:
-            "inset 60px 0 80px rgba(10,14,8,0.3), inset -60px 0 80px rgba(10,14,8,0.3)",
-          isolation: "isolate",
+          width: "100%",
+          maxWidth: "900px",
         }}
       >
-        <button
-          onClick={() => router.push("/")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "none",
-            border: "none",
-            color: "#708840",
-            fontSize: "12px",
-            fontFamily: "monospace",
-            cursor: "pointer",
-            padding: 0,
-            marginBottom: "24px",
-          }}
-        >
-          <FaArrowLeft size={10} /> BACK TO HOME
-        </button>
+        <div className="backroom-columns">
+          <MentorPanel mentor={mentor} />
 
-        <div style={{ marginBottom: "8px" }}>
-          <p
-            style={{
-              fontSize: "10px",
-              fontWeight: 700,
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "#8faa55",
-              marginBottom: "4px",
-              fontFamily: "monospace",
-            }}
-          >
-            ■ HINT BOARD
-          </p>
-          <h1
-            style={{
-              fontSize: "24px",
-              fontWeight: 700,
-              color: "#a8c060",
-              margin: "0 0 4px",
-              fontFamily: "'Share Tech Mono', monospace",
-              letterSpacing: "0.04em",
-            }}
-          >
-            ฝากคำใบ้ให้น้องรหัส
-          </h1>
-          <div
-            style={{
-              fontSize: "12px",
-              color: "#8faa55",
-              margin: "0 0 28px",
-              fontFamily: "monospace",
-            }}
-          >
-            <div style={{ marginBottom: "8px" }}>Logged in as</div>
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {/* Mentor ID Badge */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: "6px",
-                  padding: "6px 12px",
-                  border: "1px solid rgba(212, 92, 42, 0.3)",
-                  backgroundColor: "rgba(212, 92, 42, 0.08)",
-                  borderRadius: "4px",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "10px",
-                    color: "#d45c2a",
-                    fontWeight: 700,
-                    letterSpacing: "1px",
-                    lineHeight: 1,
-                  }}
-                >
-                  ID
-                </span>
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontFamily: "monospace",
-                    fontWeight: 700,
-                    lineHeight: 1,
-                  }}
-                >
-                  {firstTwo && (
-                    <span style={{ color: "#d45c2a" }}>{firstTwo}</span>
-                  )}
-                  <span style={{ color: "#c8d4a8" }}>{rest}</span>
-                </span>
-              </div>
-
-              {/* Mentor NAME Badge */}
-              {mentor.nickname && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: "6px",
-                    padding: "6px 12px",
-                    border: "1px solid rgba(168, 192, 96, 0.3)",
-                    backgroundColor: "rgba(168, 192, 96, 0.08)",
-                    borderRadius: "4px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      color: "#a8c060",
-                      fontWeight: 700,
-                      letterSpacing: "1px",
-                      lineHeight: 1,
-                    }}
-                  >
-                    NAME
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      fontFamily: "'Share Tech Mono', monospace",
-                      color: "#d8e8b8",
-                      fontWeight: 600,
-                      lineHeight: 1,
-                    }}
-                  >
-                    {mentor.nickname}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            borderTop: "1px solid rgba(140,170,80,0.2)",
-            marginBottom: "28px",
-          }}
-        />
-
-        <JuniorCard junior={mentor.mentee} />
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "14px",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "10px",
-              fontWeight: 700,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: "#708840",
-              fontFamily: "monospace",
-            }}
-          >
-            [ HINTS ] — {hints.length} added
-          </span>
-          {hints.length < 5 && (
-            <button
-              onClick={() => {
-                const usedLevels = hints.map((h) => h.level);
-                const availableLevels = [1, 2, 3, 4, 5].filter(
-                  (l) => !usedLevels.includes(l),
-                );
-                if (availableLevels.length > 0) {
-                  setNewLevel(availableLevels[0]);
-                }
-                setAdding(true);
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                background: "rgba(112, 136, 64, 0.12)",
-                border: "1px solid rgba(112,136,64,0.35)",
-                borderRadius: "2px",
-                color: "#a8c060",
-                fontSize: "11px",
-                fontFamily: "monospace",
-                padding: "4px 10px",
-                cursor: "pointer",
-              }}
-            >
-              <FaPlus size={9} /> ADD HINT
-            </button>
-          )}
-        </div>
-
-        {hints.length === 0 && !adding && (
-          <p
-            style={{
-              fontSize: "13px",
-              color: "#3a4a20",
-              fontFamily: "monospace",
-              margin: "16px 0",
-            }}
-          >
-            — ยังไม่มีคำใบ้ เพิ่มคำใบ้แรกได้เลย —
-          </p>
-        )}
-
-        {hints.map((h, i) => (
-          <HintItem
-            key={h.id}
-            hint={h}
-            index={i}
-            onDelete={deleteHint}
-            onEdit={editHint}
+          <HintBoard
+            hints={hints}
+            adding={adding}
+            newHint={newHint}
+            newLevel={newLevel}
+            setAdding={setAdding}
+            setNewHint={setNewHint}
+            setNewLevel={setNewLevel}
+            addHint={addHint}
+            deleteHint={deleteHint}
+            editHint={editHint}
           />
-        ))}
-
-        {adding && (
-          <div
-            style={{
-              marginTop: "10px",
-              padding: "14px",
-              backgroundColor: "rgba(10,14,8,0.6)",
-              border: "1px solid rgba(140,170,80,0.2)",
-              borderRadius: "3px",
-            }}
-          >
-            <p
-              style={{
-                fontSize: "11px",
-                color: "#708840",
-                fontFamily: "monospace",
-                margin: "0 0 8px",
-                letterSpacing: "0.08em",
-              }}
-            >
-              NEW HINT
-            </p>
-            <select
-              value={newLevel}
-              onChange={(e) => setNewLevel(Number(e.target.value))}
-              style={{
-                width: "100%",
-                background: "rgba(140,170,80,0.06)",
-                border: "1px solid rgba(140,170,80,0.25)",
-                borderRadius: "2px",
-                color: "#d8e8b8",
-                fontSize: "14px",
-                padding: "8px 12px",
-                fontFamily: "monospace",
-                outline: "none",
-                marginBottom: "10px",
-              }}
-            >
-              {[1, 2, 3, 4, 5].map((l) => {
-                const isUsed = hints.some((h) => h.level === l);
-                return (
-                  <option
-                    key={l}
-                    value={l}
-                    disabled={isUsed}
-                    style={{
-                      background: "#0a0e08",
-                      color: isUsed ? "#4a5a3a" : "#d8e8b8",
-                    }}
-                  >
-                    Level {l} {isUsed ? "(เลือกแล้ว)" : ""}
-                  </option>
-                );
-              })}
-            </select>
-            <textarea
-              autoFocus
-              placeholder="เขียนคำใบ้ที่นี่..."
-              value={newHint}
-              onChange={(e) => setNewHint(e.target.value)}
-              rows={3}
-              style={{
-                width: "100%",
-                boxSizing: "border-box",
-                background: "rgba(140,170,80,0.06)",
-                border: "1px solid rgba(140,170,80,0.25)",
-                borderRadius: "2px",
-                color: "#d8e8b8",
-                fontSize: "14px",
-                padding: "8px 12px",
-                fontFamily: "monospace",
-                outline: "none",
-                resize: "vertical",
-                marginBottom: "10px",
-              }}
-            />
-            <div
-              style={{
-                display: "flex",
-                gap: "8px",
-                justifyContent: "flex-end",
-              }}
-            >
-              <button
-                onClick={() => {
-                  setAdding(false);
-                  setNewHint("");
-                }}
-                style={{
-                  background: "none",
-                  border: "1px solid rgba(140,60,40,0.4)",
-                  borderRadius: "2px",
-                  color: "#b85040",
-                  fontSize: "11px",
-                  fontFamily: "monospace",
-                  padding: "5px 12px",
-                  cursor: "pointer",
-                }}
-              >
-                CANCEL
-              </button>
-              <button
-                onClick={addHint}
-                disabled={!newHint.trim()}
-                style={{
-                  background: newHint.trim()
-                    ? "rgba(112,136,64,0.2)"
-                    : "rgba(112,136,64,0.05)",
-                  border: `1px solid ${newHint.trim() ? "rgba(112,136,64,0.5)" : "rgba(112,136,64,0.15)"}`,
-                  borderRadius: "2px",
-                  color: newHint.trim() ? "#a8c060" : "#4a6028",
-                  fontSize: "11px",
-                  fontFamily: "monospace",
-                  padding: "5px 14px",
-                  cursor: newHint.trim() ? "pointer" : "not-allowed",
-                }}
-              >
-                SAVE HINT
-              </button>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

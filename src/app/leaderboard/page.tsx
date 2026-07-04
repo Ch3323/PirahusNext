@@ -169,7 +169,34 @@ export default function Leaderboard({
 
         <div style={{ borderBottom: "1px solid #1e293b", marginBottom: 14 }} />
 
-        <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <style>{`
+          .lb-scroll::-webkit-scrollbar {
+            width: 6px;
+          }
+          .lb-scroll::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .lb-scroll::-webkit-scrollbar-thumb {
+            background: ${accentColor}55;
+            border-radius: 3px;
+          }
+          .lb-scroll::-webkit-scrollbar-thumb:hover {
+            background: ${accentColor}99;
+          }
+          .lb-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: ${accentColor}55 transparent;
+          }
+        `}</style>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
           {activeTab === "points" ? (
             <>
               <div
@@ -196,12 +223,15 @@ export default function Leaderboard({
                 !points.error &&
                 points.entries.length > 0 && (
                   <div
+                    className="lb-scroll"
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       gap: 8,
                       flex: 1,
-                      justifyContent: "space-between",
+                      minHeight: 0,
+                      overflowY: "auto",
+                      paddingRight: 6,
                     }}
                   >
                     {points.entries.map((entry) => (
@@ -308,12 +338,15 @@ export default function Leaderboard({
                 !speedrun.error &&
                 speedrun.entries.length > 0 && (
                   <div
+                    className="lb-scroll"
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       gap: 8,
                       flex: 1,
-                      justifyContent: "space-between",
+                      minHeight: 0,
+                      overflowY: "auto",
+                      paddingRight: 6,
                     }}
                   >
                     {speedrun.entries.map((entry) => (

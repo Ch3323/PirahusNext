@@ -48,20 +48,16 @@ const LoginButton = ({ role }: { role: string | null }) => {
     <div className="flex items-center gap-3">
       {(role === "mentor" || role === "admin") && (
         <button
-          onClick={() => router.push("/backrooms/senior")}
+          onClick={() => router.push("/archive/senior")}
           className="flex items-center gap-3 px-5 bg-[#0d0d0d] hover:bg-[#6812D2] transition-all duration-500 ease-in-out group focus:outline-none shadow-lg h-14 cursor-pointer"
         >
-          <FaCog size={18} className="text-[#F1F1F1]" />
-          <div className="w-px h-5 bg-[#F1F1F1] opacity-30" />
-          <span className="text-[#F1F1F1] text-sm font-medium tracking-widest uppercase">
-            จัดการคำใบ้
-          </span>
+          <FaUser size={18} className="text-[#F1F1F1]" />
         </button>
       )}
 
       {role === "admin" && (
         <button
-          onClick={() => router.push("/backrooms/admin")}
+          onClick={() => router.push("/backrooms")}
           className="flex items-center gap-3 px-5 bg-[#0d0d0d] hover:bg-[#a8c060] hover:text-[#0a0e08] transition-all duration-500 ease-in-out group focus:outline-none shadow-lg h-14 cursor-pointer"
         >
           <FaUser
@@ -70,21 +66,10 @@ const LoginButton = ({ role }: { role: string | null }) => {
           />
           <div className="w-px h-5 bg-[#F1F1F1] group-hover:bg-[#0a0e08] opacity-30 transition-colors" />
           <span className="text-[#F1F1F1] group-hover:text-[#0a0e08] text-sm font-medium tracking-widest uppercase transition-colors">
-            ระบบแอดมิน
+            Backrooms
           </span>
         </button>
       )}
-
-      <button
-        onClick={() => setShowProfile(true)}
-        className="flex items-center gap-3 px-5 bg-[#0d0d0d] hover:bg-[#6812D2] transition-all duration-500 ease-in-out group focus:outline-none shadow-lg h-14 cursor-pointer"
-      >
-        <FaUser size={18} className="text-[#F1F1F1]" />
-        <div className="w-px h-5 bg-[#F1F1F1] opacity-30" />
-        <span className="text-[#F1F1F1] text-sm font-medium tracking-widest uppercase">
-          Profile
-        </span>
-      </button>
 
       <button
         onClick={handleLogout}
@@ -97,7 +82,6 @@ const LoginButton = ({ role }: { role: string | null }) => {
         </span>
       </button>
 
-      {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
     </div>
   );
 };
