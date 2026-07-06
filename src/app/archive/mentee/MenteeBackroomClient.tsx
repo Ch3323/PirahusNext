@@ -4,16 +4,16 @@ import { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { hintService } from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
-import { IHint } from "@/src/core/domain/hint";
-import HintBoard from "@/src/components/archive/junior/Hintboard";
-import JuniorPanel from "@/src/components/archive/junior/Juniorpanel";
+import { IMenteeHint } from "@/src/core/domain/hint";
+import HintBoard from "@/src/components/archive/mentee/Hintboard";
+import MenteePanel from "@/src/components/archive/mentee/MenteePanel";
 import Link from "next/dist/client/link";
 import Grainient from "@/src/components/reactbits/background/Grainient";
+import { MenteeUser } from "@/src/core/domain/user";
 
-export default function JuniorBackroomClient() {
+export default function MenteeBackroomClient() {
   const { user, loading: authLoading, getUser } = useUserStore();
-  const [junior, setJunior] = useState<any>(null);
-  const [hints, setHints] = useState<IHint[]>([]);
+  const [hints, setHints] = useState<IMenteeHint[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,20 +23,19 @@ export default function JuniorBackroomClient() {
   useEffect(() => {
     if (authLoading || !user) return;
 
-    setJunior(user);
+    const fetchHints = async () => {
+      setLoading(true);
+      try {
+        const hints = await hintService.getMenteeHints();
+        setHints(hints);
+      } catch (err) {
+        console.error("Failed to load hints:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const mentorId = (user as any)?.mentor?.id;
-
-    if (!mentorId) {
-      setLoading(false);
-      return;
-    }
-
-    hintService
-      .getHintsByMentorId(mentorId)
-      .then(setHints)
-      .catch((err) => console.error("Failed to load hints:", err))
-      .finally(() => setLoading(false));
+    fetchHints();
   }, [user, authLoading]);
 
   if (loading) {
@@ -247,7 +246,7 @@ export default function JuniorBackroomClient() {
               boxShadow: "0 0 8px #a78bfa",
             }}
           />
-          Junior Archive — Mentee Access Terminal
+          Mentee Archive — Access Terminal
           <div
             style={{
               flex: 1,
@@ -267,31 +266,34 @@ export default function JuniorBackroomClient() {
             backdropFilter: "blur(2px)",
           }}
         >
-          {(["top left", "top right", "bottom left", "bottom right"] as const).map(
-            (pos) => {
-              const [v, h] = pos.split(" ") as ["top" | "bottom", "left" | "right"];
-              return (
-                <div
-                  key={pos}
-                  style={{
-                    position: "absolute",
-                    [v]: "-1px",
-                    [h]: "-1px",
-                    width: "18px",
-                    height: "18px",
-                    borderTop: v === "top" ? "2px solid #a78bfa" : "none",
-                    borderBottom: v === "bottom" ? "2px solid #a78bfa" : "none",
-                    borderLeft: h === "left" ? "2px solid #a78bfa" : "none",
-                    borderRight: h === "right" ? "2px solid #a78bfa" : "none",
-                    opacity: 0.6,
-                  }}
-                />
-              );
-            },
-          )}
+          {(
+            ["top left", "top right", "bottom left", "bottom right"] as const
+          ).map((pos) => {
+            const [v, h] = pos.split(" ") as [
+              "top" | "bottom",
+              "left" | "right",
+            ];
+            return (
+              <div
+                key={pos}
+                style={{
+                  position: "absolute",
+                  [v]: "-1px",
+                  [h]: "-1px",
+                  width: "18px",
+                  height: "18px",
+                  borderTop: v === "top" ? "2px solid #a78bfa" : "none",
+                  borderBottom: v === "bottom" ? "2px solid #a78bfa" : "none",
+                  borderLeft: h === "left" ? "2px solid #a78bfa" : "none",
+                  borderRight: h === "right" ? "2px solid #a78bfa" : "none",
+                  opacity: 0.6,
+                }}
+              />
+            );
+          })}
 
           <div className="backroom-columns">
-            <JuniorPanel junior={junior} />
+            <MenteePanel mentee={user as MenteeUser} />
             <HintBoard hints={hints} />
           </div>
         </div>

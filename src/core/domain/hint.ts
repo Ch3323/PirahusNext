@@ -1,5 +1,6 @@
 export interface IHint {
   id: string;
+  mentorId: string;
   content: string;
   level: number;
   createdAt: Date;
@@ -16,10 +17,10 @@ export interface IUpdateHints {
 
 export interface IMenteeHint {
   id: string;
+  content: string | null;
   level: number;
   cost: number;
   isUnlocked: boolean;
-  content: string | null;
 }
 
 export interface IUnlockHintResult {

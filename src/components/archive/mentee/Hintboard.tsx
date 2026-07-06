@@ -1,8 +1,8 @@
 "use client";
 
-import { IHint } from "@/src/core/domain/hint";
+import { IMenteeHint } from "@/src/core/domain/hint";
 
-function JuniorHintItem({ hint }: { hint: IHint }) {
+function MenteeHintItem({ hint }: { hint: IMenteeHint }) {
   return (
     <div
       style={{
@@ -33,25 +33,40 @@ function JuniorHintItem({ hint }: { hint: IHint }) {
         Level {hint.level}
       </span>
 
-      <span
-        style={{
-          flex: 1,
-          fontSize: "14px",
-          color: "#cabdf0",
-          fontFamily: "monospace",
-        }}
-      >
-        {hint.content}
-      </span>
+      {hint.content && (
+        <span
+          style={{
+            flex: 1,
+            fontSize: "14px",
+            color: "#cabdf0",
+            fontFamily: "monospace",
+          }}
+        >
+          {hint.content}
+        </span>
+      )}
+
+      {!hint.content && (
+        <span
+          style={{
+            flex: 1,
+            fontSize: "14px",
+            color: "red",
+            fontFamily: "monospace",
+          }}
+        >
+          คำใบ้ถูกซ่อนอยู่
+        </span>
+      )}
     </div>
   );
 }
 
-export interface JuniorHintBoardProps {
-  hints: IHint[];
+export interface MenteeHintBoardProps {
+  hints: IMenteeHint[];
 }
 
-export default function JuniorHintBoard({ hints }: JuniorHintBoardProps) {
+export default function MenteeHintBoard({ hints }: MenteeHintBoardProps) {
   const sortedHints = [...hints].sort((a, b) => a.level - b.level);
 
   return (
@@ -125,7 +140,7 @@ export default function JuniorHintBoard({ hints }: JuniorHintBoardProps) {
       )}
 
       {sortedHints.map((h) => (
-        <JuniorHintItem key={h.id} hint={h} />
+        <MenteeHintItem key={h.id} hint={h} />
       ))}
     </div>
   );
