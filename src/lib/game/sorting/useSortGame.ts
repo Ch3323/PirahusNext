@@ -33,7 +33,7 @@ export function useSortGame() {
     setTimerActive(true);
   }, []);
 
-  useEffect(() => { startGame("easy"); }, [startGame]);
+  useEffect(() => { Promise.resolve().then(() => startGame("easy")); }, [startGame]);
 
   useEffect(() => {
     if (!timerActive) return;
@@ -46,8 +46,10 @@ export function useSortGame() {
     
     if (isSorted(bars) && swaps > 0) {
       hasAwardedRef.current = true;
-      setWon(true);
-      setTimerActive(false);
+      Promise.resolve().then(() => {
+        setWon(true);
+        setTimerActive(false);
+      });
       const pts = calculateSortPts(diff, swaps, par);
       awardPoints(pts, { diff, swaps, par });
     }

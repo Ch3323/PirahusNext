@@ -16,7 +16,7 @@ export default function PointsPopup({ points, show, onComplete }: PointsPopupPro
 
   useEffect(() => {
     if (!show) return;
-    setVisible(true);
+    Promise.resolve().then(() => setVisible(true));
     const timer = setTimeout(() => {
       setVisible(false);
       onComplete?.();

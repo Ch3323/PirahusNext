@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { successResponse } from "@/src/lib/api-response";
 import { handleError } from "@/src/lib/handle-error";
 import { ShopItemService } from "@/src/services/shop-item.service";
-import { ShopCategory } from "@/src/lib/shop/Types";
 
 const shopItemService = new ShopItemService();
 

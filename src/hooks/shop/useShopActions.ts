@@ -58,7 +58,7 @@ export function useShopActions(
           icon: "success",
           confirmButtonText: "ตกลง",
         });
-      } catch (error) {
+      } catch {
         Swal.fire({
           title: "เกิดข้อผิดพลาด!",
           text: "เกิดข้อผิดพลาดในการซื้อคำใบ้",
@@ -97,7 +97,7 @@ export function useShopActions(
           icon: "success",
           confirmButtonText: "ตกลง",
         });
-      } catch (error) {
+      } catch {
         Swal.fire({
           title: "เกิดข้อผิดพลาด!",
           text: "แต้มไม่พอหรือเกิดข้อผิดพลาด",
@@ -140,7 +140,7 @@ export function useShopActions(
         timer: 1500,
         showConfirmButton: false,
       });
-    } catch (error) {
+    } catch {
       Swal.fire({
         title: "ผิดพลาด!",
         text: "เกิดข้อผิดพลาดในการเปลี่ยนเอฟเฟกต์",
@@ -172,7 +172,7 @@ export function useShopActions(
         showConfirmButton: false,
       });
       return true;
-    } catch (error) {
+    } catch {
       Swal.fire({
         title: "ผิดพลาด!",
         text: "เกิดข้อผิดพลาดในการโอนแต้ม",

@@ -31,7 +31,7 @@ export default function GlobalEffectWrapper({
         }
       });
     } else {
-      setEffectKey(null);
+      Promise.resolve().then(() => setEffectKey(null));
     }
     return () => {
       isMounted = false;

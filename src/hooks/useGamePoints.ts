@@ -2,7 +2,6 @@ import { useState, useCallback, useRef } from "react";
 import {
   mentorService,
   menteeService,
-  authService,
 } from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
 
@@ -14,7 +13,8 @@ interface AwardResult {
   error?: string;
 }
 
-export function useGamePoints(game: GameName) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function useGamePoints(_game: GameName) {
   const [submitting, setSubmitting] = useState(false);
   const getUser = useUserStore((s) => s.getUser);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +26,8 @@ export function useGamePoints(game: GameName) {
   const awardPoints = useCallback(
     async (
       points: number,
-      meta?: Record<string, unknown>,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _meta?: Record<string, unknown>,
     ): Promise<AwardResult> => {
       if (points <= 0) return { success: false, error: "No points to award" };
       if (isSubmittingRef.current)
@@ -67,7 +68,7 @@ export function useGamePoints(game: GameName) {
         isSubmittingRef.current = false;
       }
     },
-    [game],
+    [getUser],
   );
 
   const closePopup = useCallback(() => setShowPopup(false), []);

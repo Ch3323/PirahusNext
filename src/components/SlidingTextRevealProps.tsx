@@ -59,7 +59,7 @@ export default function SlidingTextReveal({
   coverClass = "bg-neutral-900",
   hoverToReveal = false,
 }: SlidingTextRevealProps) {
-  const Tag = as as any;
+  const Tag = as as React.ElementType;
   const rootRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rootRef, { amount: 0.3, once });
   const [hover, setHover] = useState(false);

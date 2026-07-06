@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { hintService } from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
 import Swal from "sweetalert2";
 import { IHint } from "@/src/core/domain/hint";
+import { MentorUser } from "@/src/core/domain/user";
 import HintBoard from "@/src/components/archive/mentor/Hintboard";
 import MentorPanel from "@/src/components/archive/mentor/Mentorpanel";
 import Link from "next/dist/client/link";
@@ -26,7 +26,7 @@ const swalCancel = "#4b3a6b"; // muted violet — cancel / secondary
 
 export default function MentorBackroomClient() {
   const { user, loading: authLoading, getUser } = useUserStore();
-  const [mentor, setMentor] = useState<any>(null);
+  const mentor = user as MentorUser | null;
   const [hints, setHints] = useState<IHint[]>([]);
   const [newHint, setNewHint] = useState("");
   const [newLevel, setNewLevel] = useState<number>(1);
@@ -49,7 +49,6 @@ export default function MentorBackroomClient() {
   useEffect(() => {
     if (authLoading || !user) return;
 
-    setMentor(user);
     hintService
       .getHintsByMentorId(user.id)
       .then(setHints)
@@ -455,7 +454,7 @@ export default function MentorBackroomClient() {
           )}
 
           <div className="backroom-columns">
-            <MentorPanel mentor={mentor} />
+            {mentor && <MentorPanel mentor={mentor} />}
 
             <HintBoard
               hints={hints}

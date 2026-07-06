@@ -13,8 +13,10 @@ export function useSpeedrunLeaderboard(
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
+    Promise.resolve().then(() => {
+      setLoading(true);
+      setError(null);
+    });
 
     const params = new URLSearchParams({ game, limit: String(limit) });
     if (difficulty) params.set("difficulty", difficulty);

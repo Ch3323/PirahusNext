@@ -331,7 +331,7 @@ class CanvAscii {
     try {
       await document.fonts.load('600 200px "IBM Plex Mono"');
       await document.fonts.load('500 12px "IBM Plex Mono"');
-    } catch (e) {}
+    } catch {}
     await document.fonts.ready;
     this.setMesh();
     this.setRenderer();
@@ -442,7 +442,7 @@ class CanvAscii {
   }
 
   clear() {
-    this.scene.traverse((object: any) => {
+    this.scene.traverse((object: THREE.Object3D) => {
       const obj = object as unknown as THREE.Mesh;
       if (!obj.isMesh) return;
       [obj.material].flat().forEach(material => {

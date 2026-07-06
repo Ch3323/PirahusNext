@@ -13,7 +13,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { authService, mentorService, hintService } from "@/src/clients/container";
+import { mentorService, hintService } from "@/src/clients/container";
 import { useUserStore } from "@/src/store/auth";
 import Swal from "sweetalert2";
 import { IMentor } from "@/src/core/domain/mentor";
@@ -732,8 +732,10 @@ export default function AdminBackroomClient() {
 
   useEffect(() => {
     if (authLoading || !user) return;
-
-    refreshData().finally(() => setLoading(false));
+    (async () => {
+      await refreshData();
+      setLoading(false);
+    })();
   }, [user, authLoading]);
 
   const filtered = students.filter(

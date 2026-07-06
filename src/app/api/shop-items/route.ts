@@ -4,7 +4,6 @@ import { handleError } from "@/src/lib/handle-error";
 import { requireAuth } from "@/src/lib/get-current-user";
 import { createShopItemSchema } from "@/src/core/schema/shop-item";
 import { ShopItemService } from "@/src/services/shop-item.service";
-import { CreateShopItemInput } from "@/src/core/domain/shop-item";
 
 const shopItemService = new ShopItemService();
 
