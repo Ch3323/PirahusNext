@@ -45,20 +45,14 @@ export default function ScrollHero() {
       >
         {/* Background image */}
         <Image
-          src="/images/image.jpg"
+          src="/images/pirahusnextimg.jpg"
           alt="Hero background"
           fill
           priority
           className="object-cover"
         />
 
-        {/* Overlay (optional, for contrast) */}
-        <div className="absolute inset-0 bg-black/30" />
 
-        {/* Content */}
-        <h1 className="absolute inset-0 flex items-center justify-center text-white text-[clamp(3rem,10vw,8rem)]">
-          test
-        </h1>
       </div>
     </section>
   );
