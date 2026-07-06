@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BarChart3, Gift, ArrowLeft } from 'lucide-react'
+import { BarChart3, Gift } from 'lucide-react'
+import Link from "next/dist/client/link";
 import Menu from "@/src/components/menu";
 import MenuToggle from "@/src/components/menutoggle";
 import PixelBlast from "@/src/components/reactbits/background/PixelBlast";
@@ -23,23 +24,45 @@ export default function Lobby() {
 
   const points = user?.point;
 
+  const buttonStyle = {
+    color: "#c4b5fd",
+    border: "1px solid rgba(167, 139, 250, 0.45)",
+    fontSize: "0.875rem",
+    padding: "0.25rem 0.75rem",
+    width: "fit-content",
+    background: "transparent",
+    cursor: "pointer",
+    borderRadius: "0.25rem",
+    fontFamily: "'Pixelify Sans', sans-serif",
+    textDecoration: "none",
+    display: "inline-block",
+  } as const;
+
   return (
     <div style={{ position: "relative" }}>
       <div
-        className="fixed top-8 left-8 flex items-center gap-4"
-        style={{ zIndex: 2000 }}
+        style={{
+          position: "fixed",
+          top: "2.5rem",
+          left: "2rem",
+          zIndex: 1000,
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.5rem",
+          alignItems: "flex-start",
+        }}
       >
-        {/* Back Button */}
-        <button
-          onClick={() => router.push('/')}
-          className="flex items-center justify-center w-14 h-14 bg-[#0d0d0d] hover:bg-[#6812D2] transition-all duration-500 ease-in-out group focus:outline-none shadow-lg"
-          aria-label="Go Back"
-        >
-          <ArrowLeft size={28} strokeWidth={1.5} className="text-[#F1F1F1] transition-all duration-500" />
-        </button>
-        
         {/* Points Badge */}
         <PtsBadge pts={points} isLoading={loading} />
+
+        <Link
+          href="/"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#e9e0ff")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "#c4b5fd")}
+        >
+          ← Back
+        </Link>
       </div>
 
       <div
@@ -139,7 +162,7 @@ export default function Lobby() {
             <div
               style={{
                 display: "flex",
-                gap: "32px",
+                gap: "42px",
                 alignItems: "center",
                 justifyContent: "center",
                 flexWrap: "wrap",
