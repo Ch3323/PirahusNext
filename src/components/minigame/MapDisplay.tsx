@@ -27,7 +27,7 @@ function getCellColor(
 
 export default function MapDisplay({ state, debug = false }: Props) {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => { Promise.resolve().then(() => setMounted(true)); }, []);
 
   if (!mounted || !state) return null;
 

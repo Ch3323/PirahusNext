@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { FaUser, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/src/store/auth";
 import { Code } from "lucide-react";

@@ -5,7 +5,7 @@ import { FaPlus, FaTrash, FaPencilAlt, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { shopItemService } from "@/src/clients/container";
 import type { ShopItemEntity, CreateShopItemInput } from "@/src/core/domain/shop-item";
-import type { ShopCategory } from "@/src/lib/shop/Types";
+import type { ShopCategory, EffectKey } from "@/src/lib/shop/Types";
 
 export default function ShopAdminTab() {
   const [items, setItems] = useState<ShopItemEntity[]>([]);
@@ -85,7 +85,7 @@ export default function ShopAdminTab() {
       price,
       icon,
       disabled,
-      effectKey: effectKey.trim() !== "" ? (effectKey as any) : null,
+      effectKey: effectKey.trim() !== "" ? (effectKey as EffectKey) : null,
       hintLevel: hintLevel > 0 ? hintLevel : null,
     };
 

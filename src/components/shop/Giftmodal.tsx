@@ -45,10 +45,11 @@ export default function GiftModal({
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     try {
-      await onSend({
+      const isSuccess = await onSend({
         recipientCode: recipientCode.trim(),
         amount: parsedAmount,
       });
+      if (isSuccess) setSuccess(true);
     } finally {
       setSending(false);
     }

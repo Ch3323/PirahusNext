@@ -8,7 +8,8 @@ const BASE_PTS: Record<"easy" | "medium" | "hard", number> = {
 // ── Dungeon ─────────────────────────────────────────────────────────────
 export function calculateDungeonPts(
   fragmentsFound: number,
-  trapCount: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _trapCount: number,
 ): number {
   const base = 10;
   const fragmentBonus = fragmentsFound * 10;

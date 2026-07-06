@@ -1,5 +1,5 @@
 import { prisma } from "@/src/lib/prisma";
-import { Mentee, Prisma } from "@/prisma/generated/client";
+import { Prisma } from "@/prisma/generated/client";
 import { ICreateMentee, IMentee } from "@/src/core/domain/mentee";
 
 export type MenteeWithRelations = Prisma.MenteeGetPayload<{

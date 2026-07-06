@@ -83,7 +83,7 @@ export class AuthService {
         );
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { ...userData } = mentor;
       return { ...userData, mentee: mentor.mentee || null, role: currentRole };
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePointsLeaderboard } from "@/src/hooks/leaderboard/usePointsLeaderboard";
 import { useSpeedrunLeaderboard } from "@/src/hooks/leaderboard/useSpeedrunLeaderboard";

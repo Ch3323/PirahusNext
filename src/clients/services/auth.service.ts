@@ -21,7 +21,7 @@ export class AuthService {
     try {
       const response = await this.authRepository.me();
       return response.data;
-    } catch (error) {
+    } catch {
       return null;
     }
   }

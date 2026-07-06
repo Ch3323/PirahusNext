@@ -35,16 +35,19 @@ export default function GameCard({ game }: { game: GameTheme }) {
           <div style={{ width: '100%', height: '270px', position: 'relative', overflow: 'hidden', background: '#0d0d1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 
             {/* Corner accents */}
-            {[{ top: 8, left: 8, borderTop: true, borderLeft: true, borderRadius: '2px 0 0 0' },
-              { top: 8, right: 8, borderTop: true, borderRight: true, borderRadius: '0 2px 0 0' }
-            ].map((pos, i) => (
+            {(
+              [
+                { top: 8, left: 8, borderTop: true, borderLeft: true, borderRadius: '2px 0 0 0' },
+                { top: 8, right: 8, borderTop: true, borderRight: true, borderRadius: '0 2px 0 0' }
+              ] as Array<{ top?: number; left?: number; right?: number; borderTop?: boolean; borderLeft?: boolean; borderRight?: boolean; borderRadius?: string }>
+            ).map((pos, i) => (
               <div key={i} style={{
                 position: 'absolute', width: 10, height: 10,
                 borderTop:   pos.borderTop  ? `2px solid ${game.color}` : undefined,
                 borderLeft:  pos.borderLeft ? `2px solid ${game.color}` : undefined,
-                borderRight: (pos as any).borderRight ? `2px solid ${game.color}` : undefined,
+                borderRight: pos.borderRight ? `2px solid ${game.color}` : undefined,
                 borderRadius: pos.borderRadius,
-                top: pos.top, left: (pos as any).left, right: (pos as any).right,
+                top: pos.top, left: pos.left, right: pos.right,
                 opacity: isHovered ? 1 : 0, transition: 'opacity 0.3s', zIndex: 2,
               }} />
             ))}

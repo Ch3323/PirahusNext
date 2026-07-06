@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { Pixelify_Sans } from "next/font/google";
 
@@ -84,21 +84,6 @@ function emojiToPixels(emoji: string): PixelData[] {
     return pixels;
 }
 
-function makePixelCanvas(emoji: string): HTMLCanvasElement {
-    const pixels = emojiToPixels(emoji);
-    const cvs = document.createElement("canvas");
-    cvs.width = cvs.height = GRID_SIZE * PIXEL_SIZE;
-    cvs.style.imageRendering = "pixelated";
-    const ctx = cvs.getContext("2d")!;
-    pixels.forEach((px, i) => {
-        if (px.a < 0.05) return;
-        const gx = i % GRID_SIZE;
-        const gy = Math.floor(i / GRID_SIZE);
-        ctx.fillStyle = `rgba(${Math.round(px.r)},${Math.round(px.g)},${Math.round(px.b)},${px.a.toFixed(2)})`;
-        ctx.fillRect(gx * PIXEL_SIZE, gy * PIXEL_SIZE, PIXEL_SIZE - 1, PIXEL_SIZE - 1);
-    });
-    return cvs;
-}
 
 type AsciiPixel = { color: string | null; ch: string };
 

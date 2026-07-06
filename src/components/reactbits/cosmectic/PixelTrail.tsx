@@ -8,12 +8,7 @@ interface GooeyFilterProps {
   strength?: number;
 }
 
-interface DotMaterialUniforms {
-  resolution: THREE.Vector2;
-  mouseTrail: THREE.Texture | null;
-  gridSize: number;
-  pixelColor: THREE.Color;
-}
+
 
 interface SceneProps {
   gridSize: number;
@@ -121,10 +116,12 @@ function Scene({ gridSize, trailSize, maxAge, interpolate, easingFunction, pixel
 
   useEffect(() => {
     if (!trail) return;
-    trail.minFilter = THREE.NearestFilter;
-    trail.magFilter = THREE.NearestFilter;
-    trail.wrapS = THREE.ClampToEdgeWrapping;
-    trail.wrapT = THREE.ClampToEdgeWrapping;
+    const t = trail as unknown as Record<string, unknown>;
+    // eslint-disable-next-line react-hooks/immutability
+    t.minFilter = THREE.NearestFilter;
+    t.magFilter = THREE.NearestFilter;
+    t.wrapS = THREE.ClampToEdgeWrapping;
+    t.wrapT = THREE.ClampToEdgeWrapping;
   }, [trail]);
 
   const scale = Math.max(viewport.width, viewport.height) / 2;

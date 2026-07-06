@@ -43,7 +43,7 @@ export function useSudoku() {
   }, []);
 
   useEffect(() => {
-    startGame("easy");
+    Promise.resolve().then(() => startGame("easy"));
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [startGame]);
 
@@ -52,7 +52,7 @@ export function useSudoku() {
     
     if (board.every((v, i) => v === solution[i])) {
       hasAwardedRef.current = true;
-      setWin(true);
+      Promise.resolve().then(() => setWin(true));
       if (timerRef.current) clearInterval(timerRef.current);
       const pts = calculateSudokuPts(diff, mistakes);
       awardPoints(pts, { diff, mistakes, timer });

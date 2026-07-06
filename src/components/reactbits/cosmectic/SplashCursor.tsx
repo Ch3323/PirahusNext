@@ -145,11 +145,11 @@ export default function SplashCursor({
 
       const halfFloatTexType = isWebGL2
         ? (gl as WebGL2RenderingContext).HALF_FLOAT
-        : (halfFloat && (halfFloat as any).HALF_FLOAT_OES) || 0;
+        : (halfFloat && (halfFloat as { HALF_FLOAT_OES: number }).HALF_FLOAT_OES) || 0;
 
-      let formatRGBA: any;
-      let formatRG: any;
-      let formatR: any;
+      let formatRGBA: { internalFormat: number; format: number } | null = null;
+      let formatRG: { internalFormat: number; format: number } | null = null;
+      let formatR: { internalFormat: number; format: number } | null = null;
 
       if (isWebGL2) {
         formatRGBA = getSupportedFormat(gl, (gl as WebGL2RenderingContext).RGBA16F, gl.RGBA, halfFloatTexType);
@@ -287,7 +287,7 @@ export default function SplashCursor({
       return uniforms;
     }
 
-    class Program {
+    const Program = class {
       program: WebGLProgram | null;
       uniforms: Record<string, WebGLUniformLocation | null>;
 
@@ -301,7 +301,7 @@ export default function SplashCursor({
       }
     }
 
-    class Material {
+    const Material = class {
       vertexShader: WebGLShader | null;
       fragmentShaderSource: string;
       programs: Record<number, WebGLProgram | null>;
@@ -798,9 +798,9 @@ export default function SplashCursor({
       const dyeRes = getResolution(config.DYE_RESOLUTION!);
 
       const texType = ext.halfFloatTexType;
-      const rgba = ext.formatRGBA;
-      const rg = ext.formatRG;
-      const r = ext.formatR;
+      const rgba = ext.formatRGBA!;
+      const rg = ext.formatRG!;
+      const r = ext.formatR!;
       const filtering = ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST;
       gl.disable(gl.BLEND);
 

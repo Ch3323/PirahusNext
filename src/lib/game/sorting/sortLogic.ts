@@ -20,7 +20,7 @@ export function shuffle<T>(arr: T[]): T[] {
 }
 
 export function isSorted<T>(arr: T[]): boolean {
-  return arr.every((v, i) => i === 0 || (v as any) >= (arr[i - 1] as any));
+  return arr.every((v, i) => i === 0 || Number(v) >= Number(arr[i - 1]));
 }
 
 export function minSwaps(arr: number[]): number {

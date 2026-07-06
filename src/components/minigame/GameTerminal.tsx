@@ -20,7 +20,7 @@ function getLogColor(line: string): string {
 
 export default function GameTerminal({ state, dispatch }: Props) {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => { Promise.resolve().then(() => setMounted(true)); }, []);
 
   if (!mounted || !state) return null;
 

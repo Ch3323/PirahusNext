@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Info } from "lucide-react";
 import { generateGame } from "@/src/lib/game/dungeon/mapGen";
 import { gameReducer } from "@/src/lib/game/dungeon/gameReducer";
-import { useDungeonPoints } from "@/src/lib/game/dungeon/useDungeon";
+
 import MapDisplay from "../../../components/minigame/MapDisplay";
 import GameTerminal from "../../../components/minigame/GameTerminal";
 import FaultyTerminal from "../../../components/reactbits/background/FaultyTerminal";
@@ -110,7 +110,7 @@ export default function Page() {
       );
       awardPoints(pts, { fragments: state.collectedParts.length });
     }
-  }, [state?.phase, state?.collectedParts.length, awardPoints]);
+  }, [state?.phase, state?.collectedParts.length, state?.traps.length, awardPoints]);
 
   const handleKey = useCallback(
     (e: KeyboardEvent) => {
@@ -182,7 +182,7 @@ export default function Page() {
             <p>
               Navigate the maze with WASD. Entering a new room reveals a
               Caesar-ciphered description — each room uses its own random shift.
-              Collect all 4 key fragments (each shifted by the room's shift);
+              Collect all 4 key fragments (each shifted by the room&apos;s shift);
               decode and combine them in order, then enter the result at the exit to
               escape. Avoid trap rooms.
             </p>
