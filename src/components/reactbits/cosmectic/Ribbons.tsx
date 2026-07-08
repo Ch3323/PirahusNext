@@ -1,6 +1,18 @@
 "use client";
 import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Renderer, Transform, Vec3, Color, Polyline } from "ogl";
+import { useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => {};
+
+function useMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,   // client snapshot: always true once hydrated
+    () => false   // server snapshot: always false during SSR
+  );
+}
 
 interface RibbonsProps {
   colors?: string[];
@@ -32,6 +44,7 @@ const Ribbons: React.FC<RibbonsProps> = ({
   backgroundColor = [0, 0, 0, 0],
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const mounted = useMounted(); // replaces useState + useEffect(() => setMounted(true), [])
 
   useEffect(() => {
     const container = containerRef.current;
@@ -53,11 +66,13 @@ const Ribbons: React.FC<RibbonsProps> = ({
       gl.clearColor(0, 0, 0, 0);
     }
 
-    gl.canvas.style.position = "absolute";
+    gl.canvas.style.position = "fixed";
     gl.canvas.style.top = "0";
     gl.canvas.style.left = "0";
-    gl.canvas.style.width = "100%";
-    gl.canvas.style.height = "100%";
+    gl.canvas.style.width = "100vw";
+    gl.canvas.style.height = "100vh";
+    gl.canvas.style.pointerEvents = "none";
+    gl.canvas.style.zIndex = "9999";
     container.appendChild(gl.canvas);
 
     const scene = new Transform();
@@ -131,9 +146,8 @@ const Ribbons: React.FC<RibbonsProps> = ({
     `;
 
     function resize() {
-      if (!container) return;
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
       renderer.setSize(width, height);
       lines.forEach((line) => line.polyline.resize());
     }
@@ -186,28 +200,28 @@ const Ribbons: React.FC<RibbonsProps> = ({
 
     resize();
 
+    // Track mouse position across the whole viewport, not just the container box,
+    // since the canvas is now a fixed full-page overlay.
     const mouse = new Vec3();
     function updateMouse(e: MouseEvent | TouchEvent) {
       let x: number, y: number;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
       if ("changedTouches" in e && e.changedTouches.length) {
-        x = e.changedTouches[0].clientX - rect.left;
-        y = e.changedTouches[0].clientY - rect.top;
+        x = e.changedTouches[0].clientX;
+        y = e.changedTouches[0].clientY;
       } else if (e instanceof MouseEvent) {
-        x = e.clientX - rect.left;
-        y = e.clientY - rect.top;
+        x = e.clientX;
+        y = e.clientY;
       } else {
         x = 0;
         y = 0;
       }
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
       mouse.set((x / width) * 2 - 1, (y / height) * -2 + 1, 0);
     }
-    container.addEventListener("mousemove", updateMouse);
-    container.addEventListener("touchstart", updateMouse);
-    container.addEventListener("touchmove", updateMouse);
+    window.addEventListener("mousemove", updateMouse);
+    window.addEventListener("touchstart", updateMouse);
+    window.addEventListener("touchmove", updateMouse);
 
     const tmp = new Vec3();
     let frameId: number;
@@ -248,9 +262,9 @@ const Ribbons: React.FC<RibbonsProps> = ({
 
     return () => {
       window.removeEventListener("resize", resize);
-      container.removeEventListener("mousemove", updateMouse);
-      container.removeEventListener("touchstart", updateMouse);
-      container.removeEventListener("touchmove", updateMouse);
+      window.removeEventListener("mousemove", updateMouse);
+      window.removeEventListener("touchstart", updateMouse);
+      window.removeEventListener("touchmove", updateMouse);
       cancelAnimationFrame(frameId);
       if (gl.canvas && gl.canvas.parentNode === container) {
         container.removeChild(gl.canvas);
@@ -271,20 +285,23 @@ const Ribbons: React.FC<RibbonsProps> = ({
     backgroundColor,
   ]);
 
-  return <div ref={containerRef} className="relative w-full h-full" />;
+  const content = (
+    <div
+      ref={containerRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        pointerEvents: "none",
+        zIndex: 9999,
+      }}
+    />
+  );
+
+  if (!mounted) return null;
+  return createPortal(content, document.body);
 };
 
 export default Ribbons;
-
-// import Ribbons from './Ribbons';
-
-// <div style={{ height: '500px', position: 'relative', overflow: 'hidden'}}>
-//   <Ribbons
-//     baseThickness={9}
-//     colors={["#5227FF"]}
-//     speedMultiplier={0.39}
-//     maxAge={300}
-//     enableFade
-//     enableShaderEffect
-//   />
-// </div>

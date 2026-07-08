@@ -31,62 +31,61 @@ export default function ActiveEffect({
     case "click-spark":
       return (
         <ClickSpark
-          sparkColor="#ffd66b"
-          sparkSize={8}
-          sparkRadius={20}
-          sparkCount={10}
-          duration={450}
-        >
+            sparkColor="#ffffff"
+            sparkSize={10}
+            sparkRadius={35}
+            sparkCount={8}
+            duration={400}
+          >
           {children}
-        </ClickSpark>
-      );
+        </ ClickSpark>
+          );
 
-    case "ribbons":
-      return (
-        <>
-          {children}
-          <div className="fixed inset-0 z-900 pointer-events-none">
+          case "ribbons":
+          return (
+          <>
+            {children}
             <Ribbons
               colors={["#6dff9e", "#ffd66b", "#ffb347"]}
-              baseThickness={10}
+              baseThickness={20}
+              baseSpring={0.05}
               speedMultiplier={0.5}
               maxAge={350}
               enableFade
             />
-          </div>
-        </>
-      );
+          </>
+          );
 
-    case "splash-cursor":
-      return (
-        <>
-          {children}
-          <SplashCursor
-            SPLAT_RADIUS={0.15}
-            SPLAT_FORCE={5000}
-            RAINBOW_MODE={false}
-            COLOR="#6dff9e"
-            TRANSPARENT
-          />
-        </>
-      );
+          case "splash-cursor":
+          return (
+          <>
+            {children}
+            <SplashCursor
+              SPLAT_RADIUS={0.15}
+              SPLAT_FORCE={5000}
+              RAINBOW_MODE={false}
+              COLOR="#6dff9e"
+              TRANSPARENT
+            />
+          </>
+          );
 
-    case "pixel-trail":
-      return (
-        <>
-          {children}
-          <PixelTrail
-            gridSize={50}
-            trailSize={0.05}
-            maxAge={300}
-            interpolate={1.5}
-            color="#3aeda6"
-            gooeyFilter={{ id: "custom-goo-filter", strength: 2 }}
-          />
-        </>
-      );
+          case "pixel-trail":
+          return (
+          <>
+            {children}
+            <PixelTrail
+              gridSize={75}
+              trailSize={0.02}
+              maxAge={300}
+              interpolate={1.5}
+              color="#3aeda6"
+              gooeyFilter={{ id: "custom-goo-filter", strength: 2 }}
+            />
+          </>
+          );
 
-    default:
-      return <>{children}</>;
+          default:
+          return <>{children}</>;
   }
 }

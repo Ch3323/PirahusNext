@@ -1,14 +1,26 @@
+"use client";
+
 import { shaderMaterial, useTrailTexture } from '@react-three/drei';
 import { Canvas, CanvasProps, ThreeEvent, useThree } from '@react-three/fiber';
 import React, { useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
+import { useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => {};
+
+function useMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,   // client snapshot: always true once hydrated
+    () => false   // server snapshot: always false during SSR
+  );
+}
 
 interface GooeyFilterProps {
   id?: string;
   strength?: number;
 }
-
-
 
 interface SceneProps {
   gridSize: number;
@@ -34,7 +46,12 @@ interface PixelTrailProps {
 
 const GooeyFilter: React.FC<GooeyFilterProps> = ({ id = 'goo-filter', strength = 10 }) => {
   return (
-    <svg className="z-1 absolute overflow-hidden">
+    <svg
+      className="fixed overflow-hidden"
+      width="0"
+      height="0"
+      style={{ pointerEvents: 'none', zIndex: 9999 }}
+    >
       <defs>
         <filter id={id}>
           <feGaussianBlur in="SourceGraphic" stdDeviation={strength} result="blur" />
@@ -69,10 +86,6 @@ const DotMaterial = shaderMaterial(
       vec2 s = resolution.xy / max(resolution.x, resolution.y);
       vec2 newUv = (uv - 0.5) * s + 0.5;
       return clamp(newUv, 0.0, 1.0);
-    }
-
-    float sdfCircle(vec2 p, float r) {
-        return length(p - 0.5) - r;
     }
 
     void main() {
@@ -124,10 +137,31 @@ function Scene({ gridSize, trailSize, maxAge, interpolate, easingFunction, pixel
     t.wrapT = THREE.ClampToEdgeWrapping;
   }, [trail]);
 
+  // Track mouse globally instead of via onPointerMove,
+  // since the canvas has pointer-events: none so clicks pass through to the page.
   const scale = Math.max(viewport.width, viewport.height) / 2;
 
+  useEffect(() => {
+    const handleWindowMove = (e: MouseEvent) => {
+      const sx = e.clientX / window.innerWidth;
+      const sy = e.clientY / window.innerHeight;
+
+      const u = 0.5 + (sx - 0.5) * (viewport.width / (2 * scale));
+      const v = 0.5 + (0.5 - sy) * (viewport.height / (2 * scale));
+
+      const uv = new THREE.Vector2(u, v);
+      onMove({
+        uv,
+        intersections: [{ uv }]
+      } as unknown as ThreeEvent<PointerEvent>);
+    };
+
+    window.addEventListener('mousemove', handleWindowMove);
+    return () => window.removeEventListener('mousemove', handleWindowMove);
+  }, [onMove, viewport.width, viewport.height, scale]);
+
   return (
-    <mesh scale={[scale, scale, 1]} onPointerMove={onMove}>
+    <mesh scale={[scale, scale, 1]}>
       <planeGeometry args={[2, 2]} />
       <primitive
         object={dotMaterial}
@@ -155,14 +189,25 @@ export default function PixelTrail({
   color = '#ffffff',
   className = ''
 }: PixelTrailProps) {
-  return (
+  const mounted = useMounted();
+
+  const content = (
     <>
       {gooeyFilter && <GooeyFilter id={gooeyFilter.id} strength={gooeyFilter.strength} />}
       <Canvas
         {...canvasProps}
         gl={glProps}
-        className={`absolute z-1 ${className}`}
-        style={gooeyFilter ? { filter: `url(#${gooeyFilter.id})` } : undefined}
+        className={`fixed inset-0 ${className}`}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 9999,
+          pointerEvents: 'none',
+          ...(gooeyFilter ? { filter: `url(#${gooeyFilter.id})` } : {})
+        }}
       >
         <Scene
           gridSize={gridSize}
@@ -175,6 +220,9 @@ export default function PixelTrail({
       </Canvas>
     </>
   );
+
+  if (!mounted) return null;
+  return createPortal(content, document.body);
 }
 
 // import PixelTrail from './PixelTrail';
