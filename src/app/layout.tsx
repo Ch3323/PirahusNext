@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Noto_Sans_Thai } from "next/font/google";
 import { Pixelify_Sans } from "next/font/google";
 import GlobalEffectWrapper from "@/src/components/GlobalEffectWrapper";
+import DesktopOnlyGate from "@/src/components/DesktopOnlyGate";
 import "./globals.css";
 
 const pixelifySans = Pixelify_Sans({
@@ -48,6 +49,7 @@ export default function RootLayout({
         <GlobalEffectWrapper>
           {children}
         </GlobalEffectWrapper>
+        <DesktopOnlyGate />
       </body>
     </html>
   );
