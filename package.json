@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate"
@@ -48,7 +48,9 @@
     "eslint-config-next": "16.0.1",
     "prisma": "^7.8.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.19.4",
+    "typescript": "^5",
+    "dotenv": "^16.4.7"
   },
   "prisma": {
     "seed": "tsx --env-file=.env prisma/seed.ts"
