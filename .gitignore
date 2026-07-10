@@ -22,7 +22,6 @@
 
 # Prisma
 /prisma/generated
-prisma/seed-data.json
 
 # production
 /build
