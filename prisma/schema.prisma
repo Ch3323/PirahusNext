@@ -8,6 +8,7 @@ datasource db {
   provider = "postgresql"
 }
 
+
 model AdmissionYear {
   id          String @id @default(cuid())
   mentorYear  String

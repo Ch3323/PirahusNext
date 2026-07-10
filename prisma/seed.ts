@@ -6,9 +6,11 @@ async function main() {
   console.log("Starting DB seeding...");
 
   const dataPath = path.join(process.cwd(), "prisma", "seed-data.json");
-  
+
   if (!fs.existsSync(dataPath)) {
-    console.error(`Seed data not found at ${dataPath}. Please dump the DB first.`);
+    console.error(
+      `Seed data not found at ${dataPath}. Please dump the DB first.`,
+    );
     process.exit(1);
   }
 
