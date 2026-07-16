@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { successResponse } from "@/src/lib/api-response";
 import { handleError } from "@/src/lib/handle-error";
-import { requireAuth } from "@/src/lib/get-current-user";
 import { LeaderboardService } from "@/src/services/leaderboard.service";
 
 const leaderboardService = new LeaderboardService();

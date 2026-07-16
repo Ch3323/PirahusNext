@@ -2,7 +2,15 @@
 
 import { useEffect, useState, memo } from "react";
 import { Pixelify_Sans, Share_Tech_Mono } from "next/font/google";
-import { Info } from "lucide-react";
+import {
+  Info,
+  Trophy,
+  Check,
+  ArrowUp,
+  Minus,
+  ArrowDown,
+  X,
+} from "lucide-react";
 import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal";
 import { useSortGame } from "@/src/lib/game/sorting/useSortGame";
 import {
@@ -102,18 +110,91 @@ function InfoBtn({ onClick }: { onClick: () => void }) {
       style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        width: "1.75rem",
-        height: "1.75rem",
-        background: "transparent",
+        gap: "0.25rem",
+        color: hov ? "#000000" : "#111827",
+        border: "1px solid #374151",
+        fontSize: "0.875rem",
+        padding: "0.25rem 0.75rem",
+        width: "fit-content",
+        background: "#ffffff",
         cursor: "pointer",
-        padding: 0,
-        color: hov ? "#d1d5db" : "#6b7280",
-        transition: "color 0.15s, border-color 0.15s",
+        borderRadius: "0.25rem",
+        fontFamily: "inherit",
+        transition: "color 0.15s",
       }}
     >
       <Info size={16} strokeWidth={1.5} />
+      <span>Info</span>
     </button>
+  );
+}
+
+function ScoringPill({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <span
+      style={{
+        color,
+        border: `1px solid ${color}`,
+        backgroundColor: `${color}1a`,
+        fontSize: "0.7rem",
+        fontWeight: "bold",
+        padding: "0.15rem 0.6rem",
+        borderRadius: "9999px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label} {value}
+    </span>
+  );
+}
+
+function ScoringRow({
+  icon,
+  color,
+  title,
+  titleNote,
+  subtitle,
+  value,
+}: {
+  icon: React.ReactNode;
+  color: string;
+  title: string;
+  titleNote?: string;
+  subtitle?: string;
+  value: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0.4rem 0",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <span style={{ color, display: "flex" }}>{icon}</span>
+        <div>
+          <span style={{ color: "#d1d5db", fontSize: "0.85rem" }}>{title}</span>
+          {titleNote && (
+            <span style={{ color: "#6b7280", fontSize: "0.75rem" }}> {titleNote}</span>
+          )}
+          {subtitle && (
+            <div style={{ color: "#6b7280", fontSize: "0.75rem" }}>{subtitle}</div>
+          )}
+        </div>
+      </div>
+      <span
+        style={{
+          color: "#f3f4f6",
+          fontSize: "0.85rem",
+          fontWeight: "bold",
+          fontFamily: shareTechMono.style.fontFamily,
+        }}
+      >
+        ×{value}
+      </span>
+    </div>
   );
 }
 
@@ -297,9 +378,9 @@ export default function SortGame() {
             title="Sort"
           >
             <p>
-              Click a bar to select it, then click an adjacent bar to swap. Sort
-              the bars into ascending order in as few swaps as possible — try to
-              beat par.
+              คลิกแท่งเพื่อเลือก แล้วคลิกแท่งที่อยู่ติดกันเพื่อสลับตำแหน่ง
+              จัดเรียงตัวเลขจากน้อยไปมากโดยใช้จำนวนครั้งในการสลับให้น้อยที่สุด
+              พยายามทำผลงานให้ดีกว่าค่า par เพื่อคะแนนสูงสุด.
             </p>
 
             <div style={{ borderTop: "1px solid #374151", margin: "0.75rem 0" }} />
@@ -312,23 +393,61 @@ export default function SortGame() {
                 padding: "0.5rem 0.75rem",
               }}
             >
-              <span
-                style={{
-                  color: "#fde047",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                }}
-              >
-                Scoring
-              </span>
-              <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
-                Base points scale with difficulty (Easy 10 / Medium 25 / Hard 50).
-                Finish at or under par for a <strong style={{ color: "#d1d5db" }}>1.5×</strong> multiplier;
-                each swap over par lowers it — 1.25× at +1, 1.0× at +2, 0.75× at +3,
-                down to <strong style={{ color: "#d1d5db" }}>0.5×</strong> at +4 or more.
-              </p>
+              {/* Header */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.4rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                  <Trophy size={16} color="#fbbf24" strokeWidth={2} />
+                  <span style={{ color: "#e5e7eb", fontSize: "0.85rem", fontWeight: "bold" }}>
+                    การคิดคะแนน
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: "0.4rem" }}>
+                  <ScoringPill label="Easy" value={10} color="#4ade80" />
+                  <ScoringPill label="Medium" value={25} color="#fb923c" />
+                  <ScoringPill label="Hard" value={50} color="#f87171" />
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid #374151", margin: "0.6rem 0" }} />
+
+              {/* Par tiers */}
+              <ScoringRow
+                icon={<Check size={16} strokeWidth={2} />}
+                color="#4ade80"
+                title="สลับไม่เกินค่า Par"
+                titleNote="(เสร็จภายในหรือเท่ากับค่าเป้าหมาย)"
+                subtitle="ได้คะแนนโบนัสสูงสุด"
+                value="1.5"
+              />
+              <ScoringRow
+                icon={<ArrowUp size={16} strokeWidth={2} />}
+                color="#fb923c"
+                title="เกิน Par +1 ครั้ง"
+                subtitle="สลับเกินเป้าหมาย 1 ครั้ง"
+                value="1.25"
+              />
+              <ScoringRow
+                icon={<Minus size={16} strokeWidth={2} />}
+                color="#fb923c"
+                title="เกิน Par +2 ครั้ง"
+                subtitle="สลับเกินเป้าหมาย 2 ครั้ง"
+                value="1.0"
+              />
+              <ScoringRow
+                icon={<ArrowDown size={16} strokeWidth={2} />}
+                color="#fb923c"
+                title="เกิน Par +3 ครั้ง"
+                subtitle="สลับเกินเป้าหมาย 3 ครั้ง"
+                value="0.75"
+              />
+              <ScoringRow
+                icon={<X size={16} strokeWidth={2} />}
+                color="#f87171"
+                title="เกิน Par +4 ครั้งขึ้นไป"
+                subtitle="สลับเกินเป้าหมาย 4 ครั้งขึ้นไป"
+                value="0.5"
+              />
+
             </div>
           </InfoPopup>
 

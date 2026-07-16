@@ -68,18 +68,21 @@ function InfoBtn({ onClick }: { onClick: () => void }) {
       style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        width: "1.75rem",
-        height: "1.75rem",
-        background: "transparent",
-        border: "none",
+        gap: "0.25rem",
+        color: hov ? "#000000" : "#111827",
+        border: "1px solid #374151",
+        fontSize: "0.875rem",
+        padding: "0.25rem 0.75rem",
+        width: "fit-content",
+        background: "#ffffff",
         cursor: "pointer",
-        padding: 0,
-        color: hov ? "#d1d5db" : "#6b7280",
+        borderRadius: "0.25rem",
+        fontFamily: "inherit",
         transition: "color 0.15s",
       }}
     >
       <Info size={16} strokeWidth={1.5} />
+      <span>Info</span>
     </button>
   );
 }
@@ -133,10 +136,20 @@ export default function Page() {
         state?.phase === "escaped"
       )
         return;
-      const dir = e.key.toLowerCase();
-      if (["w", "a", "s", "d"].includes(dir)) {
+      const codeToDir: Record<string, "w" | "a" | "s" | "d"> = {
+        KeyW: "w",
+        KeyA: "a",
+        KeyS: "s",
+        KeyD: "d",
+        ArrowUp: "w",
+        ArrowLeft: "a",
+        ArrowDown: "s",
+        ArrowRight: "d",
+      };
+      const dir = codeToDir[e.code];
+      if (dir) {
         e.preventDefault();
-        dispatch({ type: "MOVE", dir: dir as "w" | "a" | "s" | "d" });
+        dispatch({ type: "MOVE", dir });
       }
     },
     [state?.phase],
@@ -199,11 +212,9 @@ export default function Page() {
             title="Dungeon"
           >
             <p>
-              Navigate the maze with WASD. Entering a new room reveals a
-              Caesar-ciphered description — each room uses its own random shift.
-              Collect all 4 key fragments (each shifted by the room&apos;s shift);
-              decode and combine them in order, then enter the result at the exit to
-              escape. Avoid trap rooms.
+              กดเดินโดยใช้ปุ่ม WASD (หรือ ไฟหก). ภารกิจคือตามหากุญแจทั้ง 4 ที่ถูกกระจัดกระจายอยู่ตามห้อง
+              โดยกุญแจจะถูกเข้ารหัสด้วย Caesar-ciphered เมื่อนำกุญแจมารวมกันก็จะได้คำตอบ ไว้สำหรับใส่ที่ประตูทางออก
+              และทุกๆครั้งที่เข้าห้องใหม่ก็จะมีคำใบ้เล็กน้อยเพื่อบอกโดยสังเขปว่าในห้องนั้นมีอะไรอยู่. ระวังกับดักหละ.
             </p>
 
             <div
@@ -233,8 +244,8 @@ export default function Page() {
                 Scoring
               </span>
               <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
-                10 base points + 10 per fragment collected, plus a 15-point bonus
-                for finding all 4. <strong style={{ color: "#d1d5db" }}>Max: 65 pts.</strong>
+                คะแนนพื้นฐาน 10 คะแนน + 10 คะแนนต่อชิ้นส่วนกุญแจที่เก็บได้ และจะได้รับ โบนัสเพิ่มอีก 15 คะแนน หากเก็บครบทั้ง 4 ชิ้น<br />
+                <strong style={{ color: "#d1d5db" }}>คะแนนสูงสุด: 65 คะแนน</strong>
               </p>
             </div>
           </InfoPopup>

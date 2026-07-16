@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, memo, useState } from "react";
 import { Share_Tech_Mono, Pixelify_Sans } from "next/font/google";
-import { Info } from "lucide-react";
+import { Info, Trophy, Clock } from "lucide-react";
 import FaultyTerminal from "@/src/components/reactbits/background/FaultyTerminal";
 import PointsPopup from "@/src/components/minigame/PointsPopup";
 import {
@@ -102,18 +102,60 @@ function InfoBtn({ onClick }: { onClick: () => void }) {
       style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        width: "1.75rem",
-        height: "1.75rem",
-        background: "transparent",
+        gap: "0.25rem",
+        color: hov ? "#000000" : "#111827",
+        border: "1px solid #374151",
+        fontSize: "0.875rem",
+        padding: "0.25rem 0.75rem",
+        width: "fit-content",
+        background: "#ffffff",
         cursor: "pointer",
-        padding: 0,
-        color: hov ? "#d1d5db" : "#6b7280",
-        transition: "color 0.15s, border-color 0.15s",
+        borderRadius: "0.25rem",
+        fontFamily: "inherit",
+        transition: "color 0.15s",
       }}
     >
       <Info size={16} strokeWidth={1.5} />
+      <span>Info</span>
     </button>
+  );
+}
+
+function ScoringRow({
+  icon,
+  color,
+  label,
+  multiplier,
+}: {
+  icon: React.ReactNode;
+  color: string;
+  label: string;
+  multiplier: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0.4rem 0",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <span style={{ color, display: "flex" }}>{icon}</span>
+        <span style={{ color: "#d1d5db", fontSize: "0.85rem" }}>{label}</span>
+      </div>
+      <span
+        style={{
+          color: "#f3f4f6",
+          fontSize: "0.85rem",
+          fontWeight: "bold",
+          fontFamily: shareTechMono.style.fontFamily,
+        }}
+      >
+        {multiplier}
+      </span>
+    </div>
   );
 }
 
@@ -265,9 +307,8 @@ export default function TraceGame() {
             title="Trace"
           >
             <p>
-              Read the code snippet and predict its output before time runs out.
-              Correct answers add bonus time — harder questions are worth more.
-              10 questions per run.
+              อ่านโค้ดและหาผลลัพธ์ก่อนเวลาหมด. คำตอบที่ถูกต้องจะเพิ่มเวลาโบนัสให้
+              ยิ่งเล่นคำถามจะยิ่งยากขึ้น โดยคำถามที่ยากจะเพิ่มเวลาให้มากกว่า. มีทั้งหมด 10 คำถามต่อรอบ.
             </p>
 
             <div style={{ borderTop: "1px solid #374151", margin: "0.75rem 0" }} />
@@ -276,27 +317,65 @@ export default function TraceGame() {
               style={{
                 backgroundColor: "#111827",
                 border: "1px solid #374151",
-                borderRadius: "0.25rem",
-                padding: "0.5rem 0.75rem",
+                borderRadius: "0.5rem",
+                padding: "0.75rem 0.9rem",
               }}
             >
-              <span
-                style={{
-                  color: "#fde047",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                }}
-              >
-                Scoring
-              </span>
-              <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
-                Fixed base of 40 points, scaled by your accuracy across all 10
-                questions and a time bonus:{" "}
-                <strong style={{ color: "#d1d5db" }}>1.5×</strong> with over 2 minutes
-                left, 1.25× with over 1 minute left, 1.0× otherwise.
-              </p>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                  <Trophy size={16} color="#fbbf24" strokeWidth={2} />
+                  <span style={{ color: "#e5e7eb", fontSize: "0.85rem", fontWeight: "bold" }}>
+                    คะแนนพื้นฐาน
+                  </span>
+                </div>
+                <span
+                  style={{
+                    color: "#f3f4f6",
+                    fontSize: "0.85rem",
+                    fontWeight: "bold",
+                    fontFamily: shareTechMono.style.fontFamily,
+                  }}
+                >
+                  40 คะแนน
+                </span>
+              </div>
+
+              <div style={{ borderTop: "1px solid #374151", margin: "0.6rem 0" }} />
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.2rem 0 0.5rem" }}>
+                <span style={{ color: "#d1d5db", fontSize: "0.85rem" }}>
+                  ความแม่นยำจากคำถามทั้ง 10 ข้อ
+                </span>
+                <span
+                  style={{
+                    color: "#f3f4f6",
+                    fontSize: "0.85rem",
+                    fontWeight: "bold",
+                    fontFamily: shareTechMono.style.fontFamily,
+                  }}
+                >
+                  ปรับตามผลงาน
+                </span>
+              </div>
+
+              <ScoringRow
+                icon={<Clock size={16} strokeWidth={2} />}
+                color="#4ade80"
+                label="เหลือเวลา > 2 นาที"
+                multiplier="×1.5"
+              />
+              <ScoringRow
+                icon={<Clock size={16} strokeWidth={2} />}
+                color="#fb923c"
+                label="เหลือเวลา > 1 นาที"
+                multiplier="×1.25"
+              />
+              <ScoringRow
+                icon={<Clock size={16} strokeWidth={2} />}
+                color="#9ca3af"
+                label="เหลือเวลา ≤ 1 นาที"
+                multiplier="×1.0"
+              />
             </div>
           </InfoPopup>
 

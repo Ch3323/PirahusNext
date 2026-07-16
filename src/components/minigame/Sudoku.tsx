@@ -7,7 +7,7 @@ import { useSudoku, MAX_MISTAKES } from "@/src/lib/game/sudoku/useSudoku";
 import { Difficulty } from "@/src/lib/game/sudoku/types";
 import PointsPopup from "@/src/components/minigame/PointsPopup";
 import InfoPopup from "../InfoPopup";
-import { Info } from "lucide-react";
+import { Info, Trophy, CircleCheck, TriangleAlert, CircleX } from "lucide-react";
 
 const pixelifySans = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "700"] });
 const shareTechMono = Share_Tech_Mono({ subsets: ["latin"], weight: "400" });
@@ -57,6 +57,93 @@ function HoverBtn({ onClick, children, active, style }: {
     >
       {children}
     </button>
+  );
+}
+
+function InfoBtn({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Game Info"
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.25rem",
+        color: hov ? "#000000" : "#111827",
+        border: "1px solid #374151",
+        fontSize: "0.875rem",
+        padding: "0.25rem 0.75rem",
+        width: "fit-content",
+        background: "#ffffff",
+        cursor: "pointer",
+        borderRadius: "0.25rem",
+        fontFamily: "inherit",
+        transition: "color 0.15s",
+      }}
+    >
+      <Info size={16} strokeWidth={1.5} />
+      <span>Info</span>
+    </button>
+  );
+}
+
+function ScoringPill({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <span
+      style={{
+        color,
+        border: `1px solid ${color}`,
+        backgroundColor: `${color}1a`,
+        fontSize: "0.7rem",
+        fontWeight: "bold",
+        padding: "0.15rem 0.6rem",
+        borderRadius: "9999px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label} {value}
+    </span>
+  );
+}
+
+function ScoringRow({
+  icon,
+  color,
+  label,
+  multiplier,
+}: {
+  icon: React.ReactNode;
+  color: string;
+  label: string;
+  multiplier: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0.4rem 0",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <span style={{ color, display: "flex" }}>{icon}</span>
+        <span style={{ color: "#d1d5db", fontSize: "0.85rem" }}>{label}</span>
+      </div>
+      <span
+        style={{
+          color: "#f3f4f6",
+          fontSize: "0.85rem",
+          fontWeight: "bold",
+          fontFamily: shareTechMono.style.fontFamily,
+        }}
+      >
+        {multiplier}
+      </span>
+    </div>
   );
 }
 
@@ -136,26 +223,13 @@ export default function Sudoku() {
             <h1 style={{ color: "#d1d5db", fontSize: "1.5rem", fontWeight: "bold", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
               Sudoku
             </h1>
-            <button
-              onClick={() => setShowInfo(true)}
-              aria-label="Game Info"
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "center",
-                width: "1.75rem", height: "1.75rem",
-                background: "transparent", cursor: "pointer", padding: 0,
-                color: "#6b7280", transition: "color 0.15s, border-color 0.15s",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = "#d1d5db"; e.currentTarget.style.borderColor = "#6b7280"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = "#6b7280"; e.currentTarget.style.borderColor = "#374151"; }}
-            >
-              <Info size={16} strokeWidth={1.5} />
-            </button>
+            <InfoBtn onClick={() => setShowInfo(true)} />
           </div>
 
           <InfoPopup isOpen={showInfo} onClose={() => setShowInfo(false)} title="Sudoku">
             <p>
-              Fill the grid so each row, column, and 3×3 box contains 1–9 with no
-              repeats. You have {MAX_MISTAKES} lives — use them wisely.
+              ซูโดกุอะน้อง. เกมนี้เป็นเกมปริศนาตัวเลขที่ต้องเติมตัวเลข 1–9 ลงในตาราง 9×9 โดยแต่ละแถว แต่ละคอลัมน์ และแต่ละกล่องย่อย 3×3 ต้องมีตัวเลข 1–9 ครบถ้วนโดยไม่มีซ้ำกัน
+              โดยผู้เล่นมี {MAX_MISTAKES} ชีวิต — ใช้ดีๆหละ.
             </p>
 
             <div style={{ borderTop: "1px solid #374151", margin: "0.75rem 0" }} />
@@ -164,27 +238,44 @@ export default function Sudoku() {
               style={{
                 backgroundColor: "#111827",
                 border: "1px solid #374151",
-                borderRadius: "0.25rem",
-                padding: "0.5rem 0.75rem",
+                borderRadius: "0.5rem",
+                padding: "0.75rem 0.9rem",
               }}
             >
-              <span
-                style={{
-                  color: "#fde047",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                }}
-              >
-                Scoring
-              </span>
-              <p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: "0.25rem 0 0" }}>
-                Base points scale with difficulty (Easy 10 / Medium 25 / Hard 50).
-                A flawless solve earns <strong style={{ color: "#d1d5db" }}>1.5×</strong>,
-                one mistake keeps 1.0×, and two or more mistakes drops it to{" "}
-                <strong style={{ color: "#d1d5db" }}>0.7×</strong>.
-              </p>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.4rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                  <Trophy size={16} color="#fbbf24" strokeWidth={2} />
+                  <span style={{ color: "#e5e7eb", fontSize: "0.85rem", fontWeight: "bold" }}>
+                    การคิดคะแนน
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: "0.4rem" }}>
+                  <ScoringPill label="Easy" value={10} color="#4ade80" />
+                  <ScoringPill label="Medium" value={25} color="#fb923c" />
+                  <ScoringPill label="Hard" value={50} color="#f87171" />
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid #374151", margin: "0.6rem 0" }} />
+
+              <ScoringRow
+                icon={<CircleCheck size={16} strokeWidth={2} />}
+                color="#4ade80"
+                label="ตอบถูกทั้งหมด"
+                multiplier="×1.5"
+              />
+              <ScoringRow
+                icon={<TriangleAlert size={16} strokeWidth={2} />}
+                color="#fb923c"
+                label="ผิด 1 ข้อ"
+                multiplier="×1.0"
+              />
+              <ScoringRow
+                icon={<CircleX size={16} strokeWidth={2} />}
+                color="#f87171"
+                label="ผิด 2 ข้อขึ้นไป"
+                multiplier="×0.7"
+              />
             </div>
           </InfoPopup>
 
