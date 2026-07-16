@@ -4,24 +4,32 @@ import gsap from "gsap";
 
 const faqs = [
   {
-    question: "พี่รหัสคืออะไร?",
-    answer: "พี่รหัสคือรุ่นพี่ที่ได้รับมอบหมายให้ดูแลน้องใหม่ในคณะ โดยมีระบบหมายเลขรหัสเพื่อจับคู่พี่น้อง"
+    question: "เว็บนี้ใครเล่นได้บ้าง ?",
+    answer: "เว็บนี้เปิดให้เฉพาะนักศึกษาสาขาวิทยาการคอมพิวเตอร์ประยุกต์ มหาวิทยาลัยพระจอมเกล้าธนบุรี ที่มีรหัสปีการศึกษา 68/69 เท่านั้น"
   },
   {
-    question: "ฉันจะติดต่อพี่รหัสได้อย่างไร?",
-    answer: "สามารถติดต่อผ่าน Line หรือ Facebook ได้เลย โดยค้นหาจากหมายเลขรหัสของคุณในหน้า 'Find Your พี่รหัส'"
+    question: "แล้วเว็บนี้เล่นยังไงอะ ?",
+    answer: "อย่างแรกต้องล็อกอินที่ปุ่มด้านบนขวาก่อน หลังจากนั้นก็สามารถเล่นมินิเกมส์ต่างๆเพื่อเก็บคะแนนได้เลย"
   },
   {
-    question: "กิจกรรมรับน้องมีอะไรบ้าง?",
-    answer: "มีกิจกรรมต้อนรับน้องใหม่ ทัศนศึกษา ค่ายรับน้อง และงานเลี้ยงต้อนรับ ติดตามตารางได้ในหน้า Events"
+    question: "ล็อกอินยังไงออ ?",
+    answer: "ล็อกอินด้วยเลขประจำตัวนักศึกษาได้เลย โดยครั้งแรกที่ล็อกอินจะสามารถตั้งชื่อเล่น และรหัสผ่านได้ หลังจากนั้นก็สามารถล็อกอินด้วยรหัสผ่านที่ตั้งไว้ได้เลย"
   },
   {
-    question: "ต้องเตรียมอะไรบ้างสำหรับวันแรก?",
-    answer: "เตรียมบัตรนักศึกษา เอกสารลงทะเบียน และชุดนักศึกษาให้พร้อม พร้อมทั้งมาถึงก่อนเวลาอย่างน้อย 15 นาที"
+    question: "พี่รหัสต้องทำอะไรบ้าง ?",
+    answer: "หลังจากล็อกอินให้กดที่ปุ่ม user หรือปุ่มฟันเฟืองด้านบนขวาแล้วไปที่ archive เพื่อ add คำใบ้ให้น้อง"
   },
   {
-    question: "มีค่าใช้จ่ายในการเข้าร่วมกิจกรรมไหม?",
-    answer: "กิจกรรมส่วนใหญ่ไม่มีค่าใช้จ่าย แต่บางกิจกรรมอาจมีค่าอาหารและที่พัก ติดตามรายละเอียดได้ในแต่ละ Event"
+    question: "จะหาคำใบ้ได้อย่างไรรึ ?",
+    answer: "คำใบ้จะได้จากการนำคะแนนที่ได้จากมินิเกมส์ไปแลกที่ชอป โดยคำใบ้ที่ซื้อมาแล้วจะสามารถดูได้ที่ archive ของน้องรหัส"
+  },
+  {
+    question: "ชอปอยู่ไหนนน ?",
+    answer: "อยู่หน้ามินิเกมส์เลยจ้าาา (กดปุ่ม To Minigame ด้านบนหรือปุ่มฟันเฟืองด้านบนขวา)"
+  },
+  {
+    question: "คำใบ้เป็นยังไงบ้าง ?",
+    answer: "คำใบ้จะมีทั้งหมด 5 ระดับ โดยระดับที่สูงขึ้นจะใช้คะแนนมากขึ้น แต่ก็จะได้คำใบ้ที่ชัดเจนมากขึ้นเช่นกัน"
   }
 ]
 
@@ -51,7 +59,10 @@ function FAQItem({ faq, isOpen, onToggle }: {
   }, [isOpen])
 
   return (
-    <div className="faq-item" style={{ paddingTop: '0.5rem' }}>
+    <div
+      className="faq-item"
+      style={{ paddingTop: '0.5rem', contain: 'layout paint', willChange: 'contents' }}
+    >
       <button onClick={onToggle} className="w-full flex justify-between items-center py-4 text-left group">
         <span className="text-white text-2xl group-hover:opacity-70 transition-opacity duration-200">
           {faq.question}
@@ -61,7 +72,11 @@ function FAQItem({ faq, isOpen, onToggle }: {
         </span>
       </button>
 
-      <div ref={answerRef} style={{ height: 0, overflow: "hidden", opacity: 0 }} onClick={onToggle}>
+      <div
+        ref={answerRef}
+        style={{ height: 0, overflow: "hidden", opacity: 0, contain: 'layout paint', willChange: 'height, opacity' }}
+        onClick={onToggle}
+      >
         <div ref={innerRef} className="text-lg leading-relaxed" style={{ paddingTop: '0.25rem' }}>
           {faq.answer}
         </div>
@@ -90,7 +105,10 @@ function FAQ() {
   )
 
   return (
-    <div className="w-full min-h-screen flex flex-col gap-5 items-center justify-center">
+    <div
+      className="w-full min-h-screen flex flex-col items-center"
+      style={{ paddingTop: '10rem', paddingBottom: '10rem' }}
+    >
       <h1 className="text-white text-5xl font-bold tracking-widest mb-12">FAQ</h1>
 
       <div ref={containerRef} className="w-full max-w-2xl">

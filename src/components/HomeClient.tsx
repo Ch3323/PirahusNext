@@ -72,7 +72,9 @@ function HomeClient({ role }: HomeClientProps) {
       )}
 
       <div style={{ position: "relative" }}>
-        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+        {/* Sticky layer pins Silk at a fixed 100vh size — it will never resize
+      when FAQ items open/close, so no more WebGL resize flicker */}
+        <div style={{ position: "sticky", top: 0, height: "100vh", zIndex: 0, overflow: "hidden" }}>
           <Silk
             speed={9}
             scale={1.1}
@@ -82,7 +84,8 @@ function HomeClient({ role }: HomeClientProps) {
           />
         </div>
 
-        <div style={{ position: "relative", zIndex: 1 }}>
+        {/* Content pulled up to overlap the sticky background */}
+        <div style={{ position: "relative", zIndex: 1, marginTop: "-100vh" }}>
           <ToMinigame />
 
           <div style={{ padding: "0 15rem" }}>
