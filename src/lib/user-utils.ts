@@ -4,7 +4,6 @@ import { IMentee } from "@/src/core/domain/mentee";
 export type SafeMentor = Omit<IMentor, "password"> & { hasPassword: boolean };
 
 export function stripMentorPassword(mentor: IMentor): SafeMentor {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password: _password, ...safeMentor } = mentor;
   return { ...safeMentor, hasPassword: !!_password } as SafeMentor;
 }
@@ -12,7 +11,6 @@ export function stripMentorPassword(mentor: IMentor): SafeMentor {
 export type SafeMentee = Omit<IMentee, "password"> & { hasPassword: boolean };
 
 export function stripMenteePassword(mentee: IMentee): SafeMentee {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password: _password, ...safeMentee } = mentee;
   return { ...safeMentee, hasPassword: !!_password } as SafeMentee;
 }

@@ -273,12 +273,17 @@ function MenteeBadge({
   );
 }
 
+type AdminMentorData = IMentor & {
+  hasPassword?: boolean;
+  mentee?: (IMentee & { hasPassword?: boolean }) | null;
+};
+
 function MentorRow({
   mentor,
   mode,
   onRefresh,
 }: {
-  mentor: IMentor & { hasPassword?: boolean; mentee?: (IMentee & { hasPassword?: boolean }) | null };
+  mentor: AdminMentorData;
   mode: "mentors" | "passwords";
   onRefresh: () => Promise<void>;
 }) {
@@ -552,6 +557,7 @@ function MentorRow({
                       await onRefresh();
                       alertUtil.showSuccess("สำเร็จ", "ลบรหัสผ่านเรียบร้อย");
                     } catch (err) {
+                      console.error(err);
                       alertUtil.showError("ผิดพลาด", "ไม่สามารถลบรหัสผ่านได้");
                     }
                   }
@@ -735,6 +741,7 @@ function MentorRow({
                               await onRefresh();
                               alertUtil.showSuccess("สำเร็จ", "ลบรหัสผ่านเรียบร้อย");
                             } catch (err) {
+                              console.error(err);
                               alertUtil.showError("ผิดพลาด", "ไม่สามารถลบรหัสผ่านได้");
                             }
                           }
@@ -1132,7 +1139,7 @@ export default function AdminBackroomClient() {
 
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<AdminMentorData[]>([]);
   const [activeTab, setActiveTab] = useState<"mentors" | "shop" | "passwords">("mentors");
 
   const refreshData = async () => {

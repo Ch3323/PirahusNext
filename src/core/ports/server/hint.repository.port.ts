@@ -1,5 +1,4 @@
 import { IUpdateHints, IHint } from "@/src/core/domain/hint";
-import { IMentee } from "@/src/core/domain/mentee";
 
 export interface IHintRepository {
   addHints(

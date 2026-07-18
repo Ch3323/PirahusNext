@@ -1,5 +1,5 @@
 import { MentorRepository } from "@/src/repositories/mentor.repository";
-import { ICreateMentor, IMentor } from "@/src/core/domain/mentor";
+import { ICreateMentor } from "@/src/core/domain/mentor";
 import { NotFoundError, ForbiddenError } from "@/src/core/error/error";
 import { IMentorRepository } from "@/src/core/ports/server/mentor.repository.port";
 import { stripMentorPassword, SafeMentor } from "@/src/lib/user-utils";
