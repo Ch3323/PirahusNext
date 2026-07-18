@@ -92,9 +92,21 @@ export default function ShopAdminTab() {
 
     try {
       if (editingItem) {
+        const confirmResult = await alertUtil.showConfirm(
+          "ยืนยันการแก้ไข",
+          "คุณต้องการบันทึกการแก้ไขสินค้านี้ใช่หรือไม่?"
+        );
+        if (!confirmResult.isConfirmed) return;
+
         await shopItemService.updateShopItem(editingItem.id, payload);
         alertUtil.showSuccess(ALERT_MESSAGES.SUCCESS.TITLE, ALERT_MESSAGES.SUCCESS.UPDATE_ITEM);
       } else {
+        const confirmResult = await alertUtil.showConfirm(
+          "ยืนยันการเพิ่มสินค้า",
+          "คุณต้องการเพิ่มสินค้าใหม่นี้ใช่หรือไม่?"
+        );
+        if (!confirmResult.isConfirmed) return;
+
         await shopItemService.createShopItem(payload);
         alertUtil.showSuccess(ALERT_MESSAGES.SUCCESS.TITLE, ALERT_MESSAGES.SUCCESS.CREATE_ITEM);
       }

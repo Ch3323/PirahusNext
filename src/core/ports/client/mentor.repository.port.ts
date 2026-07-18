@@ -10,4 +10,5 @@ export interface IMentorClientRepository {
   setAdminRole(id: string, isAdmin: boolean): Promise<ApiResponse<IMentor>>;
   getMentorPoint(mentorId: string): Promise<ApiResponse<number>>;
   addMentorPoint(mentorId: string, point: number): Promise<ApiResponse<number>>;
+  setMentorPoint(mentorId: string, point: number): Promise<ApiResponse<number>>;
 }

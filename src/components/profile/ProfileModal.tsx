@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useUserStore } from "@/src/store/auth";
 import { profileService } from "@/src/clients/container";
+import { alertUtil } from "@/src/utils/alert.util";
+import { ALERT_MESSAGES } from "@/src/core/constants/messages";
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -31,6 +33,12 @@ const ProfileModal = ({ onClose }: ProfileModalProps) => {
       setError("กรุณากรอกชื่อเล่น");
       return;
     }
+
+    const confirmResult = await alertUtil.showConfirm(
+      ALERT_MESSAGES.CONFIRM.UPDATE_PROFILE,
+      ALERT_MESSAGES.CONFIRM.UPDATE_PROFILE_DESC
+    );
+    if (!confirmResult.isConfirmed) return;
 
     setLoading(true);
     setError("");

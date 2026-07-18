@@ -1,32 +1,38 @@
 import { AuthRepository } from "@/src/repositories/auth.repository";
+import { AdmissionYearRepository } from "@/src/repositories/admission-year.repository";
+import { MentorRepository } from "@/src/repositories/mentor.repository";
+import { MenteeRepository } from "@/src/repositories/mentee.repository";
 import { NotFoundError, UnauthorizedError } from "@/src/core/error/error";
-import {
-  LoginResponse,
-  SetupProfileResponse,
-} from "@/src/core/domain/auth";
+import { LoginResponse, SetupProfileResponse } from "@/src/core/domain/auth";
 import { Role, CurrentUser } from "@/src/core/domain/user";
 import { IMentor } from "@/src/core/domain/mentor";
 import { IMentee } from "@/src/core/domain/mentee";
 import { IAuthRepository } from "@/src/core/ports/server/auth.repository.port";
+import { IAdmissionYearRepository } from "@/src/core/ports/server/admission-year.repository.port";
+import { IMentorRepository } from "@/src/core/ports/server/mentor.repository.port";
+import { IMenteeRepository } from "@/src/core/ports/server/mentee.repository.port";
 
 export class AuthService {
   constructor(
     private readonly authRepo: IAuthRepository = new AuthRepository(),
+    private readonly admissionYearRepo: IAdmissionYearRepository = new AdmissionYearRepository(),
+    private readonly mentorRepo: IMentorRepository = new MentorRepository(),
+    private readonly menteeRepo: IMenteeRepository = new MenteeRepository(),
   ) {}
 
   async login(studentId: string, password?: string): Promise<LoginResponse> {
-    const config = await this.authRepo.findAdmissionYear();
+    const config = await this.admissionYearRepo.findFirst();
     if (!config) throw new Error("Admission year setting not configured");
 
     let user: IMentor | IMentee | null = null;
     let userType: "mentor" | "mentee" = "mentor";
 
     if (studentId.startsWith(config.mentorYear)) {
-      user = await this.authRepo.findMentorByStudentId(studentId);
+      user = await this.mentorRepo.findByStudentId(studentId);
       userType = "mentor";
       if (!user) throw new NotFoundError("Mentor not found");
     } else if (studentId.startsWith(config.menteeYear)) {
-      user = await this.authRepo.findMenteeByStudentId(studentId);
+      user = await this.menteeRepo.findByStudentId(studentId);
       userType = "mentee";
       if (!user) throw new NotFoundError("Mentee not found");
     } else {
@@ -83,7 +89,6 @@ export class AuthService {
         );
       }
 
-       
       const { ...userData } = mentor;
       return { ...userData, mentee: mentor.mentee || null, role: currentRole };
     }

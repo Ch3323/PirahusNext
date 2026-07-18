@@ -3,15 +3,6 @@ import { IMinigameRecordRepository } from "@/src/core/ports/server/minigame-reco
 import { IMinigameRecordResponse } from "@/src/core/domain/minigame";
 
 export class MinigameRecordRepository implements IMinigameRecordRepository {
-  async findMenteeIdByStudentId(studentId: string): Promise<string | null> {
-    const mentee = await prisma.mentee.findUnique({ where: { studentId } });
-    return mentee?.id || null;
-  }
-
-  async findMentorIdByStudentId(studentId: string): Promise<string | null> {
-    const mentor = await prisma.mentor.findUnique({ where: { studentId } });
-    return mentor?.id || null;
-  }
 
   async findExistingRecord(menteeId: string | null, mentorId: string | null, gameName: string): Promise<{ id: string, timeTaken: number, score: number | null } | null> {
     const existing = await prisma.minigameRecord.findFirst({

@@ -19,7 +19,7 @@ import { alertUtil } from "@/src/utils/alert.util";
 import { ALERT_MESSAGES } from "@/src/core/constants/messages";
 import { IMentor } from "@/src/core/domain/mentor";
 
-function MentorBadge({ id, nickname }: { id: string; nickname?: string | null }) {
+function MentorBadge({ id, nickname, point }: { id: string; nickname?: string | null; point: number }) {
   const firstTwo = id.length >= 2 ? id.slice(0, 2) : "";
   const rest = id.length >= 2 ? id.slice(2) : id;
   return (
@@ -59,11 +59,27 @@ function MentorBadge({ id, nickname }: { id: string; nickname?: string | null })
           </span>
         </div>
       )}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          gap: "6px",
+          padding: "6px 12px",
+          border: "1px solid rgba(220, 180, 50, 0.3)",
+          backgroundColor: "rgba(220, 180, 50, 0.08)",
+          borderRadius: "4px",
+        }}
+      >
+        <span style={{ fontSize: "10px", color: "#e8c850", fontWeight: 700, letterSpacing: "1px", lineHeight: 1 }}>PTS</span>
+        <span style={{ fontSize: "14px", fontFamily: "'Share Tech Mono', monospace", color: "#f8e8a8", fontWeight: 600, lineHeight: 1 }}>
+          {point}
+        </span>
+      </div>
     </div>
   );
 }
 
-function MenteeBadge({ id, nickname }: { id: string; nickname?: string | null }) {
+function MenteeBadge({ id, nickname, point }: { id: string; nickname?: string | null; point: number }) {
   const firstTwo = id.length >= 2 ? id.slice(0, 2) : "";
   const rest = id.length >= 2 ? id.slice(2) : id;
   return (
@@ -103,6 +119,22 @@ function MenteeBadge({ id, nickname }: { id: string; nickname?: string | null })
           </span>
         </div>
       )}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          gap: "6px",
+          padding: "6px 12px",
+          border: "1px solid rgba(220, 180, 50, 0.3)",
+          backgroundColor: "rgba(220, 180, 50, 0.08)",
+          borderRadius: "4px",
+        }}
+      >
+        <span style={{ fontSize: "10px", color: "#e8c850", fontWeight: 700, letterSpacing: "1px", lineHeight: 1 }}>PTS</span>
+        <span style={{ fontSize: "14px", fontFamily: "'Share Tech Mono', monospace", color: "#f8e8a8", fontWeight: 600, lineHeight: 1 }}>
+          {point}
+        </span>
+      </div>
     </div>
   );
 }
@@ -132,6 +164,12 @@ function MentorRow({
       const points = parseInt(amount, 10);
       if (isNaN(points) || points === 0) return;
 
+      const confirmResult = await alertUtil.showConfirm(
+        ALERT_MESSAGES.CONFIRM.ADD_POINTS,
+        ALERT_MESSAGES.CONFIRM.ADD_POINTS_DESC(points > 0 ? 'เพิ่ม' : 'ลด', Math.abs(points), studentId)
+      );
+      if (!confirmResult.isConfirmed) return;
+
       try {
         alertUtil.showLoading(ALERT_MESSAGES.LOADING.ADD_POINTS);
         
@@ -146,6 +184,40 @@ function MentorRow({
       } catch (err) {
         console.error("Failed to add points:", err);
         alertUtil.showError(ALERT_MESSAGES.ERROR.TITLE, ALERT_MESSAGES.ERROR.ADD_POINTS);
+      }
+    }
+  };
+
+  const setPointsToUser = async (id: string, role: "mentor" | "mentee", studentId: string) => {
+    const { value: amount } = await alertUtil.showPrompt(
+      ALERT_MESSAGES.PROMPT.SET_POINTS(studentId),
+      ALERT_MESSAGES.PROMPT.SET_POINTS_LABEL
+    );
+
+    if (amount) {
+      const points = parseInt(amount, 10);
+      if (isNaN(points) || points < 0) return;
+
+      const confirmResult = await alertUtil.showConfirm(
+        ALERT_MESSAGES.CONFIRM.SET_POINTS,
+        ALERT_MESSAGES.CONFIRM.SET_POINTS_DESC(studentId, points)
+      );
+      if (!confirmResult.isConfirmed) return;
+
+      try {
+        alertUtil.showLoading(ALERT_MESSAGES.LOADING.SET_POINTS);
+        
+        if (role === "mentor") {
+          await mentorService.setMentorPoint(id, points);
+        } else {
+          await menteeService.setMenteePoint(id, points);
+        }
+        
+        await onRefresh();
+        alertUtil.showSuccess(ALERT_MESSAGES.SUCCESS.TITLE, ALERT_MESSAGES.SUCCESS.SET_POINTS);
+      } catch (err) {
+        console.error("Failed to set points:", err);
+        alertUtil.showError(ALERT_MESSAGES.ERROR.TITLE, ALERT_MESSAGES.ERROR.SET_POINTS);
       }
     }
   };
@@ -173,6 +245,13 @@ function MentorRow({
 
   const saveEdit = async (hintId: string) => {
     if (!editVal.trim()) return;
+
+    const result = await alertUtil.showConfirm(
+      ALERT_MESSAGES.CONFIRM.EDIT_HINT,
+      ALERT_MESSAGES.CONFIRM.EDIT_HINT_DESC
+    );
+    if (!result.isConfirmed) return;
+
     try {
       alertUtil.showLoading(ALERT_MESSAGES.LOADING.EDIT_HINT);
       await hintService.updateHints(hintId, { content: editVal.trim() });
@@ -207,6 +286,13 @@ function MentorRow({
 
   const addHint = async () => {
     if (!newHint.trim()) return;
+
+    const result = await alertUtil.showConfirm(
+      ALERT_MESSAGES.CONFIRM.ADD_HINT,
+      ALERT_MESSAGES.CONFIRM.ADD_HINT_DESC
+    );
+    if (!result.isConfirmed) return;
+
     try {
       alertUtil.showLoading(ALERT_MESSAGES.LOADING.SAVE_HINT);
       await hintService.addHints({
@@ -255,7 +341,7 @@ function MentorRow({
             gap: "10px",
           }}
         >
-          <MentorBadge id={mentor.studentId} nickname={mentor.nickname} />
+          <MentorBadge id={mentor.studentId} nickname={mentor.nickname} point={mentor.point} />
         </div>
 
         {mentor.hints.length > 0 && (
@@ -280,7 +366,7 @@ function MentorRow({
               e.stopPropagation();
               addPointsToUser(mentor.id, "mentor", mentor.studentId);
             }}
-            title="เพิ่มแต้ม"
+            title="เพิ่ม/ลดแต้ม"
             style={{
               fontSize: "10px",
               fontFamily: "monospace",
@@ -296,6 +382,28 @@ function MentorRow({
             }}
           >
             + PTS
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setPointsToUser(mentor.id, "mentor", mentor.studentId);
+            }}
+            title="แก้ไขแต้ม (แทนที่ค่าเดิม)"
+            style={{
+              fontSize: "10px",
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              padding: "2px 8px",
+              borderRadius: "2px",
+              cursor: "pointer",
+              border: "1px solid rgba(220, 100, 50, 0.5)",
+              backgroundColor: "rgba(220, 100, 50, 0.15)",
+              color: "#e88050",
+              marginRight: "6px",
+            }}
+          >
+            EDIT PTS
           </button>
           <button
             onClick={toggleAdmin}
@@ -369,14 +477,14 @@ function MentorRow({
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "10px" }}
                 >
-                  <MenteeBadge id={mentor.mentee.studentId} nickname={mentor.mentee.nickname} />
+                  <MenteeBadge id={mentor.mentee.studentId} nickname={mentor.mentee.nickname} point={mentor.mentee.point} />
                 </div>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     addPointsToUser(mentor.mentee!.id, "mentee", mentor.mentee!.studentId);
                   }}
-                  title="เพิ่มแต้ม"
+                  title="เพิ่ม/ลดแต้ม"
                   style={{
                     marginLeft: "auto",
                     fontSize: "10px",
@@ -389,10 +497,32 @@ function MentorRow({
                     border: "1px solid rgba(74, 158, 255, 0.5)",
                     backgroundColor: "rgba(74, 158, 255, 0.15)",
                     color: "#7ab8e8",
-                    marginRight: "10px",
+                    marginRight: "6px",
                   }}
                 >
                   + PTS
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPointsToUser(mentor.mentee!.id, "mentee", mentor.mentee!.studentId);
+                  }}
+                  title="แก้ไขแต้ม (แทนที่ค่าเดิม)"
+                  style={{
+                    fontSize: "10px",
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    padding: "2px 8px",
+                    borderRadius: "2px",
+                    cursor: "pointer",
+                    border: "1px solid rgba(158, 100, 255, 0.5)",
+                    backgroundColor: "rgba(158, 100, 255, 0.15)",
+                    color: "#b880e8",
+                    marginRight: "10px",
+                  }}
+                >
+                  EDIT PTS
                 </button>
                 <span
                   style={{

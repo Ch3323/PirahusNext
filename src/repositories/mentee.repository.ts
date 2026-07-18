@@ -23,7 +23,9 @@ export class MenteeRepository implements IMenteeRepository {
 
   async createMany(data: ICreateMentee[]): Promise<IMentee[]> {
     await prisma.mentee.createMany({ data, skipDuplicates: true });
-    const mentees = await prisma.mentee.findMany({ include: { mentor: { include: { hints: true } } } });
+    const mentees = await prisma.mentee.findMany({
+      include: { mentor: { include: { hints: true } } },
+    });
     return mentees.map(mapToDomainMentee);
   }
 
@@ -43,7 +45,7 @@ export class MenteeRepository implements IMenteeRepository {
   }
 
   async findByStudentId(studentId: string): Promise<IMentee | null> {
-    const mentee = await prisma.mentee.findUnique({ 
+    const mentee = await prisma.mentee.findUnique({
       where: { studentId },
       include: { mentor: { include: { hints: true } } },
     });
@@ -51,8 +53,8 @@ export class MenteeRepository implements IMenteeRepository {
   }
 
   async update(id: string, data: Partial<IMentee>): Promise<IMentee> {
-    const mentee = await prisma.mentee.update({ 
-      where: { id }, 
+    const mentee = await prisma.mentee.update({
+      where: { id },
       data: {
         studentId: data.studentId,
         nickname: data.nickname,
@@ -75,7 +77,7 @@ export class MenteeRepository implements IMenteeRepository {
   }
 
   async getPoint(id: string): Promise<IMentee | null> {
-    const mentee = await prisma.mentee.findUnique({ 
+    const mentee = await prisma.mentee.findUnique({
       where: { id },
       include: { mentor: { include: { hints: true } } },
     });
@@ -90,4 +92,23 @@ export class MenteeRepository implements IMenteeRepository {
     });
     return mapToDomainMentee(mentee);
   }
+
+  async setPoint(id: string, point: number): Promise<IMentee> {
+    const mentee = await prisma.mentee.update({
+      where: { id },
+      data: { point },
+      include: { mentor: { include: { hints: true } } },
+    });
+    return mapToDomainMentee(mentee);
+  }
+
+  async unlockHint(menteeId: string, level: number, cost: number): Promise<IMentee> {
+    const mentee = await prisma.mentee.update({
+      where: { id: menteeId },
+      data: { point: { decrement: cost }, unlockedHintLevels: { push: level } },
+      include: { mentor: { include: { hints: true } } },
+    });
+    return mapToDomainMentee(mentee);
+  }
+
 }
