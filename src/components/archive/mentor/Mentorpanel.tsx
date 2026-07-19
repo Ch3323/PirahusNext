@@ -193,6 +193,8 @@ function MenteeCard({
                             border: "1px solid rgba(196, 181, 253, 0.25)",
                             backgroundColor: "rgba(196, 181, 253, 0.06)",
                             borderRadius: "4px",
+                            maxWidth: "100%",
+                            overflow: "hidden",
                         }}
                     >
                         <span
@@ -202,6 +204,7 @@ function MenteeCard({
                                 fontWeight: 700,
                                 letterSpacing: "1px",
                                 lineHeight: 1,
+                                flexShrink: 0,
                             }}
                         >
                             NAME
@@ -213,7 +216,13 @@ function MenteeCard({
                                 color: "#e9e0ff",
                                 fontFamily: "'Share Tech Mono', monospace",
                                 lineHeight: 1,
+                                maxWidth: "140px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                display: "inline-block",
                             }}
+                            title={mentee.nickname}
                         >
                             {mentee.nickname}
                         </span>
@@ -330,6 +339,7 @@ export default function MentorPanel({ mentor }: MentorPanelProps) {
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
                         }}
+                        title={mentor.nickname || "ไม่ระบุชื่อ"}
                     >
                         {mentor.nickname || "ไม่ระบุชื่อ"}
                     </h1>

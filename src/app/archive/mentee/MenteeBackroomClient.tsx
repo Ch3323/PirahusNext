@@ -195,10 +195,20 @@ export default function MenteeBackroomClient() {
       .backroom-columns {
         display: flex;
         gap: 72px;
-        align-items: center;
+        align-items: flex-start;
       }
       .backroom-col-left {
         flex: 0 0 280px;
+        min-width: 0;
+        max-width: 280px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      .backroom-col-left * {
+        min-width: 0;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
       .backroom-col-right {
         flex: 1;
