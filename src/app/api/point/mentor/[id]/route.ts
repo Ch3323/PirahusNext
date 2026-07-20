@@ -27,7 +27,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireAuth(["admin"]);
+    await requireAuth(["admin", "mentor", "mentee"]);
     const { id } = await params;
     const body = await req.json();
     const { point } = setPointSchema.parse(body);
