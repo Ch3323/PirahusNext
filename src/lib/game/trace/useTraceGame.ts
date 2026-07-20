@@ -67,7 +67,7 @@ export function useTraceGame() {
         score: calculatedScore, 
         correctAnswers: score, 
         totalAnswers: MAX_QUESTIONS,
-        timeTaken: timeLeft 
+        timeTaken: INITIAL_TIME - timeLeft 
       });
     }
   }, [phase, score, timeLeft, awardPoints]);

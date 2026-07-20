@@ -24,9 +24,9 @@ export default async function proxy(request: NextRequest) {
         pathname === "/api/auth/password" ||
         pathname === "/api/auth/setupprofile"
       ) {
-        await authLimiter.check(5, ip);
+        await authLimiter.check(20, ip);
       } else {
-        await globalLimiter.check(100, ip);
+        await globalLimiter.check(500, ip);
       }
 
       return NextResponse.next();

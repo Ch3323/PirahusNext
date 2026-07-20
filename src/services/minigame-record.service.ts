@@ -9,7 +9,7 @@ export class MinigameRecordService {
   constructor(
     private readonly recordRepo: IMinigameRecordRepository = new MinigameRecordRepository(),
     private readonly mentorRepo: IMentorRepository = new MentorRepository(),
-    private readonly menteeRepo: IMenteeRepository = new MenteeRepository()
+    private readonly menteeRepo: IMenteeRepository = new MenteeRepository(),
   ) {}
 
   async submitRecord(
@@ -19,7 +19,7 @@ export class MinigameRecordService {
     timeTaken: number = 0,
     score?: number,
     correctAnswers?: number,
-    totalAnswers?: number
+    totalAnswers?: number,
   ) {
     let menteeId = null;
     let mentorId = null;
@@ -34,7 +34,11 @@ export class MinigameRecordService {
       mentorId = mentor.id;
     }
 
-    const existing = await this.recordRepo.findExistingRecord(menteeId, mentorId, gameName);
+    const existing = await this.recordRepo.findExistingRecord(
+      menteeId,
+      mentorId,
+      gameName,
+    );
     const isTrace = gameName.startsWith("trace");
     const isSort = gameName.startsWith("sort");
 
@@ -57,10 +61,24 @@ export class MinigameRecordService {
       }
 
       if (shouldUpdate) {
-        await this.recordRepo.updateRecord(existing.id, timeTaken, score, correctAnswers, totalAnswers);
+        await this.recordRepo.updateRecord(
+          existing.id,
+          timeTaken,
+          score,
+          correctAnswers,
+          totalAnswers,
+        );
       }
     } else {
-      await this.recordRepo.createRecord(menteeId, mentorId, gameName, timeTaken, score, correctAnswers, totalAnswers);
+      await this.recordRepo.createRecord(
+        menteeId,
+        mentorId,
+        gameName,
+        timeTaken,
+        score,
+        correctAnswers,
+        totalAnswers,
+      );
     }
 
     return { success: true };
