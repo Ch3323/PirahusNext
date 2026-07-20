@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import {
   FaUser,
   FaChevronDown,
-  FaChevronUp,
   FaPlus,
   FaTrash,
   FaPencilAlt,
@@ -12,6 +11,7 @@ import {
   FaTimes,
   FaArrowLeft,
 } from "react-icons/fa";
+import { Receipt, CheckCircle2, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   mentorService,
@@ -24,41 +24,53 @@ import { ALERT_MESSAGES } from "@/src/core/constants/messages";
 import { IMentor } from "@/src/core/domain/mentor";
 import { IMentee } from "@/src/core/domain/mentee";
 
-function MentorBadge({
+function RecordCard({
+  role,
   id,
   nickname,
   point,
+  onEdit,
 }: {
+  role: "mentor" | "mentee";
   id: string;
   nickname?: string | null;
   point: number;
+  onEdit?: () => void;
 }) {
+  const accent = role === "mentor" ? "#d45c2a" : "#4a9eff";
+  const accentSoft = role === "mentor" ? "#c8d4a8" : "#8aaccc";
+  const accentBorder =
+    role === "mentor" ? "rgba(212, 92, 42, 0.3)" : "rgba(74, 158, 255, 0.25)";
+  const accentBg =
+    role === "mentor" ? "rgba(212, 92, 42, 0.06)" : "rgba(74, 158, 255, 0.06)";
   const firstTwo = id.length >= 2 ? id.slice(0, 2) : "";
   const rest = id.length >= 2 ? id.slice(2) : id;
+
   return (
     <div
       style={{
-        display: "flex",
-        gap: "10px",
-        flexWrap: "wrap",
+        display: "inline-flex",
+        alignItems: "stretch",
+        border: `1px solid ${accentBorder}`,
+        backgroundColor: accentBg,
+        borderRadius: "4px",
+        overflow: "hidden",
         margin: "4px 0",
       }}
     >
       <div
         style={{
           display: "flex",
-          alignItems: "baseline",
+          alignItems: "center",
           gap: "6px",
-          padding: "6px 12px",
-          border: "1px solid rgba(212, 92, 42, 0.3)",
-          backgroundColor: "rgba(212, 92, 42, 0.08)",
-          borderRadius: "4px",
+          padding: "6px 10px",
+          borderRight: `1px solid ${accentBorder}`,
         }}
       >
         <span
           style={{
-            fontSize: "10px",
-            color: "#d45c2a",
+            fontSize: "9px",
+            color: accent,
             fontWeight: 700,
             letterSpacing: "1px",
             lineHeight: 1,
@@ -74,33 +86,21 @@ function MentorBadge({
             lineHeight: 1,
           }}
         >
-          {firstTwo && <span style={{ color: "#d45c2a" }}>{firstTwo}</span>}
-          <span style={{ color: "#c8d4a8" }}>{rest}</span>
+          <span style={{ color: accent }}>{firstTwo}</span>
+          <span style={{ color: accentSoft }}>{rest}</span>
         </span>
       </div>
+
       {nickname && (
         <div
           style={{
             display: "flex",
-            alignItems: "baseline",
+            alignItems: "center",
             gap: "6px",
-            padding: "6px 12px",
-            border: "1px solid rgba(168, 192, 96, 0.3)",
-            backgroundColor: "rgba(168, 192, 96, 0.08)",
-            borderRadius: "4px",
+            padding: "6px 10px",
+            borderRight: `1px solid ${accentBorder}`,
           }}
         >
-          <span
-            style={{
-              fontSize: "10px",
-              color: "#a8c060",
-              fontWeight: 700,
-              letterSpacing: "1px",
-              lineHeight: 1,
-            }}
-          >
-            NAME
-          </span>
           <span
             style={{
               fontSize: "14px",
@@ -114,149 +114,17 @@ function MentorBadge({
           </span>
         </div>
       )}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          gap: "6px",
-          padding: "6px 12px",
-          border: "1px solid rgba(220, 180, 50, 0.3)",
-          backgroundColor: "rgba(220, 180, 50, 0.08)",
-          borderRadius: "4px",
-        }}
-      >
-        <span
-          style={{
-            fontSize: "10px",
-            color: "#e8c850",
-            fontWeight: 700,
-            letterSpacing: "1px",
-            lineHeight: 1,
-          }}
-        >
-          PTS
-        </span>
-        <span
-          style={{
-            fontSize: "14px",
-            fontFamily: "'Share Tech Mono', monospace",
-            color: "#f8e8a8",
-            fontWeight: 600,
-            lineHeight: 1,
-          }}
-        >
-          {point}
-        </span>
-      </div>
-    </div>
-  );
-}
 
-function MenteeBadge({
-  id,
-  nickname,
-  point,
-}: {
-  id: string;
-  nickname?: string | null;
-  point: number;
-}) {
-  const firstTwo = id.length >= 2 ? id.slice(0, 2) : "";
-  const rest = id.length >= 2 ? id.slice(2) : id;
-  return (
-    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
       <div
         style={{
           display: "flex",
-          alignItems: "baseline",
+          alignItems: "center",
           gap: "6px",
-          padding: "6px 12px",
-          border: "1px solid rgba(74, 158, 255, 0.25)",
-          backgroundColor: "rgba(74, 158, 255, 0.08)",
-          borderRadius: "4px",
+          padding: "6px 10px",
+          backgroundColor: "rgba(220, 180, 50, 0.06)",
         }}
       >
-        <span
-          style={{
-            fontSize: "10px",
-            color: "#4a9eff",
-            fontWeight: 700,
-            letterSpacing: "1px",
-            lineHeight: 1,
-          }}
-        >
-          ID
-        </span>
-        <span
-          style={{
-            fontFamily: "monospace",
-            fontSize: "14px",
-            fontWeight: 700,
-            lineHeight: 1,
-          }}
-        >
-          {firstTwo && <span style={{ color: "#4a9eff" }}>{firstTwo}</span>}
-          <span style={{ color: "#8aaccc" }}>{rest}</span>
-        </span>
-      </div>
-      {nickname && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: "6px",
-            padding: "6px 12px",
-            border: "1px solid rgba(122, 184, 232, 0.25)",
-            backgroundColor: "rgba(122, 184, 232, 0.08)",
-            borderRadius: "4px",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "10px",
-              color: "#7ab8e8",
-              fontWeight: 700,
-              letterSpacing: "1px",
-              lineHeight: 1,
-            }}
-          >
-            NAME
-          </span>
-          <span
-            style={{
-              fontSize: "14px",
-              fontWeight: 600,
-              color: "#aadcff",
-              fontFamily: "'Share Tech Mono', monospace",
-              lineHeight: 1,
-            }}
-          >
-            {nickname}
-          </span>
-        </div>
-      )}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          gap: "6px",
-          padding: "6px 12px",
-          border: "1px solid rgba(220, 180, 50, 0.3)",
-          backgroundColor: "rgba(220, 180, 50, 0.08)",
-          borderRadius: "4px",
-        }}
-      >
-        <span
-          style={{
-            fontSize: "10px",
-            color: "#e8c850",
-            fontWeight: 700,
-            letterSpacing: "1px",
-            lineHeight: 1,
-          }}
-        >
-          PTS
-        </span>
+        <Receipt size={12} color="#e8c850" style={{ flexShrink: 0 }} />
         <span
           style={{
             fontSize: "14px",
@@ -268,6 +136,32 @@ function MenteeBadge({
         >
           {point}
         </span>
+        {onEdit && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            title="แก้ไขแต้ม (แทนที่ค่าเดิม)"
+            className="admin-btn"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "18px",
+              height: "18px",
+              marginLeft: "2px",
+              borderRadius: "2px",
+              cursor: "pointer",
+              border: "1px solid rgba(220, 180, 50, 0.5)",
+              backgroundColor: "rgba(220, 180, 50, 0.15)",
+              color: "#f8e8a8",
+              lineHeight: 1,
+            }}
+          >
+            <FaPencilAlt size={8} />
+          </button>
+        )}
       </div>
     </div>
   );
@@ -455,10 +349,12 @@ function MentorRow({
 
   return (
     <div
+      className="admin-row"
+      data-open={open}
       style={{
         backgroundColor: "rgba(10, 14, 8, 0.88)",
         backdropFilter: "blur(6px)",
-        borderRadius: "3px",
+        borderRadius: "6px",
         border: "1px solid rgba(140, 170, 80, 0.2)",
         marginBottom: "8px",
         overflow: "visible",
@@ -484,19 +380,29 @@ function MentorRow({
             gap: "10px",
           }}
         >
-          <MentorBadge
+          <RecordCard
+            role="mentor"
             id={mentor.studentId}
             nickname={mentor.nickname}
             point={mentor.point}
+            onEdit={
+              mode !== "passwords"
+                ? () => setPointsToUser(mentor.id, "mentor", mentor.studentId)
+                : undefined
+            }
           />
         </div>
 
         {mode === "passwords" && (
           <div style={{ marginRight: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
             {mentor.hasPassword ? (
-              <span style={{ fontSize: "12px", color: "#4ade80", fontFamily: "monospace", fontWeight: "bold" }}>✅ มีรหัส</span>
+              <span style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "11px", color: "#4ade80", fontFamily: "monospace", fontWeight: 700 }}>
+                <CheckCircle2 size={12} /> มีรหัส
+              </span>
             ) : (
-              <span style={{ fontSize: "12px", color: "#f87171", fontFamily: "monospace", fontWeight: "bold" }}>❌ ไม่มีรหัส</span>
+              <span style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "11px", color: "#f87171", fontFamily: "monospace", fontWeight: 700 }}>
+                <XCircle size={12} /> ไม่มีรหัส
+              </span>
             )}
             {mentor.hasPassword && (
               <button
@@ -516,6 +422,7 @@ function MentorRow({
                     }
                   }
                 }}
+                className="admin-btn"
                 style={{
                   fontSize: "10px",
                   fontFamily: "monospace",
@@ -552,29 +459,6 @@ function MentorRow({
 
         {mode !== "passwords" && (
           <div onClick={(e) => e.stopPropagation()}>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setPointsToUser(mentor.id, "mentor", mentor.studentId);
-              }}
-              title="แก้ไขแต้ม (แทนที่ค่าเดิม)"
-              style={{
-                fontSize: "10px",
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                padding: "2px 8px",
-                borderRadius: "2px",
-                cursor: "pointer",
-                border: "1px solid rgba(220, 100, 50, 0.5)",
-                backgroundColor: "rgba(220, 100, 50, 0.15)",
-                color: "#e88050",
-                marginRight: "6px",
-              }}
-            >
-              EDIT PTS
-            </button>
             <button
             onClick={toggleAdmin}
             disabled={togglingAdmin}
@@ -583,13 +467,14 @@ function MentorRow({
                 ? "คลิกเพื่อลด role เป็น Mentor"
                 : "คลิกเพื่อเพิ่มเป็น Admin"
             }
+            className="admin-btn"
             style={{
               fontSize: "10px",
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: "0.08em",
               padding: "2px 8px",
-              borderRadius: "2px",
+              borderRadius: "3px",
               cursor: togglingAdmin ? "not-allowed" : "pointer",
               opacity: togglingAdmin ? 0.5 : 1,
               border: mentor.isAdmin
@@ -606,12 +491,11 @@ function MentorRow({
         </div>
         )}
 
-        <div onClick={(e) => e.stopPropagation()}>
-          {open ? (
-            <FaChevronUp size={11} style={{ color: "#a8c060" }} />
-          ) : (
-            <FaChevronDown size={11} style={{ color: "#4a5a30" }} />
-          )}
+        <div onClick={(e) => e.stopPropagation()} className="admin-chevron">
+          <FaChevronDown
+            size={11}
+            style={{ color: open ? "#a8c060" : "#4a5a30" }}
+          />
         </div>
       </div>
 
@@ -648,18 +532,33 @@ function MentorRow({
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "10px" }}
                 >
-                  <MenteeBadge
+                  <RecordCard
+                    role="mentee"
                     id={mentor.mentee.studentId}
                     nickname={mentor.mentee.nickname}
                     point={mentor.mentee.point}
+                    onEdit={
+                      mode !== "passwords"
+                        ? () =>
+                            setPointsToUser(
+                              mentor.mentee!.id,
+                              "mentee",
+                              mentor.mentee!.studentId,
+                            )
+                        : undefined
+                    }
                   />
                 </div>
                 {mode === "passwords" && (
                   <div style={{ marginLeft: "auto", marginRight: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                     {mentor.mentee.hasPassword ? (
-                      <span style={{ fontSize: "12px", color: "#4ade80", fontFamily: "monospace", fontWeight: "bold" }}>✅ มีรหัส</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "11px", color: "#4ade80", fontFamily: "monospace", fontWeight: 700 }}>
+                        <CheckCircle2 size={12} /> มีรหัส
+                      </span>
                     ) : (
-                      <span style={{ fontSize: "12px", color: "#f87171", fontFamily: "monospace", fontWeight: "bold" }}>❌ ไม่มีรหัส</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "11px", color: "#f87171", fontFamily: "monospace", fontWeight: 700 }}>
+                        <XCircle size={12} /> ไม่มีรหัส
+                      </span>
                     )}
                     {mentor.mentee.hasPassword && (
                       <button
@@ -679,6 +578,7 @@ function MentorRow({
                             }
                           }
                         }}
+                        className="admin-btn"
                         style={{
                           fontSize: "10px",
                           fontFamily: "monospace",
@@ -695,38 +595,6 @@ function MentorRow({
                       </button>
                     )}
                   </div>
-                )}
-                {mode !== "passwords" && (
-                  <>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPointsToUser(
-                          mentor.mentee!.id,
-                          "mentee",
-                          mentor.mentee!.studentId,
-                        );
-                      }}
-                      title="แก้ไขแต้ม (แทนที่ค่าเดิม)"
-                      style={{
-                        marginLeft: "auto",
-                        fontSize: "10px",
-                        fontFamily: "monospace",
-                        fontWeight: 700,
-                        letterSpacing: "0.08em",
-                        padding: "2px 8px",
-                        borderRadius: "2px",
-                        cursor: "pointer",
-                        border: "1px solid rgba(158, 100, 255, 0.5)",
-                        backgroundColor: "rgba(158, 100, 255, 0.15)",
-                        color: "#b880e8",
-                        marginRight: "10px",
-                      }}
-                    >
-                      EDIT PTS
-                    </button>
-                  </>
                 )}
                 <span
                   style={{
@@ -789,13 +657,14 @@ function MentorRow({
                   setAdding(true);
                   setEditingIdx(null);
                 }}
+                className="admin-btn"
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: "5px",
                   background: "rgba(112, 136, 64, 0.12)",
                   border: "1px solid rgba(112,136,64,0.35)",
-                  borderRadius: "2px",
+                  borderRadius: "3px",
                   color: "#a8c060",
                   fontSize: "11px",
                   fontFamily: "monospace",
@@ -824,11 +693,12 @@ function MentorRow({
           {mentor.hints.map((h, i) => (
             <div
               key={h.id}
+              className="admin-hint-row"
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                padding: "5px 0",
+                padding: "5px 8px",
                 borderBottom: "1px solid rgba(140,170,80,0.07)",
               }}
             >
@@ -998,10 +868,11 @@ function MentorRow({
               />
               <button
                 onClick={addHint}
+                className="admin-btn"
                 style={{
                   background: "rgba(112,136,64,0.18)",
                   border: "1px solid rgba(112,136,64,0.4)",
-                  borderRadius: "2px",
+                  borderRadius: "3px",
                   color: "#a8c060",
                   fontSize: "11px",
                   fontFamily: "monospace",
@@ -1016,10 +887,11 @@ function MentorRow({
                   setAdding(false);
                   setNewHint("");
                 }}
+                className="admin-btn"
                 style={{
                   background: "none",
                   border: "1px solid rgba(140,60,40,0.4)",
-                  borderRadius: "2px",
+                  borderRadius: "3px",
                   color: "#b85040",
                   fontSize: "11px",
                   fontFamily: "monospace",
@@ -1099,7 +971,7 @@ export default function AdminBackroomClient() {
             letterSpacing: "0.15em",
           }}
         >
-          LOADING ADMIN SYSTEM...
+          LOADING ADMIN SYSTEM<span className="admin-cursor">_</span>
         </div>
       </div>
     );
@@ -1119,6 +991,82 @@ export default function AdminBackroomClient() {
         .admin-page *::selection {
           background-color: rgba(140, 170, 80, 0.35);
           color: #d8e8b8;
+        }
+
+        .admin-row {
+          transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        .admin-row:hover {
+          border-color: rgba(168, 192, 96, 0.4);
+          background-color: rgba(14, 19, 10, 0.92);
+        }
+
+        .admin-chevron {
+          transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .admin-row[data-open="true"] .admin-chevron {
+          transform: rotate(180deg);
+        }
+
+        .admin-tab {
+          position: relative;
+          transition: color 0.2s ease;
+        }
+        .admin-tab::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -1px;
+          height: 2px;
+          background: #a8c060;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.25s ease;
+        }
+        .admin-tab[data-active="true"]::after {
+          transform: scaleX(1);
+        }
+        .admin-tab:not([data-active="true"]):hover {
+          color: #8faa55 !important;
+        }
+
+        .admin-btn {
+          transition: filter 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+        }
+        .admin-btn:hover {
+          filter: brightness(1.2);
+        }
+        .admin-btn:active {
+          transform: scale(0.96);
+        }
+        .admin-btn:disabled {
+          transform: none;
+          filter: none;
+        }
+
+        .admin-search {
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .admin-search:focus {
+          border-color: rgba(168, 192, 96, 0.55);
+          box-shadow: 0 0 0 3px rgba(168, 192, 96, 0.1);
+        }
+
+        .admin-cursor {
+          display: inline-block;
+          animation: admin-blink 1.1s steps(1) infinite;
+        }
+        @keyframes admin-blink {
+          50% { opacity: 0; }
+        }
+
+        .admin-hint-row {
+          transition: background-color 0.15s ease;
+          border-radius: 3px;
+        }
+        .admin-hint-row:hover {
+          background-color: rgba(140, 170, 80, 0.05);
         }
       `}</style>
       <div
@@ -1152,6 +1100,19 @@ export default function AdminBackroomClient() {
 
         <div
           style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "11px",
+            letterSpacing: "0.25em",
+            color: "#4a6028",
+            marginBottom: "10px",
+            textTransform: "uppercase",
+          }}
+        >
+          admin_terminal // backrooms.sys<span className="admin-cursor">_</span>
+        </div>
+
+        <div
+          style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-end",
@@ -1161,6 +1122,8 @@ export default function AdminBackroomClient() {
           <div style={{ display: "flex", gap: "16px" }}>
             <button
               onClick={() => setActiveTab("mentors")}
+              className="admin-tab"
+              data-active={activeTab === "mentors"}
               style={{
                 background: "none",
                 border: "none",
@@ -1169,18 +1132,15 @@ export default function AdminBackroomClient() {
                 fontWeight: 700,
                 fontFamily: "'Share Tech Mono', monospace",
                 cursor: "pointer",
-                padding: "0 0 4px",
-                borderBottom:
-                  activeTab === "mentors"
-                    ? "2px solid #a8c060"
-                    : "2px solid transparent",
-                transition: "all 0.2s",
+                padding: "0 0 6px",
               }}
             >
               จัดการสายรหัส
             </button>
             <button
               onClick={() => setActiveTab("passwords")}
+              className="admin-tab"
+              data-active={activeTab === "passwords"}
               style={{
                 background: "none",
                 border: "none",
@@ -1189,18 +1149,15 @@ export default function AdminBackroomClient() {
                 fontWeight: 700,
                 fontFamily: "'Share Tech Mono', monospace",
                 cursor: "pointer",
-                padding: "0 0 4px",
-                borderBottom:
-                  activeTab === "passwords"
-                    ? "2px solid #a8c060"
-                    : "2px solid transparent",
-                transition: "all 0.2s",
+                padding: "0 0 6px",
               }}
             >
               จัดการรหัสผ่าน
             </button>
             <button
               onClick={() => setActiveTab("shop")}
+              className="admin-tab"
+              data-active={activeTab === "shop"}
               style={{
                 background: "none",
                 border: "none",
@@ -1209,12 +1166,7 @@ export default function AdminBackroomClient() {
                 fontWeight: 700,
                 fontFamily: "'Share Tech Mono', monospace",
                 cursor: "pointer",
-                padding: "0 0 4px",
-                borderBottom:
-                  activeTab === "shop"
-                    ? "2px solid #a8c060"
-                    : "2px solid transparent",
-                transition: "all 0.2s",
+                padding: "0 0 6px",
               }}
             >
               จัดการร้านค้า
@@ -1223,11 +1175,12 @@ export default function AdminBackroomClient() {
 
           <button
             onClick={() => router.push("/")}
+            className="admin-btn"
             style={{
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              background: "none",
+              background: "rgba(168, 192, 96, 0.06)",
               border: "1px solid rgba(140,170,80,0.4)",
               color: "#a8c060",
               fontSize: "12px",
@@ -1250,26 +1203,54 @@ export default function AdminBackroomClient() {
 
         {activeTab === "mentors" || activeTab === "passwords" ? (
           <>
-            <input
-              type="text"
-              placeholder="> search by id..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+            <div style={{ position: "relative", marginBottom: "8px" }}>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "14px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "#5a7a38",
+                  fontFamily: "monospace",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  pointerEvents: "none",
+                }}
+              >
+                $
+              </span>
+              <input
+                type="text"
+                placeholder="search by id..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="admin-search"
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  padding: "9px 14px 9px 30px",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(140,170,80,0.25)",
+                  backgroundColor: "rgba(10, 14, 8, 0.82)",
+                  color: "#a8c060",
+                  fontSize: "13px",
+                  outline: "none",
+                  fontFamily: "monospace",
+                  caretColor: "#a8c060",
+                }}
+              />
+            </div>
+
+            <div
               style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "9px 14px",
-                borderRadius: "2px",
-                border: "1px solid rgba(140,170,80,0.25)",
-                backgroundColor: "rgba(10, 14, 8, 0.82)",
-                color: "#a8c060",
-                fontSize: "13px",
-                outline: "none",
-                marginBottom: "16px",
                 fontFamily: "monospace",
-                caretColor: "#a8c060",
+                fontSize: "11px",
+                color: "#4a6028",
+                marginBottom: "16px",
               }}
-            />
+            >
+              {filtered.length} {filtered.length === 1 ? "entry" : "entries"} found
+            </div>
 
             <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
               {[
