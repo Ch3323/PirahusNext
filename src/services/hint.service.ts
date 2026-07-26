@@ -126,9 +126,14 @@ export class HintService {
     const mentor = await this.mentorRepo.findById(mentee.mentorId);
     if (!mentor) throw new NotFoundError("Mentor not found");
     const hints = await this.hintRepo.findByMentorId(mentor.id);
+
+    if (hints.length === 0) {
+      throw new AppError("Mentor has not added any hints yet", 404, "NO_HINTS");
+    }
+
     const hint = hints.find((h) => h.level === level);
 
-    if (!hint) throw new NotFoundError("Hint not found for this level");
+    if (!hint) throw new AppError("Hint not found for this level", 404, "HINT_LEVEL_NOT_FOUND");
 
     const shopItem = await this.shopItemRepo.findHintItem(level);
 

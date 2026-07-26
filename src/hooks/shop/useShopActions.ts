@@ -48,8 +48,15 @@ export function useShopActions(
         getUser();
 
         alertUtil.showSuccess(ALERT_MESSAGES.SUCCESS.TITLE, ALERT_MESSAGES.SUCCESS.BUY);
-      } catch {
-        alertUtil.showError(ALERT_MESSAGES.ERROR.TITLE, ALERT_MESSAGES.ERROR.BUY);
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : "";
+        if (msg.includes("NO_HINTS") || msg.toLowerCase().includes("not added any hints")) {
+          alertUtil.showError(ALERT_MESSAGES.ERROR.TITLE, ALERT_MESSAGES.ERROR.BUY_NO_HINTS);
+        } else if (msg.includes("HINT_LEVEL_NOT_FOUND") || msg.toLowerCase().includes("hint not found for this level")) {
+          alertUtil.showError(ALERT_MESSAGES.ERROR.TITLE, ALERT_MESSAGES.ERROR.BUY_HINT_NOT_FOUND);
+        } else {
+          alertUtil.showError(ALERT_MESSAGES.ERROR.TITLE, ALERT_MESSAGES.ERROR.BUY);
+        }
       }
     }
 
