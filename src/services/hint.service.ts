@@ -123,7 +123,7 @@ export class HintService {
       throw new AppError("Hint already unlocked", 400, "ALREADY_UNLOCKED");
     }
 
-    const mentor = await this.mentorRepo.findByStudentId(mentee.mentorId);
+    const mentor = await this.mentorRepo.findById(mentee.mentorId);
     if (!mentor) throw new NotFoundError("Mentor not found");
     const hints = await this.hintRepo.findByMentorId(mentor.id);
     const hint = hints.find((h) => h.level === level);

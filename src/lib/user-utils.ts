@@ -5,7 +5,15 @@ export type SafeMentor = Omit<IMentor, "password"> & { hasPassword: boolean };
 
 export function stripMentorPassword(mentor: IMentor): SafeMentor {
   const { password: _password, ...safeMentor } = mentor;
-  return { ...safeMentor, hasPassword: !!_password } as SafeMentor;
+  const safeMentorResult = { ...safeMentor, hasPassword: !!_password } as SafeMentor;
+
+  if (safeMentorResult.mentee) {
+    const { password: _menteePassword, ...safeMentee } = safeMentorResult.mentee as IMentee;
+    const safeMenteeResult: SafeMentee = { ...safeMentee, hasPassword: !!_menteePassword };
+    (safeMentorResult as unknown as { mentee: SafeMentee }).mentee = safeMenteeResult;
+  }
+
+  return safeMentorResult;
 }
 
 export type SafeMentee = Omit<IMentee, "password"> & { hasPassword: boolean };
