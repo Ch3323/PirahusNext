@@ -690,7 +690,7 @@ function MentorRow({
             </p>
           )}
 
-          {mentor.hints.map((h, i) => (
+          {[...mentor.hints].sort((a, b) => a.level - b.level).map((h, i) => (
             <div
               key={h.id}
               className="admin-hint-row"
@@ -1109,6 +1109,79 @@ export default function AdminBackroomClient() {
           }}
         >
           admin_terminal // backrooms.sys<span className="admin-cursor">_</span>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "16px",
+            marginBottom: "20px",
+            fontFamily: "monospace",
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              padding: "12px 16px",
+              backgroundColor: "rgba(10, 14, 8, 0.82)",
+              border: "1px solid rgba(140, 170, 80, 0.2)",
+              borderRadius: "4px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "11px",
+                color: "#5a7a38",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}
+            >
+              พี่รหัสที่สมัครแล้ว (Registered Mentors)
+            </span>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+              <span style={{ fontSize: "20px", fontWeight: 700, color: "#d45c2a" }}>
+                {students.filter((s) => s.hasPassword).length}
+              </span>
+              <span style={{ fontSize: "12px", color: "#4a6028" }}>
+                / {students.length} ทั้งหมด
+              </span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              flex: 1,
+              padding: "12px 16px",
+              backgroundColor: "rgba(10, 14, 8, 0.82)",
+              border: "1px solid rgba(140, 170, 80, 0.2)",
+              borderRadius: "4px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "11px",
+                color: "#5a7a38",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}
+            >
+              น้องรหัสที่สมัครแล้ว (Registered Mentees)
+            </span>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+              <span style={{ fontSize: "20px", fontWeight: 700, color: "#4a9eff" }}>
+                {students.filter((s) => s.mentee?.hasPassword).length}
+              </span>
+              <span style={{ fontSize: "12px", color: "#4a6028" }}>
+                / {students.filter((s) => s.mentee != null).length} ทั้งหมด
+              </span>
+            </div>
+          </div>
         </div>
 
         <div

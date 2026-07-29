@@ -24,17 +24,31 @@ const pixelifySans = Pixelify_Sans({ subsets: ["latin"] });
 
 export default function ProfileSetupPage() {
   const router = useRouter();
+  const { user, loading: authLoading, getUser } = useUserStore();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const { user, getUser } = useUserStore();
 
   useEffect(() => {
-    getUser();
+    (async () => {
+      await getUser();
+      setIsCheckingAuth(false);
+    })();
   }, [getUser]);
+
+  useEffect(() => {
+    if (!isCheckingAuth && !authLoading) {
+      if (!user) {
+        router.push("/auth/login");
+      } else if (user.nickname !== null) {
+        router.push("/");
+      }
+    }
+  }, [user, authLoading, isCheckingAuth, router]);
 
   const {
     register,
@@ -50,6 +64,21 @@ export default function ProfileSetupPage() {
   });
 
   const passwordVal = watch("password");
+
+  if (isCheckingAuth || authLoading || !user || user.nickname !== null) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#000000",
+        }}
+      />
+    );
+  }
 
   const onSubmit = async (data: { password?: string; nickname?: string }) => {
     const confirmResult = await alertUtil.showConfirm(

@@ -274,7 +274,7 @@ export default function HintBoard({
         </p>
       )}
 
-      {hints.map((h) => (
+      {[...hints].sort((a, b) => a.level - b.level).map((h) => (
         <HintItem key={h.id} hint={h} onDelete={deleteHint} onEdit={editHint} />
       ))}
 

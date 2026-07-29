@@ -21,7 +21,8 @@ const pixelifySans = Pixelify_Sans({ subsets: ["latin"] });
 
 export default function Page() {
   const router = useRouter();
-  const { getUser } = useUserStore();
+  const { user, loading: authLoading, getUser } = useUserStore();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [showPasswordInput, setShowPasswordInput] = useState(false);
@@ -43,9 +44,41 @@ export default function Page() {
   const studentId = watch("studentId");
 
   useEffect(() => {
+    (async () => {
+      await getUser();
+      setIsCheckingAuth(false);
+    })();
+  }, [getUser]);
+
+  useEffect(() => {
+    if (!isCheckingAuth && !authLoading && user) {
+      if (user.nickname === null) {
+        router.push("/auth/setupprofile");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [user, authLoading, isCheckingAuth, router]);
+
+  useEffect(() => {
     setShowPasswordInput(false);
     setErrorMsg("");
   }, [studentId]);
+
+  if (isCheckingAuth || authLoading || user) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#000000",
+        }}
+      />
+    );
+  }
 
   const onSubmit = async (data: { studentId: string; password?: string }) => {
     setErrorMsg("");

@@ -1,6 +1,6 @@
 import Swal, { SweetAlertResult } from "sweetalert2";
 
-const THEME = {
+const GREEN_THEME = {
   background: "#0a0e08",
   color: "#d8e8b8",
   confirmButtonColor: "#708840",
@@ -9,50 +9,73 @@ const THEME = {
   warningConfirmColor: "#a8c060",
 };
 
+const PURPLE_THEME = {
+  background: "#0d0d11",
+  color: "#f1f1f1",
+  confirmButtonColor: "#6812D2",
+  cancelButtonColor: "#27272a",
+  dangerConfirmColor: "#ef4444",
+  warningConfirmColor: "#8b5cf6",
+};
+
+const getTheme = () => {
+  if (typeof window !== "undefined") {
+    const path = window.location.pathname;
+    if (path.startsWith("/backrooms")) {
+      return GREEN_THEME;
+    }
+  }
+  return PURPLE_THEME;
+};
+
 export const alertUtil = {
   showSuccess: (title: string, text?: string, options?: { timer?: number; showConfirmButton?: boolean }): Promise<SweetAlertResult> => {
+    const theme = getTheme();
     return Swal.fire({
       title,
       text,
       icon: "success",
-      background: THEME.background,
-      color: THEME.color,
-      confirmButtonColor: THEME.confirmButtonColor,
+      background: theme.background,
+      color: theme.color,
+      confirmButtonColor: theme.confirmButtonColor,
       timer: options?.timer,
       showConfirmButton: options?.showConfirmButton !== false,
     });
   },
 
   showWarning: (title: string, text?: string): Promise<SweetAlertResult> => {
+    const theme = getTheme();
     return Swal.fire({
       title,
       text,
       icon: "warning",
-      background: THEME.background,
-      color: THEME.color,
-      confirmButtonColor: THEME.warningConfirmColor,
+      background: theme.background,
+      color: theme.color,
+      confirmButtonColor: theme.warningConfirmColor,
     });
   },
 
   showError: (title: string, text?: string, options?: { timer?: number; showConfirmButton?: boolean }): Promise<SweetAlertResult> => {
+    const theme = getTheme();
     return Swal.fire({
       title,
       text,
       icon: "error",
-      background: THEME.background,
-      color: THEME.color,
-      confirmButtonColor: THEME.confirmButtonColor,
+      background: theme.background,
+      color: theme.color,
+      confirmButtonColor: theme.confirmButtonColor,
       timer: options?.timer,
       showConfirmButton: options?.showConfirmButton !== false,
     });
   },
 
   showLoading: (title: string): void => {
+    const theme = getTheme();
     Swal.fire({
       title,
       allowOutsideClick: false,
-      background: THEME.background,
-      color: THEME.color,
+      background: theme.background,
+      color: theme.color,
       didOpen: () => {
         Swal.showLoading();
       },
@@ -72,9 +95,10 @@ export const alertUtil = {
       isDanger?: boolean;
     }
   ): Promise<SweetAlertResult> => {
+    const theme = getTheme();
     const confirmColor = options?.isDanger
-      ? THEME.dangerConfirmColor
-      : THEME.warningConfirmColor;
+      ? theme.dangerConfirmColor
+      : theme.warningConfirmColor;
 
     return Swal.fire({
       title,
@@ -84,9 +108,9 @@ export const alertUtil = {
       confirmButtonText: options?.confirmButtonText || "ยืนยัน",
       cancelButtonText: options?.cancelButtonText || "ยกเลิก",
       confirmButtonColor: confirmColor,
-      cancelButtonColor: THEME.cancelButtonColor,
-      background: THEME.background,
-      color: THEME.color,
+      cancelButtonColor: theme.cancelButtonColor,
+      background: theme.background,
+      color: theme.color,
     });
   },
 
@@ -96,16 +120,17 @@ export const alertUtil = {
     placeholder: string = "0",
     inputType: "text" | "number" = "number"
   ): Promise<SweetAlertResult> => {
+    const theme = getTheme();
     return Swal.fire({
       title,
       input: inputType,
       inputLabel: label,
       inputPlaceholder: placeholder,
       showCancelButton: true,
-      background: THEME.background,
-      color: THEME.color,
-      confirmButtonColor: THEME.warningConfirmColor,
-      cancelButtonColor: THEME.cancelButtonColor,
+      background: theme.background,
+      color: theme.color,
+      confirmButtonColor: theme.warningConfirmColor,
+      cancelButtonColor: theme.cancelButtonColor,
     });
   },
 };
