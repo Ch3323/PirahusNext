@@ -40,7 +40,7 @@ export default function Leaderboard({
   const speedrun = useSpeedrunLeaderboard(
     speedrunEndpoint,
     activeGame,
-    5,
+    10,
     gameHasDifficulty ? activeDifficulty : undefined,
   );
 
@@ -358,15 +358,15 @@ export default function Leaderboard({
                           activeGame === "trace" && entry.score != null
                             ? `${entry.score.toFixed(2)} pts`
                             : activeGame === "sort" && entry.score != null
-                            ? `${entry.score} pts`
-                            : formatTime(entry.timeMs)
+                              ? `${entry.score} pts`
+                              : formatTime(entry.timeMs)
                         }
                         meta={
                           activeGame === "trace" && entry.correctAnswers != null
                             ? `${entry.correctAnswers}${entry.totalAnswers != null ? `/${entry.totalAnswers}` : ""} correct · ⏱ ${formatTime(entry.timeMs)}`
                             : activeGame === "sort" && entry.score != null
-                            ? `⏱ ${formatTime(entry.timeMs)}`
-                            : undefined
+                              ? `⏱ ${formatTime(entry.timeMs)}`
+                              : undefined
                         }
                         isMe={entry.userId === currentUserId}
                         accentColor={activeGameMeta.color}
